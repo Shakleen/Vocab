@@ -1,23 +1,24 @@
 import 'package:equatable/equatable.dart';
+import 'package:vocab/features/query_word/domain/entities/construction.dart';
 
 import 'base_info_model.dart';
 
-class ConstructionModel extends Equatable {
-  final List<BaseInfoModel> domainList;
-  final List<String> exampleList;
-  final List<BaseInfoModel> noteList;
-  final List<BaseInfoModel> regionList;
-  final List<BaseInfoModel> registerList;
-  final String text;
-
+class ConstructionModel extends Construction {
   ConstructionModel({
-    this.domainList,
-    this.exampleList,
-    this.noteList,
-    this.regionList,
-    this.registerList,
-    this.text,
-  });
+    List<BaseInfoModel> domainList,
+    List<String> exampleList,
+    List<BaseInfoModel> noteList,
+    List<BaseInfoModel> regionList,
+    List<BaseInfoModel> registerList,
+    String text,
+  }) : super(
+          domainList: domainList,
+          exampleList: exampleList,
+          noteList: noteList,
+          regionList: regionList,
+          registerList: registerList,
+          text: text,
+        );
 
   @override
   List<Object> get props => [
