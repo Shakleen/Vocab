@@ -8,6 +8,15 @@ class ThesaurusLinkModel extends ThesaurusLink {
   ThesaurusLinkModel({String entryId, String senseId})
       : super(entryId: entryId, senseId: senseId);
 
-  @override
-  List<Object> get props => [this.entryId, this.senseId];
+  factory ThesaurusLinkModel.fromJson(Map<String, dynamic> json) =>
+      ThesaurusLinkModel(entryId: json['entry_id'], senseId: json['sense_id']);
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {};
+
+    json['entry_id'] = entryId;
+    json['sense_id'] = senseId;
+
+    return json;
+  }
 }
