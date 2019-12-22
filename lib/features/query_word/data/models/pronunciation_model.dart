@@ -1,5 +1,5 @@
-import 'package:equatable/equatable.dart';
 import 'package:vocab/features/query_word/data/models/base_info_model.dart';
+import 'package:vocab/features/query_word/domain/entities/pronunciation.dart';
 
 /// [PronunciationModel] class
 /// [audioFileUrl] (string, optional): The URL of the sound file ,
@@ -13,20 +13,22 @@ import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 /// 'Great Britain' ,
 /// [registerList] (List[BaseInfoModel], optional): A level of language usage, typically with respect to
 /// formality. e.g. 'offensive', 'informal'
-class PronunciationModel extends Equatable {
-  final String audioFileUrl, phoneticNotation, phoneticSpelling;
-  final List<String> dialectList;
-  final List<BaseInfoModel> regionList;
-  final List<BaseInfoModel> registerList;
-
+class PronunciationModel extends Pronunciation {
   PronunciationModel({
-    this.audioFileUrl,
-    this.phoneticNotation,
-    this.phoneticSpelling,
-    this.dialectList,
-    this.regionList,
-    this.registerList,
-  });
+    String audioFileUrl,
+    String phoneticNotation,
+    String phoneticSpelling,
+    List<String> dialectList,
+    List<BaseInfoModel> regionList,
+    List<BaseInfoModel> registerList,
+  }) : super(
+          audioFileUrl: audioFileUrl,
+          phoneticNotation: phoneticNotation,
+          phoneticSpelling: phoneticSpelling,
+          dialectList: dialectList,
+          regionList: regionList,
+          registerList: registerList,
+        );
 
   factory PronunciationModel.fromJson(Map<String, dynamic> jsonData) {
     final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
