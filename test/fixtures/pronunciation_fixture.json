@@ -1,0 +1,39 @@
+{
+    "audioFile": "test.mp3",
+    "dialects": [
+        "test1",
+        "test2",
+        "test3"
+    ],
+    "phoneticNotation": "test phoneticNotation",
+    "phoneticSpelling": "test phoneticSpelling",
+    "regions": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ],
+    "registers": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ]
+}

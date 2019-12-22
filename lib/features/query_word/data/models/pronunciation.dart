@@ -28,6 +28,34 @@ class Pronunciation extends Equatable {
     this.registerList,
   });
 
+  factory Pronunciation.fromJson(Map<String, dynamic> jsonData) {
+    final Function toBaseinfoList = (key) => List<BaseInfo>.from(
+          jsonData[key].map((element) => BaseInfo.fromJson(element)),
+        );
+    return Pronunciation(
+      audioFileUrl: jsonData['audioFile'],
+      dialectList: List<String>.from(jsonData['dialects']),
+      phoneticNotation: jsonData['phoneticNotation'],
+      phoneticSpelling: jsonData['phoneticSpelling'],
+      regionList: toBaseinfoList('regions'),
+      registerList: toBaseinfoList('registers'),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> jsonData = {};
+    final Function baseInfoToString = (baseInfo) => baseInfo.toJson();
+
+    jsonData['audioFile'] = this.audioFileUrl;
+    jsonData['dialects'] = this.dialectList;
+    jsonData['phoneticNotation'] = this.phoneticNotation;
+    jsonData['phoneticSpelling'] = this.phoneticSpelling;
+    jsonData['regions'] = this.regionList.map(baseInfoToString);
+    jsonData['registers'] = this.registerList.map(baseInfoToString);
+
+    return jsonData;
+  }
+
   @override
   List<Object> get props => [
         this.audioFileUrl,
