@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+import 'package:vocab/features/query_word/domain/entities/related_entry.dart';
 
 import 'base_info_model.dart';
 
@@ -10,20 +10,22 @@ import 'base_info_model.dart';
 /// [registerList] (List[BaseInfoModel], optional): A level of language usage, typically with respect to formality. e.g. '
 /// offensive', 'informal' ,
 /// [text] (string)
-class RelatedEntryModel extends Equatable {
-  final List<BaseInfoModel> domainList;
-  final String id, language, text;
-  final List<BaseInfoModel> regionList;
-  final List<BaseInfoModel> registerList;
-
+class RelatedEntryModel extends RelatedEntry {
   RelatedEntryModel({
-    this.domainList,
-    this.id,
-    this.language,
-    this.text,
-    this.regionList,
-    this.registerList,
-  });
+    List<BaseInfoModel> domainList,
+    String id,
+    String language,
+    String text,
+    List<BaseInfoModel> regionList,
+    List<BaseInfoModel> registerList,
+  }) : super(
+          domainList: domainList,
+          id: id,
+          language: language,
+          text: text,
+          regionList: regionList,
+          registerList: registerList,
+        );
 
   @override
   List<Object> get props => [
