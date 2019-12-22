@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:vocab/features/query_word/domain/entities/entry.dart';
-import 'package:vocab/features/query_word/domain/entities/inline_models.dart';
+
+import 'entry.dart';
+import 'inline_models.dart';
 
 /// [LexicalEntry] class
 ///

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:vocab/features/query_word/domain/entities/inline_models.dart';
 
+import 'inline_models.dart';
 import 'lexical_entry.dart';
 
 enum HeadwordType { Headword, Inflection, Phrase }
