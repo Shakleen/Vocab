@@ -1,28 +1,28 @@
 import 'package:equatable/equatable.dart';
 
-import 'sense.dart';
-import 'pronunciation.dart';
-import 'base_info.dart';
-import 'variant_form.dart';
+import 'sense_model.dart';
+import 'pronunciation_model.dart';
+import 'base_info_model.dart';
+import 'variant_form_model.dart';
 
-/// [Entry] class
+/// [EntryModel] class
 /// [etymologyList] (List[String], optional): The origin of the word and the way in which its meaning has changed throughout history ,
-/// [grammaticalFeatureList] (List[BaseInfo], optional),
+/// [grammaticalFeatureList] (List[BaseInfoModel], optional),
 /// [homographNumber] (string, optional): Identifies the homograph grouping. The last two digits identify different entries of the same homograph. The first one/two digits identify the homograph number. ,
-/// [noteList] (List[BaseInfo], optional),
-/// [pronunciationList] (List[Pronunciation], optional),
-/// [senseList] (Array[Sense], optional): Complete list of senses ,
-/// [variantForms] (List[VariantForm], optional): Various words that are used interchangeably depending on the context, e.g 'a' and 'an'
-class Entry extends Equatable {
+/// [noteList] (List[BaseInfoModel], optional),
+/// [pronunciationList] (List[PronunciationModel], optional),
+/// [senseList] (Array[SenseModel], optional): Complete list of senses ,
+/// [variantForms] (List[VariantFormModel], optional): Various words that are used interchangeably depending on the context, e.g 'a' and 'an'
+class EntryModel extends Equatable {
   final List<String> etymologyList;
-  final List<BaseInfo> grammaticalFeatureList;
+  final List<BaseInfoModel> grammaticalFeatureList;
   final String homographNumber;
-  final List<BaseInfo> noteList;
-  final List<Pronunciation> pronunciationList;
-  final List<Sense> senseList;
-  final List<VariantForm> variantFormList;
+  final List<BaseInfoModel> noteList;
+  final List<PronunciationModel> pronunciationList;
+  final List<SenseModel> senseList;
+  final List<VariantFormModel> variantFormList;
 
-  Entry({
+  EntryModel({
     this.etymologyList,
     this.grammaticalFeatureList,
     this.homographNumber,

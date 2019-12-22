@@ -1,15 +1,15 @@
 import 'package:equatable/equatable.dart';
 
-class BaseInfo extends Equatable {
+class BaseInfoModel extends Equatable {
   final String id, text, type;
 
-  BaseInfo({this.id, this.text, this.type});
+  BaseInfoModel({this.id, this.text, this.type});
 
   @override
   List<Object> get props => [id, text, type];
 
-  factory BaseInfo.fromJson(Map<String, dynamic> jsonData) {
-    return BaseInfo(
+  factory BaseInfoModel.fromJson(Map<String, dynamic> jsonData) {
+    return BaseInfoModel(
       id: jsonData['id'],
       text: jsonData['text'],
       type: jsonData['type'],

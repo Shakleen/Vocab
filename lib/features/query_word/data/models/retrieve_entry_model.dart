@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 
-import 'headword_entry.dart';
+import 'headword_entry_model.dart';
 
-class RetrieveEntry extends Equatable {
+class RetrieveEntryModel extends Equatable {
   final Map<String, String> metaData;
   final String id, word;
-  final List<HeadwordEntry> resultList;
+  final List<HeadwordEntryModel> resultList;
 
-  const RetrieveEntry({
+  const RetrieveEntryModel({
     this.metaData,
     this.id,
     this.word,

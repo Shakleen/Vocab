@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:vocab/features/query_word/data/models/base_info.dart';
+import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 
-/// [Pronunciation] class
+/// [PronunciationModel] class
 /// [audioFileUrl] (string, optional): The URL of the sound file ,
 /// [dialectList] (List[string], optional): A local or regional variation where the pronunciation occurs,
 /// e.g. 'British English' ,
@@ -9,17 +9,17 @@ import 'package:vocab/features/query_word/data/models/base_info.dart';
 /// [phoneticSpelling] (string, optional): Phonetic spelling is the representation of vocal sounds which
 /// express pronunciations of words. It is a system of spelling in which each letter represents invariably
 /// the same spoken sound ,
-/// [regionList] (List[BaseInfo], optional): A particular area in which the pronunciation occurs, e.g.
+/// [regionList] (List[BaseInfoModel], optional): A particular area in which the pronunciation occurs, e.g.
 /// 'Great Britain' ,
-/// [registerList] (List[BaseInfo], optional): A level of language usage, typically with respect to
+/// [registerList] (List[BaseInfoModel], optional): A level of language usage, typically with respect to
 /// formality. e.g. 'offensive', 'informal'
-class Pronunciation extends Equatable {
+class PronunciationModel extends Equatable {
   final String audioFileUrl, phoneticNotation, phoneticSpelling;
   final List<String> dialectList;
-  final List<BaseInfo> regionList;
-  final List<BaseInfo> registerList;
+  final List<BaseInfoModel> regionList;
+  final List<BaseInfoModel> registerList;
 
-  Pronunciation({
+  PronunciationModel({
     this.audioFileUrl,
     this.phoneticNotation,
     this.phoneticSpelling,
@@ -28,11 +28,11 @@ class Pronunciation extends Equatable {
     this.registerList,
   });
 
-  factory Pronunciation.fromJson(Map<String, dynamic> jsonData) {
-    final Function toBaseinfoList = (key) => List<BaseInfo>.from(
-          jsonData[key].map((element) => BaseInfo.fromJson(element)),
+  factory PronunciationModel.fromJson(Map<String, dynamic> jsonData) {
+    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
+          jsonData[key].map((element) => BaseInfoModel.fromJson(element)),
         );
-    return Pronunciation(
+    return PronunciationModel(
       audioFileUrl: jsonData['audioFile'],
       dialectList: List<String>.from(jsonData['dialects']),
       phoneticNotation: jsonData['phoneticNotation'],

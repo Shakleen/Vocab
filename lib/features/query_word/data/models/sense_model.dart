@@ -1,49 +1,48 @@
 import 'package:equatable/equatable.dart';
-import 'package:vocab/features/query_word/data/models/base_info.dart';
+import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 
-import 'pronunciation.dart';
-import 'thesaurus_link.dart';
-import 'variant_form.dart';
+import 'pronunciation_model.dart';
+import 'variant_form_model.dart';
 
-/// [Sense] class
+/// [SenseModel] class
 ///
 /// Properties:
 /// [constructionList] (List[GrammaticalFeature], optional): A construction provides information about typical syntax
 /// used of this sense. Each construction may optionally have one or more examples.
 /// [crossReferenceMarkerList] (List[String], optional): A grouping of crossreference notes. ,
-/// [crossReferenceList] (List[BaseInfo], optional),
+/// [crossReferenceList] (List[BaseInfoModel], optional),
 /// [definitionList] (List[String], optional): A list of statements of the exact meaning of a word ,
 /// [domainList] (domainsList, optional): A subject, discipline, or branch of knowledge particular to the Sense ,
 /// [etymologyList] (List[String], optional): The origin of the word and the way in which its meaning has changed throughout history ,
-/// [exampleList] (List[_Example], optional),
+/// [exampleList] (List[ExampleModel], optional),
 /// [id] (string, optional): The id of the sense that is required for the delete procedure ,
-/// [noteList] (List[BaseInfo], optional),
-/// [pronunciationList] (List[Pronunciation], optional),
-/// [regionList] (List[BaseInfo], optional): A particular area in which the Sense occurs, e.g. 'Great Britain' ,
-/// [registerList] (List[BaseInfo], optional): A level of language usage, typically with respect to formality. e.g. 'offensive', 'informal' ,
+/// [noteList] (List[BaseInfoModel], optional),
+/// [pronunciationList] (List[PronunciationModel], optional),
+/// [regionList] (List[BaseInfoModel], optional): A particular area in which the Sense occurs, e.g. 'Great Britain' ,
+/// [registerList] (List[BaseInfoModel], optional): A level of language usage, typically with respect to formality. e.g. 'offensive', 'informal' ,
 /// [shortDefinitions] (List[String], optional): A list of short statements of the exact meaning of a word ,
-/// [subsenseList] (List[Sense], optional): Ordered list of subsenses of a sense ,
-/// [thesaurusLinkList] (List[ThesaurusLink], optional): Ordered list of links to the Thesaurus Dictionary ,
-/// [variantFormList] (List[VariantForm], optional): Various words that are used interchangeably depending on the context, e.g 'duck' and 'duck boat'
-class Sense extends Equatable {
-  final List<_Construction> constructionList;
+/// [subsenseList] (List[SenseModel], optional): Ordered list of subsenses of a sense ,
+/// [thesaurusLinkList] (List[ThesaurusLinkModel], optional): Ordered list of links to the Thesaurus Dictionary ,
+/// [variantFormList] (List[VariantFormModel], optional): Various words that are used interchangeably depending on the context, e.g 'duck' and 'duck boat'
+class SenseModel extends Equatable {
+  final List<ConstructionModel> constructionList;
   final List<String> crossReferenceMarkerList;
-  final List<BaseInfo> crossReferenceList;
+  final List<BaseInfoModel> crossReferenceList;
   final List<String> definitionList;
-  final List<BaseInfo> domainList;
+  final List<BaseInfoModel> domainList;
   final List<String> etymologyList;
-  final List<_Example> exampleList;
+  final List<ExampleModel> exampleList;
   final String id;
-  final List<BaseInfo> noteList;
-  final List<Pronunciation> pronunciationList;
-  final List<BaseInfo> regionList;
-  final List<BaseInfo> registerList;
+  final List<BaseInfoModel> noteList;
+  final List<PronunciationModel> pronunciationList;
+  final List<BaseInfoModel> regionList;
+  final List<BaseInfoModel> registerList;
   final List<String> shortDefinitions;
-  final List<Sense> subsenseList;
-  final List<ThesaurusLink> thesaurusLinkList;
-  final List<VariantForm> variantFormList;
+  final List<SenseModel> subsenseList;
+  final List<ThesaurusLinkModel> thesaurusLinkList;
+  final List<VariantFormModel> variantFormList;
 
-  Sense([
+  SenseModel([
     this.constructionList,
     this.crossReferenceMarkerList,
     this.crossReferenceList,
@@ -83,26 +82,26 @@ class Sense extends Equatable {
       ];
 }
 
-/// [_Example] class
+/// [ExampleModel] class
 /// [definitionList] (List[strings], optional): A list of statements of the exact meaning of a word ,
-/// [domainList] (List[BaseInfo], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
+/// [domainList] (List[BaseInfoModel], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
 /// [noteList] (List[CategorizedText], optional),
-/// [regionList] (List[BaseInfo], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
-/// [registerList] (List[BaseInfo], optional): A level of language usage, typically with respect to formality. e.g.
+/// [regionList] (List[BaseInfoModel], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
+/// [registerList] (List[BaseInfoModel], optional): A level of language usage, typically with respect to formality. e.g.
 /// 'offensive', 'informal' ,
 /// [senseIdList] (List[strings], optional): The list of sense identifiers related to the example. Provided in the
 /// sentences endpoint only. ,
 /// [text] (string)
-class _Example extends Equatable {
+class ExampleModel extends Equatable {
   final List<String> definitionList;
-  final List<BaseInfo> domainList;
-  final List<BaseInfo> noteList;
-  final List<BaseInfo> regionList;
-  final List<BaseInfo> registerList;
+  final List<BaseInfoModel> domainList;
+  final List<BaseInfoModel> noteList;
+  final List<BaseInfoModel> regionList;
+  final List<BaseInfoModel> registerList;
   final List<String> senseIdList;
   final String text;
 
-  _Example({
+  ExampleModel({
     this.definitionList,
     this.domainList,
     this.noteList,
@@ -124,15 +123,15 @@ class _Example extends Equatable {
       ];
 }
 
-class _Construction extends Equatable {
-  final List<BaseInfo> domainList;
+class ConstructionModel extends Equatable {
+  final List<BaseInfoModel> domainList;
   final List<String> exampleList;
-  final List<BaseInfo> noteList;
-  final List<BaseInfo> regionList;
-  final List<BaseInfo> registerList;
+  final List<BaseInfoModel> noteList;
+  final List<BaseInfoModel> regionList;
+  final List<BaseInfoModel> registerList;
   final String text;
 
-  _Construction({
+  ConstructionModel({
     this.domainList,
     this.exampleList,
     this.noteList,
@@ -150,4 +149,16 @@ class _Construction extends Equatable {
         registerList,
         text,
       ];
+}
+
+/// [ThesaurusLinkModel] class
+/// entry_id (string): identifier of a word ,
+/// sense_id (string): identifier of a sense
+class ThesaurusLinkModel extends Equatable {
+  final String entryId, senseId;
+
+  ThesaurusLinkModel({this.entryId, this.senseId});
+
+  @override
+  List<Object> get props => [this.entryId, this.senseId];
 }

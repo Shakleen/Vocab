@@ -1,27 +1,27 @@
 import 'package:equatable/equatable.dart';
 
-import 'pronunciation.dart';
-import 'lexical_entry.dart';
+import 'pronunciation_model.dart';
+import 'lexical_entry_model.dart';
 
 enum HeadwordType { Headword, Inflection, Phrase }
 
-/// [HeadwordEntry] class
+/// [HeadwordEntryModel] class
 ///
 /// Properties:
 /// [id] (string): The identifier of a word ,
 /// [language] (string): IANA language code ,
-/// [lexicalEntryList] (List[LexicalEntry]): A grouping of various senses in a specific language,
+/// [lexicalEntryList] (List[LexicalEntryModel]): A grouping of various senses in a specific language,
 /// and a lexical category that relates to a word ,
-/// [pronunciationList] (List[Pronunciation], optional),
+/// [pronunciationList] (List[PronunciationModel], optional),
 /// [type] ([HeadwordType], optional): The json object type. Could be 'headword', 'inflection' or 'phrase',
 /// [word] (string): (DEPRECATED) A given written or spoken realisation of an entry, lowercased.
-class HeadwordEntry extends Equatable {
+class HeadwordEntryModel extends Equatable {
   final String id, landauge, word;
   final HeadwordType type;
-  final List<LexicalEntry> lexicalEntryList;
-  final List<Pronunciation> pronunciationList;
+  final List<LexicalEntryModel> lexicalEntryList;
+  final List<PronunciationModel> pronunciationList;
 
-  const HeadwordEntry({
+  const HeadwordEntryModel({
     this.id,
     this.landauge,
     this.word,
