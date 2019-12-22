@@ -1,24 +1,17 @@
-import 'package:equatable/equatable.dart';
+import 'package:vocab/features/query_word/domain/entities/retrieve_entry.dart';
 
 import 'headword_entry_model.dart';
 
-class RetrieveEntryModel extends Equatable {
-  final Map<String, String> metaData;
-  final String id, word;
-  final List<HeadwordEntryModel> resultList;
-
-  const RetrieveEntryModel({
-    this.metaData,
-    this.id,
-    this.word,
-    this.resultList,
-  });
-
-  @override
-  List<Object> get props => [
-        metaData,
-        id,
-        word,
-        resultList,
-      ];
+class RetrieveEntryModel extends RetrieveEntry {
+  RetrieveEntryModel({
+    Map<String, String> metaData,
+    String id,
+    String word,
+    List<HeadwordEntryModel> resultList,
+  }) : super(
+          metaData: metaData,
+          id: id,
+          word: word,
+          resultList: resultList,
+        );
 }
