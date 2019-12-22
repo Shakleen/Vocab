@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:vocab/features/query_word/data/models/base_info.dart';
 
 import 'pronunciation.dart';
-import 'inline_models.dart';
 import 'thesaurus_link.dart';
 import 'variant_form.dart';
 
@@ -11,16 +11,16 @@ import 'variant_form.dart';
 /// [constructionList] (List[GrammaticalFeature], optional): A construction provides information about typical syntax
 /// used of this sense. Each construction may optionally have one or more examples.
 /// [crossReferenceMarkerList] (List[String], optional): A grouping of crossreference notes. ,
-/// [crossReferenceList] (List[CrossReference], optional),
+/// [crossReferenceList] (List[BaseInfo], optional),
 /// [definitionList] (List[String], optional): A list of statements of the exact meaning of a word ,
 /// [domainList] (domainsList, optional): A subject, discipline, or branch of knowledge particular to the Sense ,
 /// [etymologyList] (List[String], optional): The origin of the word and the way in which its meaning has changed throughout history ,
 /// [exampleList] (List[_Example], optional),
 /// [id] (string, optional): The id of the sense that is required for the delete procedure ,
-/// [noteList] (List[Note], optional),
+/// [noteList] (List[BaseInfo], optional),
 /// [pronunciationList] (List[Pronunciation], optional),
-/// [regionList] (List[Region], optional): A particular area in which the Sense occurs, e.g. 'Great Britain' ,
-/// [registerList] (List[Register], optional): A level of language usage, typically with respect to formality. e.g. 'offensive', 'informal' ,
+/// [regionList] (List[BaseInfo], optional): A particular area in which the Sense occurs, e.g. 'Great Britain' ,
+/// [registerList] (List[BaseInfo], optional): A level of language usage, typically with respect to formality. e.g. 'offensive', 'informal' ,
 /// [shortDefinitions] (List[String], optional): A list of short statements of the exact meaning of a word ,
 /// [subsenseList] (List[Sense], optional): Ordered list of subsenses of a sense ,
 /// [thesaurusLinkList] (List[ThesaurusLink], optional): Ordered list of links to the Thesaurus Dictionary ,
@@ -28,16 +28,16 @@ import 'variant_form.dart';
 class Sense extends Equatable {
   final List<_Construction> constructionList;
   final List<String> crossReferenceMarkerList;
-  final List<CrossReference> crossReferenceList;
+  final List<BaseInfo> crossReferenceList;
   final List<String> definitionList;
-  final List<Domain> domainList;
+  final List<BaseInfo> domainList;
   final List<String> etymologyList;
   final List<_Example> exampleList;
   final String id;
-  final List<Note> noteList;
+  final List<BaseInfo> noteList;
   final List<Pronunciation> pronunciationList;
-  final List<Region> regionList;
-  final List<Register> registerList;
+  final List<BaseInfo> regionList;
+  final List<BaseInfo> registerList;
   final List<String> shortDefinitions;
   final List<Sense> subsenseList;
   final List<ThesaurusLink> thesaurusLinkList;
@@ -85,20 +85,20 @@ class Sense extends Equatable {
 
 /// [_Example] class
 /// [definitionList] (List[strings], optional): A list of statements of the exact meaning of a word ,
-/// [domainList] (List[Domain], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
+/// [domainList] (List[BaseInfo], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
 /// [noteList] (List[CategorizedText], optional),
-/// [regionList] (List[Region], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
-/// [registerList] (List[Register], optional): A level of language usage, typically with respect to formality. e.g.
+/// [regionList] (List[BaseInfo], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
+/// [registerList] (List[BaseInfo], optional): A level of language usage, typically with respect to formality. e.g.
 /// 'offensive', 'informal' ,
 /// [senseIdList] (List[strings], optional): The list of sense identifiers related to the example. Provided in the
 /// sentences endpoint only. ,
 /// [text] (string)
 class _Example extends Equatable {
   final List<String> definitionList;
-  final List<Domain> domainList;
-  final List<Note> noteList;
-  final List<Region> regionList;
-  final List<Register> registerList;
+  final List<BaseInfo> domainList;
+  final List<BaseInfo> noteList;
+  final List<BaseInfo> regionList;
+  final List<BaseInfo> registerList;
   final List<String> senseIdList;
   final String text;
 
@@ -125,11 +125,11 @@ class _Example extends Equatable {
 }
 
 class _Construction extends Equatable {
-  final List<Domain> domainList;
+  final List<BaseInfo> domainList;
   final List<String> exampleList;
-  final List<Note> noteList;
-  final List<Region> regionList;
-  final List<Register> registerList;
+  final List<BaseInfo> noteList;
+  final List<BaseInfo> regionList;
+  final List<BaseInfo> registerList;
   final String text;
 
   _Construction({
@@ -151,10 +151,3 @@ class _Construction extends Equatable {
         text,
       ];
 }
-
-/// [CrossReference] class
-/// [id] (string): The word id of the co-occurrence ,
-/// [text] (string): The word of the co-occurrence ,
-/// [type] (string): The type of relation between the two words. Possible values are 'close match', 'related',
-/// 'see also', 'variant spelling', and 'abbreviation' in case of crossreferences, or 'pre', 'post' in case of collocates.
-class CrossReference extends InlineModel2 {}

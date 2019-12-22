@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:vocab/features/query_word/data/models/base_info.dart';
 import 'package:vocab/features/query_word/data/models/variant_form.dart';
 
 import 'pronunciation.dart';
 import 'entry.dart';
-import 'inline_models.dart';
 
 /// [LexicalEntry] class
 ///
@@ -11,12 +11,12 @@ import 'inline_models.dart';
 /// [derivativeOfList] (List[_RelatedEntry], optional): Other words from which this one derives ,
 /// [derivativeList] (List[_RelatedEntry], optional): Other words from which their Sense derives ,
 /// [entryList] (List[Entry], optional),
-/// [grammaticalFeatureList] (List[GrammaticalFeature], optional),
+/// [grammaticalFeatureList] (List[BaseInfo], optional),
 /// [language] (string): IANA language code ,
-/// [lexicalCategory] ([Region]): A linguistic category of words (or more precisely lexical items),
+/// [lexicalCategory] ([BaseInfo]): A linguistic category of words (or more precisely lexical items),
 /// generally defined by the syntactic or morphological behaviour of the lexical item in question, such as
 /// noun or verb ,
-/// [noteList] ([Note], optional),
+/// [noteList] ([BaseInfo], optional),
 /// [pronunciationList] (List[Pronunciation], optional),
 /// [text] (string): A given written or spoken realisation of an entry. ,
 /// [variantFormList] (List[VariantForm], optional): Various words that are used interchangeably depending
@@ -24,10 +24,10 @@ import 'inline_models.dart';
 class LexicalEntry extends Equatable {
   final List<_RelatedEntry> derivativeOfList, derivativeList;
   final List<Entry> entryList;
-  final List<GrammaticalFeature> grammaticalFeatureList;
+  final List<BaseInfo> grammaticalFeatureList;
   final String language, text;
-  final Region lexicalCategory;
-  final List<Note> noteList;
+  final BaseInfo lexicalCategory;
+  final List<BaseInfo> noteList;
   final List<Pronunciation> pronunciationList;
   final List<VariantForm> variantFormList;
 
@@ -60,18 +60,18 @@ class LexicalEntry extends Equatable {
 }
 
 /// [_RelatedEntry] class
-/// [domainList] (List[Domain], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
+/// [domainList] (List[BaseInfo], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
 /// [id] (string): he identifier of the word ,
 /// [language] (string, optional): IANA language code specifying the language of the word ,
-/// [regionList] (List[Region], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
-/// [registerList] (List[Register], optional): A level of language usage, typically with respect to formality. e.g. '
+/// [regionList] (List[BaseInfo], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
+/// [registerList] (List[BaseInfo], optional): A level of language usage, typically with respect to formality. e.g. '
 /// offensive', 'informal' ,
 /// [text] (string)
 class _RelatedEntry extends Equatable {
-  final List<Domain> domainList;
+  final List<BaseInfo> domainList;
   final String id, language, text;
-  final List<Region> regionList;
-  final List<Register> registerList;
+  final List<BaseInfo> regionList;
+  final List<BaseInfo> registerList;
 
   _RelatedEntry({
     this.domainList,
