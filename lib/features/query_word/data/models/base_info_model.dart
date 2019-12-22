@@ -1,30 +1,20 @@
 import 'package:equatable/equatable.dart';
+import 'package:vocab/features/query_word/domain/entities/base_info.dart';
 
-class BaseInfoModel extends Equatable {
-  final String id, text, type;
+class BaseInfoModel extends BaseInfo {
+  BaseInfoModel({String id, String text, String type})
+      : super(id: id, text: text, type: type);
 
-  BaseInfoModel({this.id, this.text, this.type});
-
-  @override
-  List<Object> get props => [id, text, type];
-
-  factory BaseInfoModel.fromJson(Map<String, dynamic> jsonData) {
-    return BaseInfoModel(
-      id: jsonData['id'],
-      text: jsonData['text'],
-      type: jsonData['type'],
-    );
-  }
+  factory BaseInfoModel.fromJson(Map<String, dynamic> json) =>
+      BaseInfoModel(id: json['id'], text: json['text'], type: json['type']);
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> jsonData = {};
+    final Map<String, dynamic> json = {};
 
-    jsonData['id'] = this.id;
-    jsonData['text'] = this.text;
-    jsonData['type'] = this.type;
+    json['id'] = this.id;
+    json['text'] = this.text;
+    json['type'] = this.type;
 
-    return jsonData;
+    return json;
   }
 }
-
-
