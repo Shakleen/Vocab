@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+import 'package:vocab/features/query_word/domain/entities/example.dart';
 
 import 'base_info_model.dart';
 
@@ -12,24 +12,24 @@ import 'base_info_model.dart';
 /// [senseIdList] (List[strings], optional): The list of sense identifiers related to the example. Provided in the
 /// sentences endpoint only. ,
 /// [text] (string)
-class ExampleModel extends Equatable {
-  final List<String> definitionList;
-  final List<BaseInfoModel> domainList;
-  final List<BaseInfoModel> noteList;
-  final List<BaseInfoModel> regionList;
-  final List<BaseInfoModel> registerList;
-  final List<String> senseIdList;
-  final String text;
-
+class ExampleModel extends Example {
   ExampleModel({
-    this.definitionList,
-    this.domainList,
-    this.noteList,
-    this.regionList,
-    this.registerList,
-    this.senseIdList,
-    this.text,
-  });
+    List<String> definitionList,
+    List<BaseInfoModel> domainList,
+    List<BaseInfoModel> noteList,
+    List<BaseInfoModel> regionList,
+    List<BaseInfoModel> registerList,
+    List<String> senseIdList,
+    String text,
+  }) : super(
+          definitionList: definitionList,
+          domainList: domainList,
+          noteList: noteList,
+          regionList: regionList,
+          registerList: registerList,
+          senseIdList: senseIdList,
+          text: text,
+        );
 
   @override
   List<Object> get props => [
