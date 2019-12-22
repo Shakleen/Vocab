@@ -1,7 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 
+import 'construction_model.dart';
+import 'example_model.dart';
 import 'pronunciation_model.dart';
+import 'thesaurus_link_model.dart';
 import 'variant_form_model.dart';
 
 /// [SenseModel] class
@@ -82,83 +85,7 @@ class SenseModel extends Equatable {
       ];
 }
 
-/// [ExampleModel] class
-/// [definitionList] (List[strings], optional): A list of statements of the exact meaning of a word ,
-/// [domainList] (List[BaseInfoModel], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
-/// [noteList] (List[CategorizedText], optional),
-/// [regionList] (List[BaseInfoModel], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
-/// [registerList] (List[BaseInfoModel], optional): A level of language usage, typically with respect to formality. e.g.
-/// 'offensive', 'informal' ,
-/// [senseIdList] (List[strings], optional): The list of sense identifiers related to the example. Provided in the
-/// sentences endpoint only. ,
-/// [text] (string)
-class ExampleModel extends Equatable {
-  final List<String> definitionList;
-  final List<BaseInfoModel> domainList;
-  final List<BaseInfoModel> noteList;
-  final List<BaseInfoModel> regionList;
-  final List<BaseInfoModel> registerList;
-  final List<String> senseIdList;
-  final String text;
 
-  ExampleModel({
-    this.definitionList,
-    this.domainList,
-    this.noteList,
-    this.regionList,
-    this.registerList,
-    this.senseIdList,
-    this.text,
-  });
 
-  @override
-  List<Object> get props => [
-        definitionList,
-        domainList,
-        noteList,
-        regionList,
-        registerList,
-        senseIdList,
-        text,
-      ];
-}
 
-class ConstructionModel extends Equatable {
-  final List<BaseInfoModel> domainList;
-  final List<String> exampleList;
-  final List<BaseInfoModel> noteList;
-  final List<BaseInfoModel> regionList;
-  final List<BaseInfoModel> registerList;
-  final String text;
 
-  ConstructionModel({
-    this.domainList,
-    this.exampleList,
-    this.noteList,
-    this.regionList,
-    this.registerList,
-    this.text,
-  });
-
-  @override
-  List<Object> get props => [
-        domainList,
-        exampleList,
-        noteList,
-        regionList,
-        registerList,
-        text,
-      ];
-}
-
-/// [ThesaurusLinkModel] class
-/// entry_id (string): identifier of a word ,
-/// sense_id (string): identifier of a sense
-class ThesaurusLinkModel extends Equatable {
-  final String entryId, senseId;
-
-  ThesaurusLinkModel({this.entryId, this.senseId});
-
-  @override
-  List<Object> get props => [this.entryId, this.senseId];
-}
