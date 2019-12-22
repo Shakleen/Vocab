@@ -1,0 +1,1 @@
+flutter test test/features/query_word/data/models/base_info_test.dart
