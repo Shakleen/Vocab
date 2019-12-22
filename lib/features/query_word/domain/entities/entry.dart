@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import 'sense.dart';
 import 'inline_models.dart';
 
 /// [Entry] class
