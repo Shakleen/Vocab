@@ -6,8 +6,8 @@ import 'inline_models.dart';
 /// [LexicalEntry] class
 ///
 /// Properties:
-/// [derivativeOfList] (List[_RelatedEntries], optional): Other words from which this one derives ,
-/// [derivativeList] (List[_RelatedEntries], optional): Other words from which their Sense derives ,
+/// [derivativeOfList] (List[InlineModel2], optional): Other words from which this one derives ,
+/// [derivativeList] (List[InlineModel2], optional): Other words from which their Sense derives ,
 /// [entryList] (List[Entry], optional),
 /// [grammaticalFeatureList] (List[InlineModel3], optional),
 /// [language] (string): IANA language code ,

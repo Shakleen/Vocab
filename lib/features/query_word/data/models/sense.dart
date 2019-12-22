@@ -8,7 +8,7 @@ import 'thesaurus_link.dart';
 /// Properties:
 /// [constructionList] (List[InlineModel3], optional): A construction provides information about typical syntax
 /// used of this sense. Each construction may optionally have one or more examples.
-/// [crossReferenceMarkers] (List[String], optional): A grouping of crossreference notes. ,
+/// [crossReferenceMarkerList] (List[String], optional): A grouping of crossreference notes. ,
 /// [crossReferenceList] (List[InlineModel9], optional),
 /// [definitionList] (List[String], optional): A list of statements of the exact meaning of a word ,
 /// [domainList] (domainsList, optional): A subject, discipline, or branch of knowledge particular to the Sense ,
@@ -20,11 +20,12 @@ import 'thesaurus_link.dart';
 /// [regionList] (List[InlineModel6], optional): A particular area in which the Sense occurs, e.g. 'Great Britain' ,
 /// [registerList] (List[InlineModel7], optional): A level of language usage, typically with respect to formality. e.g. 'offensive', 'informal' ,
 /// [shortDefinitions] (List[String], optional): A list of short statements of the exact meaning of a word ,
-/// [subsenses] (List[Sense], optional): Ordered list of subsenses of a sense ,
+/// [subsenseList] (List[Sense], optional): Ordered list of subsenses of a sense ,
 /// [thesaurusLinkList] (List[ThesaurusLink], optional): Ordered list of links to the Thesaurus Dictionary ,
 /// [variantFormList] (List[InlineModel5], optional): Various words that are used interchangeably depending on the context, e.g 'duck' and 'duck boat'
 class Sense extends Equatable {
   final List<InlineModel11> constructionList;
+  final List<String> crossReferenceMarkerList;
   final List<InlineModel9> crossReferenceList;
   final List<String> definitionList;
   final List<InlineModel8> domainList;
@@ -36,12 +37,13 @@ class Sense extends Equatable {
   final List<InlineModel6> regionList;
   final List<InlineModel7> registerList;
   final List<String> shortDefinitions;
-  final List<Sense> subsenses;
+  final List<Sense> subsenseList;
   final List<ThesaurusLink> thesaurusLinkList;
   final List<InlineModel5> variantFormList;
 
   Sense([
     this.constructionList,
+    this.crossReferenceMarkerList,
     this.crossReferenceList,
     this.definitionList,
     this.domainList,
@@ -53,7 +55,7 @@ class Sense extends Equatable {
     this.regionList,
     this.registerList,
     this.shortDefinitions,
-    this.subsenses,
+    this.subsenseList,
     this.thesaurusLinkList,
     this.variantFormList,
   ]);
@@ -61,6 +63,7 @@ class Sense extends Equatable {
   @override
   List<Object> get props => [
         constructionList,
+        crossReferenceMarkerList,
         crossReferenceList,
         definitionList,
         domainList,
@@ -72,10 +75,8 @@ class Sense extends Equatable {
         regionList,
         registerList,
         shortDefinitions,
-        subsenses,
+        subsenseList,
         thesaurusLinkList,
         variantFormList,
       ];
 }
-
-
