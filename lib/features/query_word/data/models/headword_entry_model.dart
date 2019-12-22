@@ -1,9 +1,7 @@
-import 'package:equatable/equatable.dart';
+import 'package:vocab/features/query_word/domain/entities/headword_entry.dart';
 
 import 'pronunciation_model.dart';
 import 'lexical_entry_model.dart';
-
-enum HeadwordType { Headword, Inflection, Phrase }
 
 /// [HeadwordEntryModel] class
 ///
@@ -15,20 +13,22 @@ enum HeadwordType { Headword, Inflection, Phrase }
 /// [pronunciationList] (List[PronunciationModel], optional),
 /// [type] ([HeadwordType], optional): The json object type. Could be 'headword', 'inflection' or 'phrase',
 /// [word] (string): (DEPRECATED) A given written or spoken realisation of an entry, lowercased.
-class HeadwordEntryModel extends Equatable {
-  final String id, landauge, word;
-  final HeadwordType type;
-  final List<LexicalEntryModel> lexicalEntryList;
-  final List<PronunciationModel> pronunciationList;
-
-  const HeadwordEntryModel({
-    this.id,
-    this.landauge,
-    this.word,
-    this.type,
-    this.lexicalEntryList,
-    this.pronunciationList,
-  });
+class HeadwordEntryModel extends HeadwordEntry {
+  HeadwordEntryModel({
+    String id,
+    String landauge,
+    String word,
+    HeadwordType type,
+    List<LexicalEntryModel> lexicalEntryList,
+    List<PronunciationModel> pronunciationList,
+  }) : super(
+          id: id,
+          landauge: landauge,
+          word: word,
+          type: type,
+          lexicalEntryList: lexicalEntryList,
+          pronunciationList: pronunciationList,
+        );
 
   @override
   List<Object> get props => [
