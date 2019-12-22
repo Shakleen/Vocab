@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:vocab/features/query_word/data/models/base_info_model.dart';
+import 'package:vocab/features/query_word/domain/entities/variant_form.dart';
 
 import 'pronunciation_model.dart';
 
@@ -11,22 +12,22 @@ import 'pronunciation_model.dart';
 /// [registerList] (List[BaseInfoModel], optional): A level of language usage, typically with respect to formality. e.g. '
 /// offensive', 'informal' ,
 /// [text] (string)
-class VariantFormModel extends Equatable {
-  final List<BaseInfoModel> domainList;
-  final String text;
-  final List<BaseInfoModel> regionList;
-  final List<BaseInfoModel> registerList;
-  final List<BaseInfoModel> noteList;
-  final List<PronunciationModel> pronunciationList;
-
+class VariantFormModel extends VariantForm {
   VariantFormModel({
-    this.noteList,
-    this.domainList,
-    this.text,
-    this.regionList,
-    this.registerList,
-    this.pronunciationList,
-  });
+    List<BaseInfoModel> domainList,
+    String text,
+    List<BaseInfoModel> regionList,
+    List<BaseInfoModel> registerList,
+    List<BaseInfoModel> noteList,
+    List<PronunciationModel> pronunciationList,
+  }) : super(
+          noteList: noteList,
+          domainList: domainList,
+          text: text,
+          regionList: regionList,
+          registerList: registerList,
+          pronunciationList: pronunciationList,
+        );
 
   @override
   List<Object> get props => [
