@@ -24,7 +24,7 @@ import 'thesaurus_link.dart';
 /// [thesaurusLinkList] (List[ThesaurusLink], optional): Ordered list of links to the Thesaurus Dictionary ,
 /// [variantFormList] (List[InlineModel5], optional): Various words that are used interchangeably depending on the context, e.g 'duck' and 'duck boat'
 class Sense extends Equatable {
-  final List<InlineModel3> constructionList;
+  final List<InlineModel11> constructionList;
   final List<InlineModel9> crossReferenceList;
   final List<String> definitionList;
   final List<InlineModel8> domainList;

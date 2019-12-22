@@ -14,7 +14,7 @@ import 'inline_models.dart';
 /// [lexicalCategory] ([InlineModel6]): A linguistic category of words (or more precisely lexical items),
 /// generally defined by the syntactic or morphological behaviour of the lexical item in question, such as
 /// noun or verb ,
-/// [noteList] ([CategorizedTextList], optional),
+/// [noteList] ([InlineModel4], optional),
 /// [pronunciationList] (List[InlineModel1], optional),
 /// [text] (string): A given written or spoken realisation of an entry. ,
 /// [variantFormList] (List[InlineModel5], optional): Various words that are used interchangeably depending
@@ -25,7 +25,7 @@ class LexicalEntry extends Equatable {
   final List<InlineModel3> grammaticalFeatureList;
   final String language, text;
   final InlineModel6 lexicalCategory;
-  final List<InlineModel6> noteList;
+  final List<InlineModel4> noteList;
   final List<InlineModel1> pronunciationList;
   final List<InlineModel5> variantFormList;
 

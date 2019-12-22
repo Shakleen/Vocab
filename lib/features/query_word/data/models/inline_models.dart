@@ -191,3 +191,31 @@ class InlineModel10 extends Equatable {
         text,
       ];
 }
+
+class InlineModel11 extends Equatable {
+  final List<InlineModel8> domainList;
+  final List<String> exampleList;
+  final List<InlineModel4> noteList;
+  final List<InlineModel6> regionList;
+  final List<InlineModel7> registerList;
+  final String text;
+
+  InlineModel11({
+    this.domainList,
+    this.exampleList,
+    this.noteList,
+    this.regionList,
+    this.registerList,
+    this.text,
+  });
+
+  @override
+  List<Object> get props => [
+        domainList,
+        exampleList,
+        noteList,
+        regionList,
+        registerList,
+        text,
+      ];
+}
