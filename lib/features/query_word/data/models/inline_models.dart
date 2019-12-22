@@ -1,56 +1,20 @@
 import 'package:equatable/equatable.dart';
 
-/// [InlineModel1] class
-/// [audioFileUrl] (string, optional): The URL of the sound file ,
-/// [dialectList] (List[string], optional): A local or regional variation where the pronunciation occurs,
-/// e.g. 'British English' ,
-/// [phoneticNotation] (string, optional): The alphabetic system used to display the phonetic spelling ,
-/// [phoneticSpelling] (string, optional): Phonetic spelling is the representation of vocal sounds which
-/// express pronunciations of words. It is a system of spelling in which each letter represents invariably
-/// the same spoken sound ,
-/// [regionList] (List[InlineModel6], optional): A particular area in which the pronunciation occurs, e.g.
-/// 'Great Britain' ,
-/// [registerList] (List[InlineModel7], optional): A level of language usage, typically with respect to
-/// formality. e.g. 'offensive', 'informal'
-class InlineModel1 extends Equatable {
-  final String audioFileUrl, phoneticNotation, phoneticSpelling;
-  final List<String> dialectList;
-  final List<InlineModel6> regionList;
-  final List<InlineModel7> registerList;
-
-  InlineModel1({
-    this.audioFileUrl,
-    this.phoneticNotation,
-    this.phoneticSpelling,
-    this.dialectList,
-    this.regionList,
-    this.registerList,
-  });
-
-  @override
-  List<Object> get props => [
-        this.audioFileUrl,
-        this.phoneticNotation,
-        this.phoneticSpelling,
-        this.dialectList,
-        this.regionList,
-        this.registerList,
-      ];
-}
+import 'pronunciation.dart';
 
 /// [InlineModel2] class
-/// [domainList] (List[InlineModel8], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
+/// [domainList] (List[Domain], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
 /// [id] (string): he identifier of the word ,
 /// [language] (string, optional): IANA language code specifying the language of the word ,
-/// [regionList] (List[InlineModel6], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
-/// [registerList] (List[InlineModel7], optional): A level of language usage, typically with respect to formality. e.g. '
+/// [regionList] (List[Region], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
+/// [registerList] (List[Register], optional): A level of language usage, typically with respect to formality. e.g. '
 /// offensive', 'informal' ,
 /// [text] (string)
 class InlineModel2 extends Equatable {
-  final List<InlineModel8> domainList;
+  final List<Domain> domainList;
   final String id, language, text;
-  final List<InlineModel6> regionList;
-  final List<InlineModel7> registerList;
+  final List<Region> regionList;
+  final List<Register> registerList;
 
   InlineModel2({
     this.domainList,
@@ -96,20 +60,20 @@ class InlineModel3 extends Equatable {
 class InlineModel4 extends InlineModel3 {}
 
 /// [InlineModel5] class
-/// [domainList] (List[InlineModel8], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
+/// [domainList] (List[Domain], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
 /// [noteList] (List[InlineModel4], optional),
-/// [pronunciationList] (List[InlineModel1], optional): A grouping of pronunciation information ,
-/// [regionList] (List[InlineModel6], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
-/// [registerList] (List[InlineModel7], optional): A level of language usage, typically with respect to formality. e.g. '
+/// [pronunciationList] (List[Pronunciation], optional): A grouping of pronunciation information ,
+/// [regionList] (List[Region], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
+/// [registerList] (List[Register], optional): A level of language usage, typically with respect to formality. e.g. '
 /// offensive', 'informal' ,
 /// [text] (string)
 class InlineModel5 extends Equatable {
-  final List<InlineModel8> domainList;
+  final List<Domain> domainList;
   final String text;
-  final List<InlineModel6> regionList;
-  final List<InlineModel7> registerList;
+  final List<Region> regionList;
+  final List<Register> registerList;
   final List<InlineModel4> noteList;
-  final List<InlineModel1> pronunciationList;
+  final List<Pronunciation> pronunciationList;
 
   InlineModel5({
     this.noteList,
@@ -131,18 +95,20 @@ class InlineModel5 extends Equatable {
       ];
 }
 
-class InlineModel6 extends Equatable {
+class InlineModel1 extends Equatable {
   final String id, text;
 
-  InlineModel6({this.id, this.text});
+  InlineModel1({this.id, this.text});
 
   @override
   List<Object> get props => [id, text];
 }
 
-class InlineModel7 extends InlineModel6 {}
+class Region extends InlineModel1 {}
 
-class InlineModel8 extends InlineModel6 {}
+class Register extends InlineModel1 {}
+
+class Domain extends InlineModel1 {}
 
 /// [InlineModel9] class
 /// [id] (string): The word id of the co-occurrence ,
@@ -153,20 +119,20 @@ class InlineModel9 extends InlineModel3 {}
 
 /// [InlineModel10] class
 /// [definitionList] (List[strings], optional): A list of statements of the exact meaning of a word ,
-/// [domainList] (List[InlineModel8], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
+/// [domainList] (List[Domain], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
 /// [noteList] (List[CategorizedText], optional),
-/// [regionList] (List[InlineModel6], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
-/// [registerList] (List[InlineModel7], optional): A level of language usage, typically with respect to formality. e.g.
+/// [regionList] (List[Region], optional): A particular area in which the pronunciation occurs, e.g. 'Great Britain' ,
+/// [registerList] (List[Register], optional): A level of language usage, typically with respect to formality. e.g.
 /// 'offensive', 'informal' ,
 /// [senseIdList] (List[strings], optional): The list of sense identifiers related to the example. Provided in the
 /// sentences endpoint only. ,
 /// [text] (string)
 class InlineModel10 extends Equatable {
   final List<String> definitionList;
-  final List<InlineModel8> domainList;
+  final List<Domain> domainList;
   final List<InlineModel4> noteList;
-  final List<InlineModel6> regionList;
-  final List<InlineModel7> registerList;
+  final List<Region> regionList;
+  final List<Register> registerList;
   final List<String> senseIdList;
   final String text;
 
@@ -193,11 +159,11 @@ class InlineModel10 extends Equatable {
 }
 
 class InlineModel11 extends Equatable {
-  final List<InlineModel8> domainList;
+  final List<Domain> domainList;
   final List<String> exampleList;
   final List<InlineModel4> noteList;
-  final List<InlineModel6> regionList;
-  final List<InlineModel7> registerList;
+  final List<Region> regionList;
+  final List<Register> registerList;
   final String text;
 
   InlineModel11({

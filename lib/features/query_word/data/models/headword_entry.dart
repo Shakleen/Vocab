@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'inline_models.dart';
+import 'pronunciation.dart';
 import 'lexical_entry.dart';
 
 enum HeadwordType { Headword, Inflection, Phrase }
@@ -19,7 +19,7 @@ class HeadwordEntry extends Equatable {
   final String id, landauge, word;
   final HeadwordType type;
   final List<LexicalEntry> lexicalEntryList;
-  final List<InlineModel1> pronunciationList;
+  final List<Pronunciation> pronunciationList;
 
   const HeadwordEntry({
     this.id,
