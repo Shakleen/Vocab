@@ -1,7 +1,7 @@
-import 'package:equatable/equatable.dart';
-import 'package:vocab/features/query_word/data/models/base_info_model.dart';
-import 'package:vocab/features/query_word/data/models/variant_form_model.dart';
+import 'package:vocab/features/query_word/domain/entities/lexical_entry.dart';
 
+import 'base_info_model.dart';
+import 'variant_form_model.dart';
 import 'pronunciation_model.dart';
 import 'entry_model.dart';
 import 'related_entry_model.dart';
@@ -22,28 +22,30 @@ import 'related_entry_model.dart';
 /// [text] (string): A given written or spoken realisation of an entry. ,
 /// [variantFormList] (List[VariantFormModel], optional): Various words that are used interchangeably depending
 /// on the context, e.g 'a' and 'an'
-class LexicalEntryModel extends Equatable {
-  final List<RelatedEntryModel> derivativeOfList, derivativeList;
-  final List<EntryModel> entryList;
-  final List<BaseInfoModel> grammaticalFeatureList;
-  final String language, text;
-  final BaseInfoModel lexicalCategory;
-  final List<BaseInfoModel> noteList;
-  final List<PronunciationModel> pronunciationList;
-  final List<VariantFormModel> variantFormList;
-
+class LexicalEntryModel extends LexicalEntry {
   LexicalEntryModel({
-    this.derivativeOfList,
-    this.derivativeList,
-    this.entryList,
-    this.grammaticalFeatureList,
-    this.language,
-    this.text,
-    this.lexicalCategory,
-    this.noteList,
-    this.pronunciationList,
-    this.variantFormList,
-  });
+    List<RelatedEntryModel> derivativeOfList,
+    List<RelatedEntryModel> derivativeList,
+    List<EntryModel> entryList,
+    List<BaseInfoModel> grammaticalFeatureList,
+    String language,
+    String text,
+    BaseInfoModel lexicalCategory,
+    List<BaseInfoModel> noteList,
+    List<PronunciationModel> pronunciationList,
+    List<VariantFormModel> variantFormList,
+  }) : super(
+          derivativeOfList: derivativeOfList,
+          derivativeList: derivativeList,
+          entryList: entryList,
+          grammaticalFeatureList: grammaticalFeatureList,
+          language: language,
+          text: text,
+          lexicalCategory: lexicalCategory,
+          noteList: noteList,
+          pronunciationList: pronunciationList,
+          variantFormList: variantFormList,
+        );
 
   @override
   List<Object> get props => [
