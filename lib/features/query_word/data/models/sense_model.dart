@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:vocab/features/query_word/data/models/base_info_model.dart';
+import 'package:vocab/features/query_word/domain/entities/sense.dart';
 
 import 'construction_model.dart';
 import 'example_model.dart';
@@ -27,42 +28,42 @@ import 'variant_form_model.dart';
 /// [subsenseList] (List[SenseModel], optional): Ordered list of subsenses of a sense ,
 /// [thesaurusLinkList] (List[ThesaurusLinkModel], optional): Ordered list of links to the Thesaurus Dictionary ,
 /// [variantFormList] (List[VariantFormModel], optional): Various words that are used interchangeably depending on the context, e.g 'duck' and 'duck boat'
-class SenseModel extends Equatable {
-  final List<ConstructionModel> constructionList;
-  final List<String> crossReferenceMarkerList;
-  final List<BaseInfoModel> crossReferenceList;
-  final List<String> definitionList;
-  final List<BaseInfoModel> domainList;
-  final List<String> etymologyList;
-  final List<ExampleModel> exampleList;
-  final String id;
-  final List<BaseInfoModel> noteList;
-  final List<PronunciationModel> pronunciationList;
-  final List<BaseInfoModel> regionList;
-  final List<BaseInfoModel> registerList;
-  final List<String> shortDefinitions;
-  final List<SenseModel> subsenseList;
-  final List<ThesaurusLinkModel> thesaurusLinkList;
-  final List<VariantFormModel> variantFormList;
-
-  SenseModel([
-    this.constructionList,
-    this.crossReferenceMarkerList,
-    this.crossReferenceList,
-    this.definitionList,
-    this.domainList,
-    this.etymologyList,
-    this.exampleList,
-    this.id,
-    this.noteList,
-    this.pronunciationList,
-    this.regionList,
-    this.registerList,
-    this.shortDefinitions,
-    this.subsenseList,
-    this.thesaurusLinkList,
-    this.variantFormList,
-  ]);
+class SenseModel extends Sense {
+  SenseModel({
+    List<ConstructionModel> constructionList,
+    List<String> crossReferenceMarkerList,
+    List<BaseInfoModel> crossReferenceList,
+    List<String> definitionList,
+    List<BaseInfoModel> domainList,
+    List<String> etymologyList,
+    List<ExampleModel> exampleList,
+    String id,
+    List<BaseInfoModel> noteList,
+    List<PronunciationModel> pronunciationList,
+    List<BaseInfoModel> regionList,
+    List<BaseInfoModel> registerList,
+    List<String> shortDefinitions,
+    List<SenseModel> subsenseList,
+    List<ThesaurusLinkModel> thesaurusLinkList,
+    List<VariantFormModel> variantFormList,
+  }) : super(
+          constructionList: constructionList,
+          crossReferenceMarkerList: crossReferenceMarkerList,
+          crossReferenceList: crossReferenceList,
+          definitionList: definitionList,
+          domainList: domainList,
+          etymologyList: etymologyList,
+          exampleList: exampleList,
+          id: id,
+          noteList: noteList,
+          pronunciationList: pronunciationList,
+          regionList: regionList,
+          registerList: registerList,
+          shortDefinitions: shortDefinitions,
+          subsenseList: subsenseList,
+          thesaurusLinkList: thesaurusLinkList,
+          variantFormList: variantFormList,
+        );
 
   @override
   List<Object> get props => [
@@ -84,8 +85,3 @@ class SenseModel extends Equatable {
         variantFormList,
       ];
 }
-
-
-
-
-
