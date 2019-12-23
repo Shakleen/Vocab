@@ -31,14 +31,35 @@ class ExampleModel extends Example {
           text: text,
         );
 
-  @override
-  List<Object> get props => [
-        definitionList,
-        domainList,
-        noteList,
-        regionList,
-        registerList,
-        senseIdList,
-        text,
-      ];
+  factory ExampleModel.fromJson(Map<String, dynamic> json) {
+    final Function baseInfoModelToJson =
+        (element) => BaseInfoModel.fromJson(element);
+    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
+          json[key].map(baseInfoModelToJson),
+        );
+    return ExampleModel(
+      text: json['text'],
+      domainList: toBaseinfoList('domains'),
+      noteList: toBaseinfoList('notes'),
+      regionList: toBaseinfoList('regions'),
+      registerList: toBaseinfoList('registers'),
+      definitionList: List<String>.from(json['definitions']),
+      senseIdList: List<String>.from(json['senseIds']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {};
+    final Function baseInfoToString = (baseInfo) => baseInfo.toJson();
+
+    json['text'] = this.text;
+    json['domains'] = this.domainList.map(baseInfoToString);
+    json['regions'] = this.regionList.map(baseInfoToString);
+    json['registers'] = this.registerList.map(baseInfoToString);
+    json['notes'] = this.noteList.map(baseInfoToString);
+    json['definitions'] = this.definitionList;
+    json['senseIds'] = this.senseIdList;
+
+    return json;
+  }
 }

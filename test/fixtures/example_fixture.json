@@ -1,0 +1,75 @@
+{
+    "definitions": [
+        "test definition",
+        "test definition",
+        "test definition",
+        "test definition",
+        "test definition"
+    ],
+    "domains": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ],
+    "regions": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ],
+    "registers": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ],
+    "notes": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ],
+    "senseIds": [
+        "test sense",
+        "test sense",
+        "test sense",
+        "test sense",
+        "test sense"
+    ],
+    "text": "test text"
+}
