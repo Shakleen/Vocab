@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 import 'package:vocab/features/query_word/domain/entities/variant_form.dart';
 
@@ -29,13 +28,40 @@ class VariantFormModel extends VariantForm {
           pronunciationList: pronunciationList,
         );
 
-  @override
-  List<Object> get props => [
-        noteList,
-        domainList,
-        text,
-        regionList,
-        registerList,
-        pronunciationList,
-      ];
+  factory VariantFormModel.fromJson(Map<String, dynamic> json) {
+    final Function baseInfoModelToJson =
+        (element) => BaseInfoModel.fromJson(element);
+    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
+          json[key].map(baseInfoModelToJson),
+        );
+    final Function pronunciationModelToJson =
+        (element) => PronunciationModel.fromJson(element);
+    final Function toPronunciationList = (key) => List<PronunciationModel>.from(
+          json[key].map(pronunciationModelToJson),
+        );
+    return VariantFormModel(
+      text: json['text'],
+      domainList: toBaseinfoList('domains'),
+      noteList: toBaseinfoList('notes'),
+      regionList: toBaseinfoList('regions'),
+      registerList: toBaseinfoList('registers'),
+      pronunciationList: toPronunciationList('pronunciations'),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {};
+    final Function baseInfoToString = (baseInfo) => baseInfo.toJson();
+    final Function pronunciationToString =
+        (pronunciation) => pronunciation.toJson();
+
+    json['text'] = this.text;
+    json['domains'] = this.domainList.map(baseInfoToString);
+    json['regions'] = this.regionList.map(baseInfoToString);
+    json['registers'] = this.registerList.map(baseInfoToString);
+    json['notes'] = this.noteList.map(baseInfoToString);
+    json['pronunciations'] = this.pronunciationList.map(pronunciationToString);
+
+    return json;
+  }
 }
