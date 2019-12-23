@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 import 'package:vocab/features/query_word/data/models/pronunciation_model.dart';
 import 'package:vocab/features/query_word/data/models/variant_form_model.dart';
+import 'package:vocab/features/query_word/domain/entities/variant_form.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
 
@@ -31,8 +32,8 @@ void main() {
   );
   final String fixtureFileName = 'variant_form_fixture.json';
 
-  test('should be of type VariantFormModel', () {
-    expect(tVariantFormModel, isA<VariantFormModel>());
+  test('should be of type VariantForm', () {
+    expect(tVariantFormModel, isA<VariantForm>());
   });
 
   test('should return VariantFormModel object after fromJson', () {

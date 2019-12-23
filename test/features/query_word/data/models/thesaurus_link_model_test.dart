@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vocab/features/query_word/data/models/thesaurus_link_model.dart';
+import 'package:vocab/features/query_word/domain/entities/thesaurus_link.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
 
@@ -12,8 +13,8 @@ void main() {
   );
   final String fixtureFileName = 'thesaurus_link_fixture.json';
 
-  test('should be of type ThesaurusLinkModel', () {
-    expect(tThesaurusLinkModel, isA<ThesaurusLinkModel>());
+  test('should be of type ThesaurusLink', () {
+    expect(tThesaurusLinkModel, isA<ThesaurusLink>());
   });
 
   test('should return ThesaurusLinkModel object after fromJson', () {

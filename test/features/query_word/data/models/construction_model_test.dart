@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 import 'package:vocab/features/query_word/data/models/construction_model.dart';
+import 'package:vocab/features/query_word/domain/entities/construction.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
 
@@ -27,8 +28,8 @@ void main() {
   );
   final String fixtureFileName = 'construction_fixture.json';
 
-  test('should be of type ConstructionModel', () {
-    expect(tConstructionModel, isA<ConstructionModel>());
+  test('should be of type Construction', () {
+    expect(tConstructionModel, isA<Construction>());
   });
 
   test('should return ConstructionModel object after fromJson', () {
