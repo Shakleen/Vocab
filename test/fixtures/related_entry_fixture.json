@@ -1,0 +1,41 @@
+{
+    "id": "test id",
+    "language": "test english",
+    "text": "test text",
+    "domains": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ],
+    "regions": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ],
+    "registers": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ]
+}

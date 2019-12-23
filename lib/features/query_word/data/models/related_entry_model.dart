@@ -27,13 +27,33 @@ class RelatedEntryModel extends RelatedEntry {
           registerList: registerList,
         );
 
-  @override
-  List<Object> get props => [
-        domainList,
-        id,
-        language,
-        text,
-        regionList,
-        registerList,
-      ];
+  factory RelatedEntryModel.fromJson(Map<String, dynamic> json) {
+    final Function baseInfoModelToJson =
+        (element) => BaseInfoModel.fromJson(element);
+    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
+          json[key].map(baseInfoModelToJson),
+        );
+    return RelatedEntryModel(
+      id: json['id'],
+      language: json['language'],
+      text: json['text'],
+      domainList: toBaseinfoList('domains'),
+      regionList: toBaseinfoList('regions'),
+      registerList: toBaseinfoList('registers'),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {};
+    final Function baseInfoToString = (baseInfo) => baseInfo.toJson();
+
+    json['id'] = this.id;
+    json['language'] = this.language;
+    json['text'] = this.text;
+    json['domains'] = this.domainList.map(baseInfoToString);
+    json['regions'] = this.regionList.map(baseInfoToString);
+    json['registers'] = this.registerList.map(baseInfoToString);
+
+    return json;
+  }
 }

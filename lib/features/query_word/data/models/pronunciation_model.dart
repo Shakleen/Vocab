@@ -31,9 +31,12 @@ class PronunciationModel extends Pronunciation {
         );
 
   factory PronunciationModel.fromJson(Map<String, dynamic> jsonData) {
+    final Function baseInfoModelToJson =
+        (element) => BaseInfoModel.fromJson(element);
     final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          jsonData[key].map((element) => BaseInfoModel.fromJson(element)),
+          jsonData[key].map(baseInfoModelToJson),
         );
+
     return PronunciationModel(
       audioFileUrl: jsonData['audioFile'],
       dialectList: List<String>.from(jsonData['dialects']),
@@ -45,7 +48,7 @@ class PronunciationModel extends Pronunciation {
   }
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> jsonData = {};
+    final Map<String, dynamic> jsonData = {};
     final Function baseInfoToString = (baseInfo) => baseInfo.toJson();
 
     jsonData['audioFile'] = this.audioFileUrl;
