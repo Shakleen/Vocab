@@ -1,0 +1,67 @@
+{
+    "domains": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ],
+    "examples": [
+        "test example 1",
+        "test example 2",
+        "test example 3",
+        "test example 4"
+    ],
+    "notes": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ],
+    "regions": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        },
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ],
+    "registers": [
+        {
+            "id": "test id",
+            "text": "test text",
+            "type": "test type"
+        }
+    ],
+    "text": "test text"
+}
