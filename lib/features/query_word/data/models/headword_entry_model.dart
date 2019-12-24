@@ -16,27 +16,74 @@ import 'lexical_entry_model.dart';
 class HeadwordEntryModel extends HeadwordEntry {
   HeadwordEntryModel({
     String id,
-    String landauge,
+    String language,
     String word,
-    HeadwordType type,
+    String type,
     List<LexicalEntryModel> lexicalEntryList,
     List<PronunciationModel> pronunciationList,
   }) : super(
           id: id,
-          landauge: landauge,
+          language: language,
           word: word,
-          type: type,
+          type: _StringToHeadwordType(type),
           lexicalEntryList: lexicalEntryList,
           pronunciationList: pronunciationList,
         );
 
-  @override
-  List<Object> get props => [
-        this.id,
-        this.landauge,
-        this.word,
-        this.type,
-        this.lexicalEntryList,
-        this.pronunciationList,
-      ];
+  static HeadwordType _StringToHeadwordType(String type) {
+    switch (type.toLowerCase()) {
+      case "headword":
+        return HeadwordType.Headword;
+      case "inflection":
+        return HeadwordType.Inflection;
+      case "phrase":
+        return HeadwordType.Phrase;
+      default:
+        throw Exception('Headword type error!');
+    }
+  }
+
+  static String _HeadwordTypeToString(HeadwordType type) {
+    switch (type) {
+      case HeadwordType.Headword:
+        return "headword";
+      case HeadwordType.Inflection:
+        return "inflection";
+      case HeadwordType.Phrase:
+        return "phrase";
+      default:
+        throw Exception('Headword type error!');
+    }
+  }
+
+  factory HeadwordEntryModel.fromJson(Map<String, dynamic> json) {
+    final Function toPronunciationList = (key) => List<PronunciationModel>.from(
+          json[key].map((element) => PronunciationModel.fromJson(element)),
+        );
+    final Function toLexicalList = (key) => List<LexicalEntryModel>.from(
+          json[key].map((element) => LexicalEntryModel.fromJson(element)),
+        );
+    return HeadwordEntryModel(
+      id: json['id'],
+      language: json['language'],
+      word: json['word'],
+      type: json['type'],
+      lexicalEntryList: toLexicalList('lexicalEntries'),
+      pronunciationList: toPronunciationList('pronunciations'),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Function toString = (element) => element.toJson();
+    final Map<String, dynamic> json = {};
+
+    json['id'] = this.id;
+    json['language'] = this.language;
+    json['word'] = this.word;
+    json['type'] = _HeadwordTypeToString(this.type);
+    json['lexicalEntries'] = this.lexicalEntryList.map(toString);
+    json['pronunciations'] = this.pronunciationList.map(toString);
+
+    return json;
+  }
 }

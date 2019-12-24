@@ -16,14 +16,14 @@ enum HeadwordType { Headword, Inflection, Phrase }
 /// [type] ([HeadwordType], optional): The json object type. Could be 'headword', 'inflection' or 'phrase',
 /// [word] (string): (DEPRECATED) A given written or spoken realisation of an entry, lowercased.
 class HeadwordEntry extends Equatable {
-  final String id, landauge, word;
+  final String id, language, word;
   final HeadwordType type;
   final List<LexicalEntry> lexicalEntryList;
   final List<Pronunciation> pronunciationList;
 
   const HeadwordEntry({
     this.id,
-    this.landauge,
+    this.language,
     this.word,
     this.type,
     this.lexicalEntryList,
@@ -33,7 +33,7 @@ class HeadwordEntry extends Equatable {
   @override
   List<Object> get props => [
         this.id,
-        this.landauge,
+        this.language,
         this.word,
         this.type,
         this.lexicalEntryList,
