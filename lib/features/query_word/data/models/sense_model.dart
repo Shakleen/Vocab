@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 import 'package:vocab/features/query_word/domain/entities/sense.dart';
 
@@ -65,23 +64,76 @@ class SenseModel extends Sense {
           variantFormList: variantFormList,
         );
 
-  @override
-  List<Object> get props => [
-        constructionList,
-        crossReferenceMarkerList,
-        crossReferenceList,
-        definitionList,
-        domainList,
-        etymologyList,
-        exampleList,
-        id,
-        noteList,
-        pronunciationList,
-        regionList,
-        registerList,
-        shortDefinitions,
-        subsenseList,
-        thesaurusLinkList,
-        variantFormList,
-      ];
+  factory SenseModel.fromJson(Map<String, dynamic> json) {
+    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
+          json[key].map((element) => BaseInfoModel.fromJson(element)),
+        );
+    final Function toConstructionList = (key) => List<ConstructionModel>.from(
+          json[key].map((element) => ConstructionModel.fromJson(element)),
+        );
+    final Function toExampleList = (key) => List<ExampleModel>.from(
+          json[key].map((element) => ExampleModel.fromJson(element)),
+        );
+    final Function toPronunciationList = (key) => List<PronunciationModel>.from(
+          json[key].map((element) => PronunciationModel.fromJson(element)),
+        );
+    final Function toSenseList = (key) => List<SenseModel>.from(
+          json[key].map((element) => SenseModel.fromJson(element)),
+        );
+    final Function toThesaurusList = (key) => List<ThesaurusLinkModel>.from(
+          json[key].map((element) => ThesaurusLinkModel.fromJson(element)),
+        );
+    final Function toVariantFormList = (key) => List<VariantFormModel>.from(
+          json[key].map((element) => VariantFormModel.fromJson(element)),
+        );
+
+    List<SenseModel> subsenseList =
+        json['subsenses'] != null ? toSenseList('subsenses') : [];
+
+    return SenseModel(
+      constructionList: toConstructionList('constructions'),
+      crossReferenceMarkerList: List<String>.from(
+        json['crossReferenceMarkers'],
+      ),
+      crossReferenceList: toBaseinfoList('crossReferences'),
+      definitionList: List<String>.from(json['definitions']),
+      domainList: toBaseinfoList('domains'),
+      etymologyList: List<String>.from(json['etymologies']),
+      exampleList: toExampleList('examples'),
+      id: json['id'],
+      noteList: toBaseinfoList('notes'),
+      pronunciationList: toPronunciationList('pronunciations'),
+      registerList: toBaseinfoList('registers'),
+      regionList: toBaseinfoList('regions'),
+      shortDefinitions: List<String>.from(json['shortDefinitions']),
+      subsenseList: subsenseList,
+      thesaurusLinkList: toThesaurusList('thesaurusLinks'),
+      variantFormList: toVariantFormList('variantForms'),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Function toString = (element) => element.toJson();
+    final Map<String, dynamic> json = {};
+
+    json['constructions'] = this.constructionList.map(toString);
+    json['subsenses'] =
+        this.subsenseList.length > 0 ? this.subsenseList.map(toString) : [];
+    json['crossReferenceMarkers'] = this.crossReferenceMarkerList;
+    json['crossReferences'] = this.crossReferenceList.map(toString);
+    json['definitions'] = this.definitionList;
+    json['domains'] = this.domainList.map(toString);
+    json['etymologies'] = this.etymologyList;
+    json['examples'] = this.exampleList.map(toString);
+    json['id'] = this.id;
+    json['notes'] = this.noteList.map(toString);
+    json['pronunciations'] = this.pronunciationList.map(toString);
+    json['registers'] = this.registerList.map(toString);
+    json['regions'] = this.regionList.map(toString);
+    json['shortDefinitions'] = this.shortDefinitions;
+    json['thesaurusLinks'] = this.thesaurusLinkList.map(toString);
+    json['variantForms'] = this.variantFormList.map(toString);
+
+    return json;
+  }
 }
