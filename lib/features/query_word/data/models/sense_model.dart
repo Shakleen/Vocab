@@ -87,9 +87,6 @@ class SenseModel extends Sense {
           json[key].map((element) => VariantFormModel.fromJson(element)),
         );
 
-    List<SenseModel> subsenseList =
-        json['subsenses'] != null ? toSenseList('subsenses') : [];
-
     return SenseModel(
       constructionList: toConstructionList('constructions'),
       crossReferenceMarkerList: List<String>.from(
@@ -106,7 +103,7 @@ class SenseModel extends Sense {
       registerList: toBaseinfoList('registers'),
       regionList: toBaseinfoList('regions'),
       shortDefinitions: List<String>.from(json['shortDefinitions']),
-      subsenseList: subsenseList,
+      subsenseList: toSenseList('subsenses'),
       thesaurusLinkList: toThesaurusList('thesaurusLinks'),
       variantFormList: toVariantFormList('variantForms'),
     );
@@ -117,8 +114,7 @@ class SenseModel extends Sense {
     final Map<String, dynamic> json = {};
 
     json['constructions'] = this.constructionList.map(toString);
-    json['subsenses'] =
-        this.subsenseList.length > 0 ? this.subsenseList.map(toString) : [];
+    json['subsenses'] = this.subsenseList.map(toString);
     json['crossReferenceMarkers'] = this.crossReferenceMarkerList;
     json['crossReferences'] = this.crossReferenceList.map(toString);
     json['definitions'] = this.definitionList;

@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:vocab/features/query_word/domain/entities/entry.dart';
 
 import 'sense_model.dart';
@@ -33,14 +32,42 @@ class EntryModel extends Entry {
           variantFormList: variantFormList,
         );
 
-  @override
-  List<Object> get props => [
-        etymologyList,
-        grammaticalFeatureList,
-        homographNumber,
-        noteList,
-        pronunciationList,
-        senseList,
-        variantFormList,
-      ];
+  factory EntryModel.fromJson(Map<String, dynamic> json) {
+    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
+          json[key].map((element) => BaseInfoModel.fromJson(element)),
+        );
+    final Function toPronunciationList = (key) => List<PronunciationModel>.from(
+          json[key].map((element) => PronunciationModel.fromJson(element)),
+        );
+    final Function toSenseList = (key) => List<SenseModel>.from(
+          json[key].map((element) => SenseModel.fromJson(element)),
+        );
+    final Function toVariantFormList = (key) => List<VariantFormModel>.from(
+          json[key].map((element) => VariantFormModel.fromJson(element)),
+        );
+    return EntryModel(
+      etymologyList: List<String>.from(json['etymologies']),
+      grammaticalFeatureList: toBaseinfoList('grammaticalFeatures'),
+      homographNumber: json['homographNumber'],
+      noteList: toBaseinfoList('notes'),
+      pronunciationList: toPronunciationList('pronunciations'),
+      senseList: toSenseList('senses'),
+      variantFormList: toVariantFormList('variantForms'),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Function toString = (element) => element.toJson();
+    final Map<String, dynamic> json = {};
+
+    json['etymologies'] = this.etymologyList;
+    json['homographNumber'] = this.homographNumber;
+    json['notes'] = this.noteList.map(toString);
+    json['grammaticalFeatures'] = this.grammaticalFeatureList.map(toString);
+    json['pronunciations'] = this.pronunciationList.map(toString);
+    json['senses'] = this.senseList.map(toString);
+    json['variantForms'] = this.variantFormList.map(toString);
+
+    return json;
+  }
 }

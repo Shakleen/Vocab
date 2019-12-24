@@ -6,3 +6,4 @@ flutter test test/features/query_word/data/models/construction_model_test.dart
 flutter test test/features/query_word/data/models/variant_form_model_test.dart
 flutter test test/features/query_word/data/models/example_model_test.dart
 flutter test test/features/query_word/data/models/sense_model_test.dart
+flutter test test/features/query_word/data/models/entry_model_test.dart
