@@ -6,7 +6,7 @@ import 'package:vocab/features/query_word/data/models/pronunciation_model.dart';
 import 'package:vocab/features/query_word/data/models/variant_form_model.dart';
 import 'package:vocab/features/query_word/domain/entities/variant_form.dart';
 
-import '../../../../fixtures/fixture_reader.dart';
+import '../../fixtures/fixture_reader.dart';
 
 void main() {
   final BaseInfoModel baseInfo = BaseInfoModel(
