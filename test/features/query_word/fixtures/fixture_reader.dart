@@ -1,3 +1,3 @@
 import 'dart:io';
 
-String fixture(String name) => File('test/fixtures/$name').readAsStringSync();
+String fixture(String path) => File('test/features/query_word/fixtures/$path').readAsStringSync();
