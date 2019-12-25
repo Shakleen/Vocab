@@ -9,3 +9,4 @@ flutter test test/features/query_word/data/models/sense_model_test.dart
 flutter test test/features/query_word/data/models/entry_model_test.dart
 flutter test test/features/query_word/data/models/lexical_model_test.dart
 flutter test test/features/query_word/data/models/headword_entry_model_test.dart
+flutter test test/features/query_word/data/models/retrieve_entry_model_test.dart
