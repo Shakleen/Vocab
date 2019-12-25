@@ -9,3 +9,5 @@ class TooLongURLException implements Exception {}
 class CacheException implements Exception {}
 
 class UnknownException implements Exception {}
+
+class DeviceOfflineException implements Exception {}

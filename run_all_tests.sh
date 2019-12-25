@@ -18,6 +18,9 @@ flutter test test/features/query_word/data/models/retrieve_entry_model_test.dart
 # Data source tests
 flutter test test/features/query_word/data/data_source/word_entry_data_source_test.dart
 
+# Repository tests
+flutter test test/features/query_word/data/repository/query_word_repository_impl_test.dart
+
 # ================================================================================================
 # Domain Layer
 # ================================================================================================

@@ -19,3 +19,5 @@ class TooLongURLFailure extends Failure {}
 class CacheFailure extends Failure {}
 
 class UnknownFailure extends Failure {}
+
+class DeviceOfflineFailure extends Failure {}
