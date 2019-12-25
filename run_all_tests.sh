@@ -1,3 +1,7 @@
+# ================================================================================================
+# Data Layer
+# ================================================================================================
+# Model json parsing tests
 flutter test test/features/query_word/data/models/base_info_model_test.dart
 flutter test test/features/query_word/data/models/pronunciation_model_test.dart
 flutter test test/features/query_word/data/models/thesaurus_link_model_test.dart
@@ -10,3 +14,9 @@ flutter test test/features/query_word/data/models/entry_model_test.dart
 flutter test test/features/query_word/data/models/lexical_model_test.dart
 flutter test test/features/query_word/data/models/headword_entry_model_test.dart
 flutter test test/features/query_word/data/models/retrieve_entry_model_test.dart
+
+# ================================================================================================
+# Domain Layer
+# ================================================================================================
+# Usecase test
+flutter test test/features/query_word/domain/usecases/get_word_definition_test.dart
