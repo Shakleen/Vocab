@@ -15,6 +15,9 @@ flutter test test/features/query_word/data/models/lexical_model_test.dart
 flutter test test/features/query_word/data/models/headword_entry_model_test.dart
 flutter test test/features/query_word/data/models/retrieve_entry_model_test.dart
 
+# Data source tests
+flutter test test/features/query_word/data/data_source/word_entry_data_source_test.dart
+
 # ================================================================================================
 # Domain Layer
 # ================================================================================================
