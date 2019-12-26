@@ -6,20 +6,33 @@ import 'package:vocab/features/query_word/domain/entities/retrieve_entry.dart';
 import 'package:vocab/features/query_word/domain/repository/query_word_repository.dart';
 import 'package:vocab/core/network/network_info.dart';
 import 'package:meta/meta.dart';
+import 'package:vocab/core/error/exceptions.dart';
 
 class QueryWordRepositoryImpl implements QueryWordRepository {
   final WordEntryDataSource source;
   final NetworkInfo networkChecker;
 
-  QueryWordRepositoryImpl({@required this.source, @required this.networkChecker});
+  QueryWordRepositoryImpl(
+      {@required this.source, @required this.networkChecker});
 
   @override
   Future<Either<Failure, RetrieveEntry>> getWordEntry(String word) async {
     if (await networkChecker.isConnected) {
-      final RetrieveEntryModel wordEntry = await source.getWordEntry(word);
-      return Right(wordEntry);
-    }
-    else {
+      try {
+        final RetrieveEntryModel wordEntry = await source.getWordEntry(word);
+        return Right(wordEntry);
+      } on NotFoundException {
+        return Left(NotFoundFailure());
+      } on InvalidFilterException {
+        return Left(InvalidFilterFailure());
+      } on TooLongURLException {
+        return Left(TooLongURLFailure());
+      } on ServerException {
+        return Left(ServerFailure());
+      } on UnknownException {
+        return Left(UnknownFailure());
+      }
+    } else {
       return Left(DeviceOfflineFailure());
     }
   }
