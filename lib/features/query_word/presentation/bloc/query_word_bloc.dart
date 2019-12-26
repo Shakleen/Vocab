@@ -10,6 +10,10 @@ import 'package:meta/meta.dart';
 const String INVALID_INPUT_ERROR_MESSAGE = "Invalid input detected!";
 const String DEVICE_OFFLINE_ERROR_MESSAGE = "No internet detected!";
 const String UNKNOWN_ERROR_MESSAGE = "Unknown error!";
+const String NOT_FOUND_ERROR_MESSAGE = "Word entry not found!";
+const String INVALID_FILTER_ERROR_MESSAGE = "Invalid filter used!";
+const String TOO_LONG_URL_ERROR_MESSAGE = "The URL is too long!";
+const String SERVER_FAILURE_ERROR_MESSAGE = "Server failure has occured!";
 
 class QueryWordBloc extends Bloc<QueryWordEvent, QueryWordState> {
   final GetWordDefinition retriever;
@@ -43,6 +47,18 @@ class QueryWordBloc extends Bloc<QueryWordEvent, QueryWordState> {
               switch(failure.runtimeType) {
                 case DeviceOfflineFailure:
                   errorMessage = DEVICE_OFFLINE_ERROR_MESSAGE;
+                  break;
+                case NotFoundFailure:
+                  errorMessage = NOT_FOUND_ERROR_MESSAGE;
+                  break;
+                case InvalidFilterFailure:
+                  errorMessage = INVALID_FILTER_ERROR_MESSAGE;
+                  break;
+                case TooLongURLFailure:
+                  errorMessage = TOO_LONG_URL_ERROR_MESSAGE;
+                  break;
+                case ServerFailure:
+                  errorMessage = SERVER_FAILURE_ERROR_MESSAGE;
                   break;
                 default:
                   errorMessage = UNKNOWN_ERROR_MESSAGE;

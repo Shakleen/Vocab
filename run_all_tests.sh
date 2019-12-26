@@ -26,3 +26,9 @@ flutter test test/features/query_word/data/repository/query_word_repository_impl
 # ================================================================================================
 # Usecase test
 flutter test test/features/query_word/domain/usecases/get_word_definition_test.dart
+
+# ================================================================================================
+# Presentation Layer
+# ================================================================================================
+# bloc test
+flutter test test/features/query_word/presentation/bloc/query_word_bloc_test.dart

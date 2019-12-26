@@ -106,27 +106,32 @@ void main() {
     ],
   );
 
-  blocTest(
-    'should emit [Empty, Loading, Error] when data fetching fails',
-    build: () {
-      setupValidInputConversion();
-      when(mockGetWordDefinition(any)).thenAnswer(
-        (_) async => Left(DeviceOfflineFailure()),
-      );
-      return QueryWordBloc(
-        inputConverter: mockInputConverter,
-        retriever: mockGetWordDefinition,
-      );
-    },
-    act: (QueryWordBloc bloc) async => bloc.add(
-      GetWordEntryEvent(queryWord: tQueryWord),
-    ),
-    expect: [
-      Empty(),
-      Loading(),
-      Error(message: DEVICE_OFFLINE_ERROR_MESSAGE),
-    ],
-  );
+  void testBlocError(Failure failure, String message) {
+    blocTest(
+      'should emit [Empty, Loading, Error($message)] when data fetching fails',
+      build: () {
+        setupValidInputConversion();
+        when(mockGetWordDefinition(any)).thenAnswer(
+          (_) async => Left(failure),
+        );
+        return QueryWordBloc(
+          inputConverter: mockInputConverter,
+          retriever: mockGetWordDefinition,
+        );
+      },
+      act: (QueryWordBloc bloc) async => bloc.add(
+        GetWordEntryEvent(queryWord: tQueryWord),
+      ),
+      expect: [Empty(), Loading(), Error(message: message)],
+    );
+  }
+
+  testBlocError(DeviceOfflineFailure(), DEVICE_OFFLINE_ERROR_MESSAGE);
+  testBlocError(NotFoundFailure(), NOT_FOUND_ERROR_MESSAGE);
+  testBlocError(InvalidFilterFailure(), INVALID_FILTER_ERROR_MESSAGE);
+  testBlocError(TooLongURLFailure(), TOO_LONG_URL_ERROR_MESSAGE);
+  testBlocError(ServerFailure(), SERVER_FAILURE_ERROR_MESSAGE);
+  testBlocError(UnknownFailure(), UNKNOWN_ERROR_MESSAGE);
 }
 
 RetrieveEntryModel _buildTestModel() {
