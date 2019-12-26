@@ -6,28 +6,28 @@ abstract class QueryWordState extends Equatable {
   const QueryWordState();
 }
 
-class InitialState extends QueryWordState {
+class Empty extends QueryWordState {
   @override
   List<Object> get props => [];
 }
 
-class LoadingState extends QueryWordState {
+class Loading extends QueryWordState {
   @override
   List<Object> get props => [];
 }
 
-class LoadedState extends QueryWordState {
+class Loaded extends QueryWordState {
   final RetrieveEntry retrieveEntry;
 
-  LoadedState({@required this.retrieveEntry});
+  Loaded({@required this.retrieveEntry});
   @override
   List<Object> get props => [retrieveEntry];
 }
 
-class ErrorState extends QueryWordState {
+class Error extends QueryWordState {
   final String message;
 
-  ErrorState({@required this.message});
+  Error({@required this.message});
   @override
   List<Object> get props => [message];
 }
