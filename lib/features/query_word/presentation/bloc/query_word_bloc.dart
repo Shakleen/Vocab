@@ -4,7 +4,7 @@ import './bloc.dart';
 
 class QueryWordBloc extends Bloc<QueryWordEvent, QueryWordState> {
   @override
-  QueryWordState get initialState => InitialQueryWordState();
+  QueryWordState get initialState => InitialState();
 
   @override
   Stream<QueryWordState> mapEventToState(
