@@ -70,15 +70,15 @@ void main() {
     act: (QueryWordBloc bloc) async => bloc.add(
       GetWordEntryEvent(queryWord: tQueryWord),
     ),
-    expect: [Empty(), Error(message: INVALID_INPUT_MESSAGE)],
+    expect: [Empty(), Error(message: INVALID_INPUT_ERROR_MESSAGE)],
   );
 
   test('should call GetWordDefinition usecase to get word entry data',
       () async {
     setupValidInputConversion();
     when(mockGetWordDefinition(any)).thenAnswer(
-        (_) async => Right(retrieveEntryModel),
-      );
+      (_) async => Right(retrieveEntryModel),
+    );
     bloc.add(GetWordEntryEvent(queryWord: tQueryWord));
     await untilCalled(mockGetWordDefinition(any));
     verify(mockGetWordDefinition(Param(queryWord: tQueryWordLower)));
@@ -103,6 +103,28 @@ void main() {
       Empty(),
       Loading(),
       Loaded(retrieveEntry: retrieveEntryModel),
+    ],
+  );
+
+  blocTest(
+    'should emit [Empty, Loading, Error] when data fetching fails',
+    build: () {
+      setupValidInputConversion();
+      when(mockGetWordDefinition(any)).thenAnswer(
+        (_) async => Left(DeviceOfflineFailure()),
+      );
+      return QueryWordBloc(
+        inputConverter: mockInputConverter,
+        retriever: mockGetWordDefinition,
+      );
+    },
+    act: (QueryWordBloc bloc) async => bloc.add(
+      GetWordEntryEvent(queryWord: tQueryWord),
+    ),
+    expect: [
+      Empty(),
+      Loading(),
+      Error(message: DEVICE_OFFLINE_ERROR_MESSAGE),
     ],
   );
 }
