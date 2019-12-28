@@ -18,6 +18,23 @@ class PronunciationWidget extends StatelessWidget {
     final TextStyle subtitleStyle = Theme.of(context).textTheme.subtitle;
     final List<Widget> children = [
       Center(child: TitleText(text: 'Pronunciation #$index')),
+    ];
+
+    if (pronunciation.audioFileUrl != null)
+      children.add(Center(
+        child: CircleAvatar(
+          child: IconButton(
+            icon: Icon(Icons.play_arrow),
+            onPressed: () {
+              // TODO: Implement pronunciation playback
+            },
+            color: Colors.white,
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+      ));
+
+    children.addAll([
       Text('Dialect(s)', style: subtitleStyle),
       Column(
         children: List.from(
@@ -30,15 +47,7 @@ class PronunciationWidget extends StatelessWidget {
       SubtitleText(
         text: 'Phonetic Spelling: ${pronunciation.phoneticSpelling}',
       )
-    ];
-
-    if (pronunciation.audioFileUrl != null)
-      children.add(IconButton(
-        icon: Icon(Icons.play_arrow),
-        onPressed: () {
-          // TODO: Pronunciation playing
-        },
-      ));
+    ]);
 
     return Container(
       width: double.infinity,

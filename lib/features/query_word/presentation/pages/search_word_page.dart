@@ -33,6 +33,7 @@ class SearchPageBody extends StatefulWidget {
 }
 
 class _SearchPageBodyState extends State<SearchPageBody> {
+  final TextEditingController controller = TextEditingController();
   String _queryWord;
 
   @override
@@ -46,9 +47,15 @@ class _SearchPageBodyState extends State<SearchPageBody> {
               Expanded(
                 flex: 5,
                 child: TextField(
+                  controller: controller,
                   decoration: InputDecoration(
                     hintText: "example",
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(35.0),
+                    ),
+                    hintStyle: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
                   keyboardType: TextInputType.text,
                   onChanged: (String value) => _queryWord = value,
@@ -56,10 +63,13 @@ class _SearchPageBodyState extends State<SearchPageBody> {
               ),
               Expanded(
                 flex: 1,
-                child: IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: _submit,
-                  color: Theme.of(context).primaryColor,
+                child: CircleAvatar(
+                  child: IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: _submit,
+                    color: Colors.white,
+                  ),
+                  backgroundColor: Theme.of(context).primaryColor,
                 ),
               ),
             ],
@@ -86,6 +96,7 @@ class _SearchPageBodyState extends State<SearchPageBody> {
   }
 
   void _submit() {
+    controller.clear();
     BlocProvider.of<QueryWordBloc>(context).add(
       GetWordEntryEvent(queryWord: _queryWord),
     );

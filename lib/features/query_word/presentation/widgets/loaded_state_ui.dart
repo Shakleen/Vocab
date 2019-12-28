@@ -11,7 +11,10 @@ class LoadedStateUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle headlineStyle = Theme.of(context).textTheme.display2;
+    final TextStyle headlineStyle =
+        Theme.of(context).textTheme.display2.copyWith(
+              color: Theme.of(context).primaryColor,
+            );
     return ListView(
       children: <Widget>[
         Text(
