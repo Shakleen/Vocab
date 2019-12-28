@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/features/query_word/domain/entities/headword_entry.dart';
 
-import 'headline_text.dart';
 import 'lexical_entry.dart';
 
 class HeadwordWidget extends StatelessWidget {
@@ -21,8 +20,6 @@ class HeadwordWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          HeadlineText(text: headwordEntry.word),
-          HeadlineText(text: 'Language: ${headwordEntry.language}'),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: List<Widget>.generate(

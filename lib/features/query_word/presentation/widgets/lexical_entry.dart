@@ -20,7 +20,7 @@ class LexicalEntryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
-      HeadlineText(text: 'Lexical Entry #$index'),
+      Center(child: HeadlineText(text: 'Lexical Entry #$index')),
       TitleText(
         text: 'Lexical Category: ${lexicalEntry.lexicalCategory.text}',
       ),

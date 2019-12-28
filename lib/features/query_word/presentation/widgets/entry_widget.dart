@@ -17,7 +17,9 @@ class EntryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> children = [TitleText(text: 'Entry #$index')];
+    final List<Widget> children = [
+      Center(child: TitleText(text: 'Entry #$index')),
+    ];
 
     if (entry.etymologyList.isNotEmpty) {
       children.addAll([

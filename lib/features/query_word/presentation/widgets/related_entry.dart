@@ -16,9 +16,11 @@ class RelatedEntryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         TitleText(text: title),
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: List.from(
             relatedEntryList.map((e) => Text(e.text)),
           ),

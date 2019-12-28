@@ -17,7 +17,7 @@ class PronunciationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextStyle subtitleStyle = Theme.of(context).textTheme.subtitle;
     final List<Widget> children = [
-      TitleText(text: 'Pronunciation #$index'),
+      Center(child: TitleText(text: 'Pronunciation #$index')),
       Text('Dialect(s)', style: subtitleStyle),
       Column(
         children: List.from(

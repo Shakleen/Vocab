@@ -43,6 +43,7 @@ class SenseWidget extends StatelessWidget {
       ]);
 
     return Container(
+      margin: EdgeInsets.symmetric(vertical: isSubsense ? 0.0 : 8.0),
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,6 +55,8 @@ class SenseWidget extends StatelessWidget {
   Text _toText(String e) => Text(e);
 
   Widget _generateSenseWidget(int i) => Card(
+        margin: const EdgeInsets.all(1.0),
+        color: Colors.blue[50],
         elevation: 2,
         child: Container(
           width: double.infinity,
