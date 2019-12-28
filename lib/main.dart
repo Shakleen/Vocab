@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'features/query_word/presentation/pages/search_word_page.dart';
 import 'injection_container.dart' as di;
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
   runApp(Vocab());
