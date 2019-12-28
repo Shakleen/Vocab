@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/features/query_word/domain/entities/entry.dart';
+import 'package:vocab/features/query_word/presentation/widgets/subtitle_text.dart';
+import 'package:vocab/features/query_word/presentation/widgets/title_text.dart';
 
 import 'sense_widget.dart';
 
@@ -15,30 +17,34 @@ class EntryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle titleStyle = Theme.of(context).textTheme.title;
-    final TextStyle subtitleStyle = Theme.of(context).textTheme.subtitle;
+    final List<Widget> children = [TitleText(text: 'Entry #$index')];
+
+    if (entry.etymologyList.isNotEmpty) {
+      children.addAll([
+        SubtitleText(text: 'Etymology(s)'),
+        Column(children: List.from(entry.etymologyList.map(_toText))),
+      ]);
+    }
+
+    if (entry.noteList.isNotEmpty) {
+      children.addAll([
+        SubtitleText(text: 'Note(s)'),
+        Column(children: List.from(entry.noteList.map((e) => _toText(e.text)))),
+      ]);
+    }
+
+    children.add(Column(
+      children: List<Widget>.generate(
+        entry.senseList.length,
+        _generateSenseWidget,
+      ),
+    ));
 
     return Container(
+      width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Text('Entry #$index', style: titleStyle),
-          ),
-          Text('Etymology(s)', style: subtitleStyle),
-          Column(children: List.from(entry.etymologyList.map(_toText))),
-          Text('Note(s)', style: subtitleStyle),
-          Column(
-            children: List.from(entry.noteList.map((e) => _toText(e.text))),
-          ),
-          Column(
-            children: List<Widget>.generate(
-              entry.senseList.length,
-              _generateSenseWidget,
-            ),
-          ),
-        ],
+        children: children,
       ),
     );
   }
