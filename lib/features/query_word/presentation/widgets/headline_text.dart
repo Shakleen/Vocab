@@ -7,6 +7,12 @@ class HeadlineText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: Theme.of(context).textTheme.headline);
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.headline.copyWith(
+            color: Theme.of(context).primaryColorDark,
+            fontWeight: FontWeight.bold,
+          ),
+    );
   }
 }
