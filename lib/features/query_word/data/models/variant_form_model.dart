@@ -29,15 +29,11 @@ class VariantFormModel extends VariantForm {
         );
 
   factory VariantFormModel.fromJson(Map<String, dynamic> json) {
-    final Function baseInfoModelToJson =
-        (element) => BaseInfoModel.fromJson(element);
     final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key].map(baseInfoModelToJson),
+          json[key]?.map((element) => BaseInfoModel.fromJson(element)),
         );
-    final Function pronunciationModelToJson =
-        (element) => PronunciationModel.fromJson(element);
     final Function toPronunciationList = (key) => List<PronunciationModel>.from(
-          json[key].map(pronunciationModelToJson),
+          json[key]?.map((element) => PronunciationModel.fromJson(element)),
         );
     return VariantFormModel(
       text: json['text'],
@@ -56,11 +52,11 @@ class VariantFormModel extends VariantForm {
         (pronunciation) => pronunciation.toJson();
 
     json['text'] = this.text;
-    json['domains'] = this.domainList.map(baseInfoToString);
-    json['regions'] = this.regionList.map(baseInfoToString);
-    json['registers'] = this.registerList.map(baseInfoToString);
-    json['notes'] = this.noteList.map(baseInfoToString);
-    json['pronunciations'] = this.pronunciationList.map(pronunciationToString);
+    json['domains'] = this.domainList?.map(baseInfoToString);
+    json['regions'] = this.regionList?.map(baseInfoToString);
+    json['registers'] = this.registerList?.map(baseInfoToString);
+    json['notes'] = this.noteList?.map(baseInfoToString);
+    json['pronunciations'] = this.pronunciationList?.map(pronunciationToString);
 
     return json;
   }

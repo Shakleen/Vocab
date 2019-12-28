@@ -34,7 +34,7 @@ class PronunciationModel extends Pronunciation {
     final Function baseInfoModelToJson =
         (element) => BaseInfoModel.fromJson(element);
     final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          jsonData[key].map(baseInfoModelToJson),
+          jsonData[key]?.map(baseInfoModelToJson),
         );
 
     return PronunciationModel(
@@ -55,8 +55,8 @@ class PronunciationModel extends Pronunciation {
     jsonData['dialects'] = this.dialectList;
     jsonData['phoneticNotation'] = this.phoneticNotation;
     jsonData['phoneticSpelling'] = this.phoneticSpelling;
-    jsonData['regions'] = this.regionList.map(baseInfoToString);
-    jsonData['registers'] = this.registerList.map(baseInfoToString);
+    jsonData['regions'] = this.regionList?.map(baseInfoToString);
+    jsonData['registers'] = this.registerList?.map(baseInfoToString);
 
     return jsonData;
   }

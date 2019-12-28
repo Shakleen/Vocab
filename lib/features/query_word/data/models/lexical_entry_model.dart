@@ -49,19 +49,19 @@ class LexicalEntryModel extends LexicalEntry {
 
   factory LexicalEntryModel.fromJson(Map<String, dynamic> json) {
     final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key].map((element) => BaseInfoModel.fromJson(element)),
+          json[key]?.map((element) => BaseInfoModel.fromJson(element)),
         );
     final Function toEntryList = (key) => List<EntryModel>.from(
-          json[key].map((element) => EntryModel.fromJson(element)),
+          json[key]?.map((element) => EntryModel.fromJson(element)),
         );
     final Function toRelatedEntryList = (key) => List<RelatedEntryModel>.from(
-          json[key].map((element) => RelatedEntryModel.fromJson(element)),
+          json[key]?.map((element) => RelatedEntryModel.fromJson(element)),
         );
     final Function toPronunciationList = (key) => List<PronunciationModel>.from(
-          json[key].map((element) => PronunciationModel.fromJson(element)),
+          json[key]?.map((element) => PronunciationModel.fromJson(element)),
         );
     final Function toVariantFormList = (key) => List<VariantFormModel>.from(
-          json[key].map((element) => VariantFormModel.fromJson(element)),
+          json[key]?.map((element) => VariantFormModel.fromJson(element)),
         );
     return LexicalEntryModel(
       derivativeList: toRelatedEntryList('derivatives'),
@@ -78,19 +78,19 @@ class LexicalEntryModel extends LexicalEntry {
   }
 
   Map<String, dynamic> toJson() {
-    final Function toString = (element) => element.toJson();
+    final Function toString = (element) => element?.toJson();
     final Map<String, dynamic> json = {};
 
-    json['derivatives'] = this.derivativeList.map(toString);
-    json['derivativeOf'] = this.derivativeOfList.map(toString);
-    json['entries'] = this.entryList.map(toString);
+    json['derivatives'] = this.derivativeList?.map(toString);
+    json['derivativeOf'] = this.derivativeOfList?.map(toString);
+    json['entries'] = this.entryList?.map(toString);
     json['language'] = this.language;
     json['text'] = this.text;
     json['lexicalCategory'] = toString(this.lexicalCategory);
-    json['grammaticalFeatures'] = this.grammaticalFeatureList.map(toString);
-    json['notes'] = this.noteList.map(toString);
-    json['pronunciations'] = this.pronunciationList.map(toString);
-    json['variantForms'] = this.variantFormList.map(toString);
+    json['grammaticalFeatures'] = this.grammaticalFeatureList?.map(toString);
+    json['notes'] = this.noteList?.map(toString);
+    json['pronunciations'] = this.pronunciationList?.map(toString);
+    json['variantForms'] = this.variantFormList?.map(toString);
 
     return json;
   }

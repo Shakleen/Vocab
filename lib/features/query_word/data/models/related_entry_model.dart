@@ -31,7 +31,7 @@ class RelatedEntryModel extends RelatedEntry {
     final Function baseInfoModelToJson =
         (element) => BaseInfoModel.fromJson(element);
     final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key].map(baseInfoModelToJson),
+          json[key]?.map(baseInfoModelToJson),
         );
     return RelatedEntryModel(
       id: json['id'],
@@ -50,9 +50,9 @@ class RelatedEntryModel extends RelatedEntry {
     json['id'] = this.id;
     json['language'] = this.language;
     json['text'] = this.text;
-    json['domains'] = this.domainList.map(baseInfoToString);
-    json['regions'] = this.regionList.map(baseInfoToString);
-    json['registers'] = this.registerList.map(baseInfoToString);
+    json['domains'] = this.domainList?.map(baseInfoToString);
+    json['regions'] = this.regionList?.map(baseInfoToString);
+    json['registers'] = this.registerList?.map(baseInfoToString);
 
     return json;
   }

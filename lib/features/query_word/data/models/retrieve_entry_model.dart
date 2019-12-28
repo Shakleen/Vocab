@@ -20,7 +20,7 @@ class RetrieveEntryModel extends RetrieveEntry {
         id: json['id'],
         word: json['word'],
         metaData: _buildMetaData(json['metadata']),
-        resultList: List<HeadwordEntryModel>.from(json['results'].map(
+        resultList: List<HeadwordEntryModel>.from(json['results']?.map(
           (element) => HeadwordEntryModel.fromJson(element),
         )),
       );
@@ -32,7 +32,7 @@ class RetrieveEntryModel extends RetrieveEntry {
     json['metadata'] = this.metaData;
     json['id'] = this.id;
     json['word'] = this.word;
-    json['results'] = this.resultList.map(toString);
+    json['results'] = this.resultList?.map(toString);
 
     return json;
   }

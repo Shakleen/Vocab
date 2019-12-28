@@ -17,57 +17,73 @@ class _SearchWordPageState extends State<SearchWordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Vocab App")),
-      body: SearchPageBody(),
-    );
-  }
-}
-
-class SearchPageBody extends StatelessWidget {
-  const SearchPageBody({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      builder: (BuildContext context) => sl<QueryWordBloc>(),
-      child: Container(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(
-                hintText: "example",
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.text,
-            ),
-
-            
-            BlocBuilder<QueryWordBloc, QueryWordState>(
-              builder: (BuildContext context, QueryWordState state) {
-                if (state is Empty) {
-                  return EmptyStateUI();
-                } else if (state is Loading) {
-                  return LoadingStateUI();
-                } else if (state is Loaded) {
-                  return LoadedStateUI(retrieveEntry: state.retrieveEntry);
-                } else if (state is Error) {
-                  return ErrorStateUI(message: state.message);
-                }
-              },
-            ),
-          ],
-        ),
+      body: BlocProvider(
+        builder: (BuildContext context) => sl<QueryWordBloc>(),
+        child: SearchPageBody(),
       ),
     );
   }
 }
 
+class SearchPageBody extends StatefulWidget {
+  SearchPageBody({Key key}) : super(key: key);
 
+  @override
+  _SearchPageBodyState createState() => _SearchPageBodyState();
+}
 
+class _SearchPageBodyState extends State<SearchPageBody> {
+  String _queryWord;
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Expanded(
+                flex: 6,
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: "example",
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.text,
+                  onChanged: (String value) => _queryWord = value,
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: _submit,
+                ),
+              ),
+            ],
+          ),
+          BlocBuilder<QueryWordBloc, QueryWordState>(
+            builder: (BuildContext context, QueryWordState state) {
+              if (state is Empty) {
+                return EmptyStateUI();
+              } else if (state is Loading) {
+                return LoadingStateUI();
+              } else if (state is Loaded) {
+                return LoadedStateUI(retrieveEntry: state.retrieveEntry);
+              } else if (state is Error) {
+                return ErrorStateUI(message: state.message);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
-
-
-
+  void _submit() {
+    BlocProvider.of<QueryWordBloc>(context).add(
+      GetWordEntryEvent(queryWord: _queryWord),
+    );
+  }
+}

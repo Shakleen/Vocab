@@ -34,16 +34,16 @@ class EntryModel extends Entry {
 
   factory EntryModel.fromJson(Map<String, dynamic> json) {
     final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key].map((element) => BaseInfoModel.fromJson(element)),
+          json[key]?.map((element) => BaseInfoModel.fromJson(element)),
         );
     final Function toPronunciationList = (key) => List<PronunciationModel>.from(
-          json[key].map((element) => PronunciationModel.fromJson(element)),
+          json[key]?.map((element) => PronunciationModel.fromJson(element)),
         );
     final Function toSenseList = (key) => List<SenseModel>.from(
-          json[key].map((element) => SenseModel.fromJson(element)),
+          json[key]?.map((element) => SenseModel.fromJson(element)),
         );
     final Function toVariantFormList = (key) => List<VariantFormModel>.from(
-          json[key].map((element) => VariantFormModel.fromJson(element)),
+          json[key]?.map((element) => VariantFormModel.fromJson(element)),
         );
     return EntryModel(
       etymologyList: List<String>.from(json['etymologies']),
@@ -62,11 +62,11 @@ class EntryModel extends Entry {
 
     json['etymologies'] = this.etymologyList;
     json['homographNumber'] = this.homographNumber;
-    json['notes'] = this.noteList.map(toString);
-    json['grammaticalFeatures'] = this.grammaticalFeatureList.map(toString);
-    json['pronunciations'] = this.pronunciationList.map(toString);
-    json['senses'] = this.senseList.map(toString);
-    json['variantForms'] = this.variantFormList.map(toString);
+    json['notes'] = this.noteList?.map(toString);
+    json['grammaticalFeatures'] = this.grammaticalFeatureList?.map(toString);
+    json['pronunciations'] = this.pronunciationList?.map(toString);
+    json['senses'] = this.senseList?.map(toString);
+    json['variantForms'] = this.variantFormList?.map(toString);
 
     return json;
   }

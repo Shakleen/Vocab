@@ -58,10 +58,10 @@ class HeadwordEntryModel extends HeadwordEntry {
 
   factory HeadwordEntryModel.fromJson(Map<String, dynamic> json) {
     final Function toPronunciationList = (key) => List<PronunciationModel>.from(
-          json[key].map((element) => PronunciationModel.fromJson(element)),
+          json[key]?.map((element) => PronunciationModel.fromJson(element)),
         );
     final Function toLexicalList = (key) => List<LexicalEntryModel>.from(
-          json[key].map((element) => LexicalEntryModel.fromJson(element)),
+          json[key]?.map((element) => LexicalEntryModel.fromJson(element)),
         );
     return HeadwordEntryModel(
       id: json['id'],
@@ -81,8 +81,8 @@ class HeadwordEntryModel extends HeadwordEntry {
     json['language'] = this.language;
     json['word'] = this.word;
     json['type'] = _HeadwordTypeToString(this.type);
-    json['lexicalEntries'] = this.lexicalEntryList.map(toString);
-    json['pronunciations'] = this.pronunciationList.map(toString);
+    json['lexicalEntries'] = this.lexicalEntryList?.map(toString);
+    json['pronunciations'] = this.pronunciationList?.map(toString);
 
     return json;
   }

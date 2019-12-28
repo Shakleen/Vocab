@@ -23,7 +23,7 @@ class ConstructionModel extends Construction {
     final Function baseInfoModelToJson =
         (element) => BaseInfoModel.fromJson(element);
     final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key].map(baseInfoModelToJson),
+          json[key]?.map(baseInfoModelToJson),
         );
     return ConstructionModel(
       text: json['text'],
@@ -40,10 +40,10 @@ class ConstructionModel extends Construction {
     final Function baseInfoToString = (baseInfo) => baseInfo.toJson();
 
     json['text'] = this.text;
-    json['domains'] = this.domainList.map(baseInfoToString);
-    json['regions'] = this.regionList.map(baseInfoToString);
-    json['registers'] = this.registerList.map(baseInfoToString);
-    json['notes'] = this.noteList.map(baseInfoToString);
+    json['domains'] = this.domainList?.map(baseInfoToString);
+    json['regions'] = this.regionList?.map(baseInfoToString);
+    json['registers'] = this.registerList?.map(baseInfoToString);
+    json['notes'] = this.noteList?.map(baseInfoToString);
     json['examples'] = this.exampleList;
 
     return json;
