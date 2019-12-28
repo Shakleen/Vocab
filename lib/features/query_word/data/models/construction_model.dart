@@ -27,7 +27,7 @@ class ConstructionModel extends Construction {
       noteList: ObjectConverter.toBaseinfoList(json['notes']),
       regionList: ObjectConverter.toBaseinfoList(json['regions']),
       registerList: ObjectConverter.toBaseinfoList(json['registers']),
-      exampleList: List<String>.from(json['examples']),
+      exampleList: ObjectConverter.toStringList(json['examples']),
     );
   }
 

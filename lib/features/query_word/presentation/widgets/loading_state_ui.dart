@@ -5,6 +5,8 @@ class LoadingStateUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: CircularProgressIndicator());
+    return Container(
+      child: Center(child: CircularProgressIndicator()),
+    );
   }
 }

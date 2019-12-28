@@ -44,7 +44,7 @@ class _SearchPageBodyState extends State<SearchPageBody> {
           Row(
             children: <Widget>[
               Expanded(
-                flex: 6,
+                flex: 5,
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: "example",
@@ -59,22 +59,26 @@ class _SearchPageBodyState extends State<SearchPageBody> {
                 child: IconButton(
                   icon: Icon(Icons.search),
                   onPressed: _submit,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ],
           ),
-          BlocBuilder<QueryWordBloc, QueryWordState>(
-            builder: (BuildContext context, QueryWordState state) {
-              if (state is Empty) {
-                return EmptyStateUI();
-              } else if (state is Loading) {
-                return LoadingStateUI();
-              } else if (state is Loaded) {
-                return LoadedStateUI(retrieveEntry: state.retrieveEntry);
-              } else if (state is Error) {
-                return ErrorStateUI(message: state.message);
-              }
-            },
+          Expanded(
+            flex: 1,
+            child: BlocBuilder<QueryWordBloc, QueryWordState>(
+              builder: (BuildContext context, QueryWordState state) {
+                if (state is Empty) {
+                  return EmptyStateUI();
+                } else if (state is Loading) {
+                  return LoadingStateUI();
+                } else if (state is Loaded) {
+                  return LoadedStateUI(retrieveEntry: state.retrieveEntry);
+                } else if (state is Error) {
+                  return ErrorStateUI(message: state.message);
+                }
+              },
+            ),
           ),
         ],
       ),
