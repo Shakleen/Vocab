@@ -3,6 +3,7 @@ import 'package:vocab/features/query_word/domain/entities/sense.dart';
 
 import 'construction_model.dart';
 import 'example_model.dart';
+import 'object_converter.dart';
 import 'pronunciation_model.dart';
 import 'thesaurus_link_model.dart';
 import 'variant_form_model.dart';
@@ -65,47 +66,29 @@ class SenseModel extends Sense {
         );
 
   factory SenseModel.fromJson(Map<String, dynamic> json) {
-    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key]?.map((element) => BaseInfoModel.fromJson(element)),
-        );
-    final Function toConstructionList = (key) => List<ConstructionModel>.from(
-          json[key]?.map((element) => ConstructionModel.fromJson(element)),
-        );
-    final Function toExampleList = (key) => List<ExampleModel>.from(
-          json[key]?.map((element) => ExampleModel.fromJson(element)),
-        );
-    final Function toPronunciationList = (key) => List<PronunciationModel>.from(
-          json[key]?.map((element) => PronunciationModel.fromJson(element)),
-        );
-    final Function toSenseList = (key) => List<SenseModel>.from(
-          json[key]?.map((element) => SenseModel.fromJson(element)),
-        );
-    final Function toThesaurusList = (key) => List<ThesaurusLinkModel>.from(
-          json[key]?.map((element) => ThesaurusLinkModel.fromJson(element)),
-        );
-    final Function toVariantFormList = (key) => List<VariantFormModel>.from(
-          json[key]?.map((element) => VariantFormModel.fromJson(element)),
-        );
-
     return SenseModel(
-      constructionList: toConstructionList('constructions'),
-      crossReferenceMarkerList: List<String>.from(
+      constructionList:
+          ObjectConverter.toConstructionList(json['constructions']),
+      crossReferenceMarkerList: ObjectConverter.toStringList(
         json['crossReferenceMarkers'],
       ),
-      crossReferenceList: toBaseinfoList('crossReferences'),
-      definitionList: List<String>.from(json['definitions']),
-      domainList: toBaseinfoList('domains'),
-      etymologyList: List<String>.from(json['etymologies']),
-      exampleList: toExampleList('examples'),
+      crossReferenceList:
+          ObjectConverter.toBaseinfoList(json['crossReferences']),
+      definitionList: ObjectConverter.toStringList(json['definitions']),
+      domainList: ObjectConverter.toBaseinfoList(json['domains']),
+      etymologyList: ObjectConverter.toStringList(json['etymologies']),
+      exampleList: ObjectConverter.toExampleList(json['examples']),
       id: json['id'],
-      noteList: toBaseinfoList('notes'),
-      pronunciationList: toPronunciationList('pronunciations'),
-      registerList: toBaseinfoList('registers'),
-      regionList: toBaseinfoList('regions'),
-      shortDefinitions: List<String>.from(json['shortDefinitions']),
-      subsenseList: toSenseList('subsenses'),
-      thesaurusLinkList: toThesaurusList('thesaurusLinks'),
-      variantFormList: toVariantFormList('variantForms'),
+      noteList: ObjectConverter.toBaseinfoList(json['notes']),
+      pronunciationList:
+          ObjectConverter.toPronunciationList(json['pronunciations']),
+      registerList: ObjectConverter.toBaseinfoList(json['registers']),
+      regionList: ObjectConverter.toBaseinfoList(json['regions']),
+      shortDefinitions: ObjectConverter.toStringList(json['shortDefinitions']),
+      subsenseList: ObjectConverter.toSenseList(json['subsenses']),
+      thesaurusLinkList:
+          ObjectConverter.toThesaurusList(json['thesaurusLinks']),
+      variantFormList: ObjectConverter.toVariantFormList(json['variantForms']),
     );
   }
 

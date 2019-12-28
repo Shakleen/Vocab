@@ -1,6 +1,7 @@
 import 'package:vocab/features/query_word/domain/entities/lexical_entry.dart';
 
 import 'base_info_model.dart';
+import 'object_converter.dart';
 import 'variant_form_model.dart';
 import 'pronunciation_model.dart';
 import 'entry_model.dart';
@@ -48,32 +49,20 @@ class LexicalEntryModel extends LexicalEntry {
         );
 
   factory LexicalEntryModel.fromJson(Map<String, dynamic> json) {
-    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key]?.map((element) => BaseInfoModel.fromJson(element)),
-        );
-    final Function toEntryList = (key) => List<EntryModel>.from(
-          json[key]?.map((element) => EntryModel.fromJson(element)),
-        );
-    final Function toRelatedEntryList = (key) => List<RelatedEntryModel>.from(
-          json[key]?.map((element) => RelatedEntryModel.fromJson(element)),
-        );
-    final Function toPronunciationList = (key) => List<PronunciationModel>.from(
-          json[key]?.map((element) => PronunciationModel.fromJson(element)),
-        );
-    final Function toVariantFormList = (key) => List<VariantFormModel>.from(
-          json[key]?.map((element) => VariantFormModel.fromJson(element)),
-        );
     return LexicalEntryModel(
-      derivativeList: toRelatedEntryList('derivatives'),
-      derivativeOfList: toRelatedEntryList('derivativeOf'),
-      entryList: toEntryList('entries'),
+      derivativeList: ObjectConverter.toRelatedEntryList(json['derivatives']),
+      derivativeOfList:
+          ObjectConverter.toRelatedEntryList(json['derivativeOf']),
+      entryList: ObjectConverter.toEntryList(json['entries']),
       language: json['language'],
       text: json['text'],
       lexicalCategory: BaseInfoModel.fromJson(json['lexicalCategory']),
-      grammaticalFeatureList: toBaseinfoList('grammaticalFeatures'),
-      noteList: toBaseinfoList('notes'),
-      pronunciationList: toPronunciationList('pronunciations'),
-      variantFormList: toVariantFormList('variantForms'),
+      grammaticalFeatureList:
+          ObjectConverter.toBaseinfoList(json['grammaticalFeatures']),
+      noteList: ObjectConverter.toBaseinfoList(json['notes']),
+      pronunciationList:
+          ObjectConverter.toPronunciationList(json['pronunciations']),
+      variantFormList: ObjectConverter.toVariantFormList(json['variantForms']),
     );
   }
 

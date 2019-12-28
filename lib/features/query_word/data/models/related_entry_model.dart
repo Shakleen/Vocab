@@ -1,6 +1,7 @@
 import 'package:vocab/features/query_word/domain/entities/related_entry.dart';
 
 import 'base_info_model.dart';
+import 'object_converter.dart';
 
 /// [RelatedEntryModel] class
 /// [domainList] (List[BaseInfoModel], optional): A subject, discipline, or branch of knowledge particular to the Sense ,
@@ -28,18 +29,13 @@ class RelatedEntryModel extends RelatedEntry {
         );
 
   factory RelatedEntryModel.fromJson(Map<String, dynamic> json) {
-    final Function baseInfoModelToJson =
-        (element) => BaseInfoModel.fromJson(element);
-    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key]?.map(baseInfoModelToJson),
-        );
     return RelatedEntryModel(
       id: json['id'],
       language: json['language'],
       text: json['text'],
-      domainList: toBaseinfoList('domains'),
-      regionList: toBaseinfoList('regions'),
-      registerList: toBaseinfoList('registers'),
+      domainList: ObjectConverter.toBaseinfoList(json['domains']),
+      regionList: ObjectConverter.toBaseinfoList(json['regions']),
+      registerList: ObjectConverter.toBaseinfoList(json['registers']),
     );
   }
 

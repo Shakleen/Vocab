@@ -1,6 +1,8 @@
 import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 import 'package:vocab/features/query_word/domain/entities/pronunciation.dart';
 
+import 'object_converter.dart';
+
 /// [PronunciationModel] class
 /// [audioFileUrl] (string, optional): The URL of the sound file ,
 /// [dialectList] (List[string], optional): A local or regional variation where the pronunciation occurs,
@@ -30,35 +32,29 @@ class PronunciationModel extends Pronunciation {
           registerList: registerList,
         );
 
-  factory PronunciationModel.fromJson(Map<String, dynamic> jsonData) {
-    final Function baseInfoModelToJson =
-        (element) => BaseInfoModel.fromJson(element);
-    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          jsonData[key]?.map(baseInfoModelToJson),
-        );
-
+  factory PronunciationModel.fromJson(Map<String, dynamic> json) {
     return PronunciationModel(
-      audioFileUrl: jsonData['audioFile'],
-      dialectList: List<String>.from(jsonData['dialects']),
-      phoneticNotation: jsonData['phoneticNotation'],
-      phoneticSpelling: jsonData['phoneticSpelling'],
-      regionList: toBaseinfoList('regions'),
-      registerList: toBaseinfoList('registers'),
+      audioFileUrl: json['audioFile'],
+      dialectList: ObjectConverter.toStringList(json['dialects']),
+      phoneticNotation: json['phoneticNotation'],
+      phoneticSpelling: json['phoneticSpelling'],
+      regionList: ObjectConverter.toBaseinfoList(json['regions']),
+      registerList: ObjectConverter.toBaseinfoList(json['registers']),
     );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> jsonData = {};
+    final Map<String, dynamic> json = {};
     final Function baseInfoToString = (baseInfo) => baseInfo.toJson();
 
-    jsonData['audioFile'] = this.audioFileUrl;
-    jsonData['dialects'] = this.dialectList;
-    jsonData['phoneticNotation'] = this.phoneticNotation;
-    jsonData['phoneticSpelling'] = this.phoneticSpelling;
-    jsonData['regions'] = this.regionList?.map(baseInfoToString);
-    jsonData['registers'] = this.registerList?.map(baseInfoToString);
+    json['audioFile'] = this.audioFileUrl;
+    json['dialects'] = this.dialectList;
+    json['phoneticNotation'] = this.phoneticNotation;
+    json['phoneticSpelling'] = this.phoneticSpelling;
+    json['regions'] = this.regionList?.map(baseInfoToString);
+    json['registers'] = this.registerList?.map(baseInfoToString);
 
-    return jsonData;
+    return json;
   }
 
   @override

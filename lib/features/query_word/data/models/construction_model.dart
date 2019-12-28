@@ -1,6 +1,7 @@
 import 'package:vocab/features/query_word/domain/entities/construction.dart';
 
 import 'base_info_model.dart';
+import 'object_converter.dart';
 
 class ConstructionModel extends Construction {
   ConstructionModel({
@@ -20,17 +21,12 @@ class ConstructionModel extends Construction {
         );
 
   factory ConstructionModel.fromJson(Map<String, dynamic> json) {
-    final Function baseInfoModelToJson =
-        (element) => BaseInfoModel.fromJson(element);
-    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key]?.map(baseInfoModelToJson),
-        );
     return ConstructionModel(
       text: json['text'],
-      domainList: toBaseinfoList('domains'),
-      noteList: toBaseinfoList('notes'),
-      regionList: toBaseinfoList('regions'),
-      registerList: toBaseinfoList('registers'),
+      domainList: ObjectConverter.toBaseinfoList(json['domains']),
+      noteList: ObjectConverter.toBaseinfoList(json['notes']),
+      regionList: ObjectConverter.toBaseinfoList(json['regions']),
+      registerList: ObjectConverter.toBaseinfoList(json['registers']),
       exampleList: List<String>.from(json['examples']),
     );
   }

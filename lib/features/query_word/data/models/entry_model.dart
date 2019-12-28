@@ -1,5 +1,6 @@
 import 'package:vocab/features/query_word/domain/entities/entry.dart';
 
+import 'object_converter.dart';
 import 'sense_model.dart';
 import 'pronunciation_model.dart';
 import 'base_info_model.dart';
@@ -33,26 +34,14 @@ class EntryModel extends Entry {
         );
 
   factory EntryModel.fromJson(Map<String, dynamic> json) {
-    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key]?.map((element) => BaseInfoModel.fromJson(element)),
-        );
-    final Function toPronunciationList = (key) => List<PronunciationModel>.from(
-          json[key]?.map((element) => PronunciationModel.fromJson(element)),
-        );
-    final Function toSenseList = (key) => List<SenseModel>.from(
-          json[key]?.map((element) => SenseModel.fromJson(element)),
-        );
-    final Function toVariantFormList = (key) => List<VariantFormModel>.from(
-          json[key]?.map((element) => VariantFormModel.fromJson(element)),
-        );
     return EntryModel(
-      etymologyList: List<String>.from(json['etymologies']),
-      grammaticalFeatureList: toBaseinfoList('grammaticalFeatures'),
+      etymologyList: ObjectConverter.toStringList(json['etymologies']),
+      grammaticalFeatureList: ObjectConverter.toBaseinfoList(json['grammaticalFeatures']),
       homographNumber: json['homographNumber'],
-      noteList: toBaseinfoList('notes'),
-      pronunciationList: toPronunciationList('pronunciations'),
-      senseList: toSenseList('senses'),
-      variantFormList: toVariantFormList('variantForms'),
+      noteList: ObjectConverter.toBaseinfoList(json['notes']),
+      pronunciationList: ObjectConverter.toPronunciationList(json['pronunciations']),
+      senseList: ObjectConverter.toSenseList(json['senses']),
+      variantFormList: ObjectConverter.toVariantFormList(json['variantForms']),
     );
   }
 

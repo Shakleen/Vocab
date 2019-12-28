@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:vocab/features/query_word/domain/entities/base_info.dart';
 
 class BaseInfoModel extends BaseInfo {

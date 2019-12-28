@@ -1,5 +1,6 @@
 import 'package:vocab/features/query_word/domain/entities/headword_entry.dart';
 
+import 'object_converter.dart';
 import 'pronunciation_model.dart';
 import 'lexical_entry_model.dart';
 
@@ -25,12 +26,12 @@ class HeadwordEntryModel extends HeadwordEntry {
           id: id,
           language: language,
           word: word,
-          type: _StringToHeadwordType(type),
+          type: _stringToHeadwordType(type),
           lexicalEntryList: lexicalEntryList,
           pronunciationList: pronunciationList,
         );
 
-  static HeadwordType _StringToHeadwordType(String type) {
+  static HeadwordType _stringToHeadwordType(String type) {
     switch (type.toLowerCase()) {
       case "headword":
         return HeadwordType.Headword;
@@ -43,7 +44,7 @@ class HeadwordEntryModel extends HeadwordEntry {
     }
   }
 
-  static String _HeadwordTypeToString(HeadwordType type) {
+  static String _headwordTypeToString(HeadwordType type) {
     switch (type) {
       case HeadwordType.Headword:
         return "headword";
@@ -57,19 +58,13 @@ class HeadwordEntryModel extends HeadwordEntry {
   }
 
   factory HeadwordEntryModel.fromJson(Map<String, dynamic> json) {
-    final Function toPronunciationList = (key) => List<PronunciationModel>.from(
-          json[key]?.map((element) => PronunciationModel.fromJson(element)),
-        );
-    final Function toLexicalList = (key) => List<LexicalEntryModel>.from(
-          json[key]?.map((element) => LexicalEntryModel.fromJson(element)),
-        );
     return HeadwordEntryModel(
       id: json['id'],
       language: json['language'],
       word: json['word'],
       type: json['type'],
-      lexicalEntryList: toLexicalList('lexicalEntries'),
-      pronunciationList: toPronunciationList('pronunciations'),
+      lexicalEntryList: ObjectConverter.toLexicalList(json['lexicalEntries']),
+      pronunciationList: ObjectConverter.toPronunciationList(json['pronunciations']),
     );
   }
 
@@ -80,7 +75,7 @@ class HeadwordEntryModel extends HeadwordEntry {
     json['id'] = this.id;
     json['language'] = this.language;
     json['word'] = this.word;
-    json['type'] = _HeadwordTypeToString(this.type);
+    json['type'] = _headwordTypeToString(this.type);
     json['lexicalEntries'] = this.lexicalEntryList?.map(toString);
     json['pronunciations'] = this.pronunciationList?.map(toString);
 

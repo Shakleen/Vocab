@@ -1,6 +1,7 @@
 import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 import 'package:vocab/features/query_word/domain/entities/variant_form.dart';
 
+import 'object_converter.dart';
 import 'pronunciation_model.dart';
 
 /// [VariantFormModel] class
@@ -29,19 +30,13 @@ class VariantFormModel extends VariantForm {
         );
 
   factory VariantFormModel.fromJson(Map<String, dynamic> json) {
-    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key]?.map((element) => BaseInfoModel.fromJson(element)),
-        );
-    final Function toPronunciationList = (key) => List<PronunciationModel>.from(
-          json[key]?.map((element) => PronunciationModel.fromJson(element)),
-        );
     return VariantFormModel(
       text: json['text'],
-      domainList: toBaseinfoList('domains'),
-      noteList: toBaseinfoList('notes'),
-      regionList: toBaseinfoList('regions'),
-      registerList: toBaseinfoList('registers'),
-      pronunciationList: toPronunciationList('pronunciations'),
+      domainList: ObjectConverter.toBaseinfoList(json['domains']),
+      noteList: ObjectConverter.toBaseinfoList(json['notes']),
+      regionList: ObjectConverter.toBaseinfoList(json['regions']),
+      registerList: ObjectConverter.toBaseinfoList(json['registers']),
+      pronunciationList: ObjectConverter.toPronunciationList(json['pronunciations']),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:vocab/features/query_word/domain/entities/example.dart';
 
 import 'base_info_model.dart';
+import 'object_converter.dart';
 
 /// [ExampleModel] class
 /// [definitionList] (List[strings], optional): A list of statements of the exact meaning of a word ,
@@ -32,19 +33,14 @@ class ExampleModel extends Example {
         );
 
   factory ExampleModel.fromJson(Map<String, dynamic> json) {
-    final Function baseInfoModelToJson =
-        (element) => BaseInfoModel.fromJson(element);
-    final Function toBaseinfoList = (key) => List<BaseInfoModel>.from(
-          json[key]?.map(baseInfoModelToJson),
-        );
     return ExampleModel(
       text: json['text'],
-      domainList: toBaseinfoList('domains'),
-      noteList: toBaseinfoList('notes'),
-      regionList: toBaseinfoList('regions'),
-      registerList: toBaseinfoList('registers'),
-      definitionList: List<String>.from(json['definitions']),
-      senseIdList: List<String>.from(json['senseIds']),
+      domainList: ObjectConverter.toBaseinfoList(json['domains']),
+      noteList: ObjectConverter.toBaseinfoList(json['notes']),
+      regionList: ObjectConverter.toBaseinfoList(json['regions']),
+      registerList: ObjectConverter.toBaseinfoList(json['registers']),
+      definitionList: ObjectConverter.toStringList(json['definitions']),
+      senseIdList: ObjectConverter.toStringList(json['senseIds']),
     );
   }
 
