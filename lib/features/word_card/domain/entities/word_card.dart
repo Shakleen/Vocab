@@ -3,7 +3,7 @@ import 'package:vocab/features/query_word/domain/entities/pronunciation.dart';
 import 'package:vocab/features/word_card/domain/entities/syllable.dart';
 import 'package:meta/meta.dart';
 
-import 'woord_card_details.dart';
+import 'word_card_details.dart';
 
 class WordCard extends Equatable {
   final String word;

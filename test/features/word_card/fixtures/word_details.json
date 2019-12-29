@@ -1,0 +1,28 @@
+{
+    "definition": "compete in a race",
+    "partOfSpeech": "verb",
+    "synonyms": [
+        "run"
+    ],
+    "typeOf": [
+        "compete",
+        "vie",
+        "contend"
+    ],
+    "hasTypes": [
+        "horse-race",
+        "boat-race",
+        "campaign",
+        "place",
+        "run",
+        "show",
+        "speed skate"
+    ],
+    "derivation": [
+        "racer",
+        "racing"
+    ],
+    "examples": [
+        "let's race and see who gets there first"
+    ]
+}

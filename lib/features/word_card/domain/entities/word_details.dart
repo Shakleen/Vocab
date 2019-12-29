@@ -60,6 +60,6 @@ class WordDetails extends Equatable {
         hasTypeList,
       ];
 
-  String getKeyString(WordDetailsKeyNames name) =>
+  static String getKey(WordDetailsKeyNames name) =>
       name.toString().split('.').last;
 }
