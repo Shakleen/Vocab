@@ -11,5 +11,5 @@ class Syllable extends Equatable {
   @override
   List<Object> get props => [count, list];
 
-  String getKeyString(SyllableKeyNames name) => name.toString().split('.').last;
+  static String getKey(SyllableKeyNames name) => name.toString().split('.').last;
 }
