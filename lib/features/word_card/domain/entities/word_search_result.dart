@@ -1,6 +1,14 @@
 import 'package:equatable/equatable.dart';
 
-enum WordSearchResultKeyNames { word, results, syllables, pronunciation, frequency }
+import 'syllable.dart';
+
+enum WordSearchResultKeyNames {
+  word,
+  results,
+  syllables,
+  pronunciation,
+  frequency
+}
 
 class WordSearchResult extends Equatable {
   final String word;
@@ -9,7 +17,7 @@ class WordSearchResult extends Equatable {
   final Pronunciation pronunciation;
   final double frequency;
 
-  WordSearchResult({
+  const WordSearchResult({
     this.word,
     this.results,
     this.syllables,
@@ -20,4 +28,7 @@ class WordSearchResult extends Equatable {
   @override
   List<Object> get props =>
       [word, results, syllables, pronunciation, frequency];
+
+  String getKeyString(WordSearchResultKeyNames name) =>
+      name.toString().split('.').last;
 }
