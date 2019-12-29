@@ -6,7 +6,7 @@ import 'package:vocab/features/query_word/data/models/pronunciation_model.dart';
 import 'package:vocab/features/query_word/data/models/variant_form_model.dart';
 import 'package:vocab/features/query_word/domain/entities/variant_form.dart';
 
-import '../../fixtures/fixture_reader.dart';
+import '../../../../fixture_reader.dart';
 
 void main() {
   final BaseInfoModel baseInfo = BaseInfoModel(
@@ -30,7 +30,7 @@ void main() {
     noteList: [baseInfo, baseInfo, baseInfo, baseInfo],
     pronunciationList: [tPronunciation, tPronunciation],
   );
-  final String fixtureFileName = 'variant_form_fixture.json';
+  final String fixtureFileName = 'test/features/query_word/fixtures/variant_form_fixture.json';
 
   test('should be of type VariantForm', () {
     expect(tVariantFormModel, isA<VariantForm>());

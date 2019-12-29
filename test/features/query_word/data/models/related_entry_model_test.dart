@@ -5,7 +5,7 @@ import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 import 'package:vocab/features/query_word/data/models/related_entry_model.dart';
 import 'package:vocab/features/query_word/domain/entities/related_entry.dart';
 
-import '../../fixtures/fixture_reader.dart';
+import '../../../../fixture_reader.dart';
 
 void main() {
   final BaseInfoModel baseInfo = BaseInfoModel(
@@ -21,7 +21,7 @@ void main() {
     regionList: [baseInfo, baseInfo],
     registerList: [baseInfo],
   );
-  final String fixtureFileName = 'related_entry_fixture.json';
+  final String fixtureFileName = 'test/features/query_word/fixtures/related_entry_fixture.json';
 
   test('should be of type RelatedEntry', () {
     expect(tRelatedEntryModel, isA<RelatedEntry>());

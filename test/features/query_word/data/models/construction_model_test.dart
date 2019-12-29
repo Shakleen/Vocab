@@ -5,7 +5,7 @@ import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 import 'package:vocab/features/query_word/data/models/construction_model.dart';
 import 'package:vocab/features/query_word/domain/entities/construction.dart';
 
-import '../../fixtures/fixture_reader.dart';
+import '../../../../fixture_reader.dart';
 
 void main() {
   final BaseInfoModel baseInfo = BaseInfoModel(
@@ -26,7 +26,8 @@ void main() {
     registerList: [baseInfo],
     text: "test text",
   );
-  final String fixtureFileName = 'construction_fixture.json';
+  final String fixtureFileName =
+      'test/features/query_word/fixtures/construction_fixture.json';
 
   test('should be of type Construction', () {
     expect(tConstructionModel, isA<Construction>());

@@ -10,7 +10,7 @@ import 'package:vocab/features/query_word/data/models/thesaurus_link_model.dart'
 import 'package:vocab/features/query_word/data/models/variant_form_model.dart';
 import 'package:vocab/features/query_word/domain/entities/sense.dart';
 
-import '../../fixtures/fixture_reader.dart';
+import '../../../../fixture_reader.dart';
 
 void main() {
   final SenseModel tSenseModelWithNoSubsense = _buildTestModel();
@@ -20,7 +20,7 @@ void main() {
   });
 
   group('without subsense', () {
-    final String fixtureFileName = 'sense_without_subsense_fixture.json';
+    final String fixtureFileName = 'test/features/query_word/fixtures/sense_without_subsense_fixture.json';
 
     test('should return SenseModel object after fromJson', () {
       final Map<String, dynamic> jsonData = json.decode(
@@ -40,7 +40,7 @@ void main() {
     tSenseModelWithSubsense.subsenseList.add(_buildTestModel());
     tSenseModelWithSubsense.subsenseList.add(_buildTestModel());
 
-    final String fixtureFileName = 'sense_with_subsense_fixture.json';
+    final String fixtureFileName = 'test/features/query_word/fixtures/sense_with_subsense_fixture.json';
 
     test('should return SenseModel object after fromJson', () {
       final Map<String, dynamic> jsonData = json.decode(

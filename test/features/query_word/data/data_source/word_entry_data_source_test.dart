@@ -16,7 +16,7 @@ import 'package:vocab/features/query_word/data/models/sense_model.dart';
 import 'package:vocab/features/query_word/data/models/thesaurus_link_model.dart';
 import 'package:vocab/features/query_word/data/models/variant_form_model.dart';
 
-import '../../fixtures/fixture_reader.dart';
+import '../../../../fixture_reader.dart';
 
 class MockHttpClient extends Mock implements http.Client {}
 
@@ -26,8 +26,9 @@ void main() {
   final RetrieveEntryModel expected = _buildTestModel();
   final String tQueryWord = "Test word";
   void setUpMockHttpClientResponse200() {
+    final String fixturePath = 'test/features/query_word/fixtures/retrieve_entry_fixture.json';
     when(mockHttpClient.get(any, headers: anyNamed('headers'))).thenAnswer(
-      (_) async => http.Response(fixture('retrieve_entry_fixture.json'), 200),
+      (_) async => http.Response(fixture(fixturePath), 200),
     );
   }
 

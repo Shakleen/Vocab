@@ -5,7 +5,7 @@ import 'package:vocab/features/query_word/data/models/base_info_model.dart';
 import 'package:vocab/features/query_word/data/models/example_model.dart';
 import 'package:vocab/features/query_word/domain/entities/example.dart';
 
-import '../../fixtures/fixture_reader.dart';
+import '../../../../fixture_reader.dart';
 
 void main() {
   final BaseInfoModel baseInfo = BaseInfoModel(
@@ -34,7 +34,8 @@ void main() {
       "test sense",
     ],
   );
-  final String fixtureFileName = 'example_fixture.json';
+  final String fixtureFileName =
+      'test/features/query_word/fixtures/example_fixture.json';
 
   test('should be of type Example', () {
     expect(tExampleModel, isA<Example>());

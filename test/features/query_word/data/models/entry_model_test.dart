@@ -11,11 +11,12 @@ import 'package:vocab/features/query_word/data/models/thesaurus_link_model.dart'
 import 'package:vocab/features/query_word/data/models/variant_form_model.dart';
 import 'package:vocab/features/query_word/domain/entities/entry.dart';
 
-import '../../fixtures/fixture_reader.dart';
+import '../../../../fixture_reader.dart';
+
 
 void main() {
   final EntryModel tEntryModel = _buildTestModel();
-  final String fixtureFileName = 'entry_fixture.json';
+  final String fixtureFileName = 'test/features/query_word/fixtures/entry_fixture.json';
 
   test('should be of type Entry', () {
     expect(tEntryModel, isA<Entry>());
