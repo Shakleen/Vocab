@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:vocab/features/query_word/domain/entities/pronunciation.dart';
+import 'package:vocab/features/word_card/domain/entities/pronunciation.dart';
 import 'package:vocab/features/word_card/domain/entities/syllable.dart';
 import 'package:meta/meta.dart';
 
@@ -19,10 +19,5 @@ class WordCard extends Equatable {
   });
 
   @override
-  List<Object> get props => [
-        word,
-        pronunciation,
-        syllables,
-        detailList,
-      ];
+  List<Object> get props => [word, pronunciation, syllables, detailList];
 }

@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 class WordCardDetails extends Equatable {
   final String definition;
@@ -8,11 +7,11 @@ class WordCardDetails extends Equatable {
   final List<String> exampleList;
   final List<String> antonymList;
 
-  const WordCardDetails({
-    @required this.definition,
-    @required this.partOfSpeech,
-    @required this.exampleList,
-    @required this.synonymList,
+  WordCardDetails({
+    this.definition,
+    this.partOfSpeech,
+    this.synonymList,
+    this.exampleList,
     this.antonymList,
   });
 

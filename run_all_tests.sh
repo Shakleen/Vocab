@@ -56,3 +56,9 @@ flutter test test/features/word_card/data/models/pronunciation_model_test.dart
 flutter test test/features/word_card/data/models/syllable_model_test.dart
 flutter test test/features/word_card/data/models/word_details_model_test.dart
 flutter test test/features/word_card/data/models/word_search_result_model_test.dart
+
+# ================================================================================================
+# Domain Layer
+# ================================================================================================
+# Usecase test
+flutter test test/features/word_card/domain/usecase/get_word_card_test.dart
