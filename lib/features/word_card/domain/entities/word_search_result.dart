@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import 'pronunciation.dart';
 import 'syllable.dart';
 
 enum WordSearchResultKeyNames {
