@@ -10,6 +10,6 @@ class Pronunciation extends Equatable {
   @override
   List<Object> get props => [all];
 
-  String getKeyString(PronunciationKeyNames name) =>
+  static String getKey(PronunciationKeyNames name) =>
       name.toString().split('.').last;
 }
