@@ -31,6 +31,6 @@ class WordSearchResult extends Equatable {
   List<Object> get props =>
       [word, results, syllables, pronunciation, frequency];
 
-  String getKeyString(WordSearchResultKeyNames name) =>
+  static String getKey(WordSearchResultKeyNames name) =>
       name.toString().split('.').last;
 }

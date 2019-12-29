@@ -55,3 +55,4 @@ flutter test test/features/query_word/presentation/bloc/query_word_bloc_test.dar
 flutter test test/features/word_card/data/models/pronunciation_model_test.dart
 flutter test test/features/word_card/data/models/syllable_model_test.dart
 flutter test test/features/word_card/data/models/word_details_model_test.dart
+flutter test test/features/word_card/data/models/word_search_result_model_test.dart

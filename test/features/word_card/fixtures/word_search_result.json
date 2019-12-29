@@ -1,0 +1,223 @@
+{
+    "word": "race",
+    "results": [
+        {
+            "definition": "compete in a race",
+            "partOfSpeech": "verb",
+            "synonyms": [
+                "run"
+            ],
+            "typeOf": [
+                "compete",
+                "vie",
+                "contend"
+            ],
+            "hasTypes": [
+                "horse-race",
+                "boat-race",
+                "campaign",
+                "place",
+                "run",
+                "show",
+                "speed skate"
+            ],
+            "derivation": [
+                "racer",
+                "racing"
+            ],
+            "examples": [
+                "let's race and see who gets there first"
+            ]
+        },
+        {
+            "definition": "the flow of air that is driven backwards by an aircraft propeller",
+            "partOfSpeech": "noun",
+            "synonyms": [
+                "airstream",
+                "backwash",
+                "slipstream",
+                "wash"
+            ],
+            "typeOf": [
+                "flow"
+            ]
+        },
+        {
+            "definition": "cause to move fast or to rush or race",
+            "partOfSpeech": "verb",
+            "synonyms": [
+                "rush"
+            ],
+            "typeOf": [
+                "move",
+                "displace"
+            ],
+            "derivation": [
+                "racer"
+            ],
+            "examples": [
+                "The psychologist raced the rats through a long maze"
+            ]
+        },
+        {
+            "definition": "move hurridly",
+            "partOfSpeech": "verb",
+            "synonyms": [
+                "belt along",
+                "bucket along",
+                "cannonball along",
+                "hasten",
+                "hie",
+                "hotfoot",
+                "pelt along",
+                "rush",
+                "rush along",
+                "speed",
+                "step on it"
+            ],
+            "typeOf": [
+                "go",
+                "travel",
+                "locomote",
+                "move"
+            ],
+            "hasTypes": [
+                "flash",
+                "barge",
+                "buck",
+                "dash",
+                "dart",
+                "shoot",
+                "shoot down",
+                "charge",
+                "tear",
+                "push forward",
+                "thrust ahead",
+                "scoot",
+                "scud"
+            ],
+            "examples": [
+                "The cars raced down the street"
+            ]
+        },
+        {
+            "definition": "a canal for a current of water",
+            "partOfSpeech": "noun",
+            "synonyms": [
+                "raceway"
+            ],
+            "typeOf": [
+                "canal"
+            ]
+        },
+        {
+            "definition": "(biology) a taxonomic group that is a division of a species; usually arises as a consequence of geographical isolation within a species",
+            "partOfSpeech": "noun",
+            "synonyms": [
+                "subspecies"
+            ],
+            "inCategory": [
+                "biological science",
+                "biology"
+            ],
+            "typeOf": [
+                "taxonomic group",
+                "taxon",
+                "taxonomic category"
+            ]
+        },
+        {
+            "definition": "a contest of speed",
+            "partOfSpeech": "noun",
+            "typeOf": [
+                "contest",
+                "competition"
+            ],
+            "hasTypes": [
+                "bicycle race",
+                "bike race",
+                "boat race",
+                "burnup",
+                "relay race",
+                "auto race",
+                "automobile race",
+                "chariot race",
+                "cross country",
+                "dog racing",
+                "foot race",
+                "footrace",
+                "freestyle",
+                "heat",
+                "horse race",
+                "potato race",
+                "relay",
+                "repechage",
+                "run",
+                "sack race",
+                "scratch race",
+                "ski race",
+                "skiing race",
+                "car race"
+            ],
+            "derivation": [
+                "racy"
+            ],
+            "examples": [
+                "the race is to the swift"
+            ]
+        },
+        {
+            "definition": "any competition",
+            "partOfSpeech": "noun",
+            "typeOf": [
+                "competition",
+                "contest"
+            ],
+            "hasTypes": [
+                "campaign",
+                "political campaign",
+                "run",
+                "arms race"
+            ],
+            "examples": [
+                "the race for the presidency"
+            ]
+        },
+        {
+            "definition": "people who are believed to belong to the same genetic stock",
+            "partOfSpeech": "noun",
+            "typeOf": [
+                "group",
+                "grouping"
+            ],
+            "hasTypes": [
+                "master race",
+                "herrenvolk"
+            ],
+            "derivation": [
+                "racial"
+            ],
+            "examples": [
+                "some biologists doubt that there are important genetic differences between races of human beings"
+            ]
+        },
+        {
+            "definition": "to work as fast as possible towards a goal, sometimes in competition with others",
+            "partOfSpeech": "verb",
+            "typeOf": [
+                "move",
+                "act"
+            ]
+        }
+    ],
+    "syllables": {
+        "count": 1,
+        "list": [
+            "race"
+        ]
+    },
+    "pronunciation": {
+        "all": "reɪs"
+    },
+    "frequency": 4.75
+}
