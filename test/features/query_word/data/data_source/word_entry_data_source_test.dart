@@ -64,75 +64,24 @@ void main() {
     },
   );
 
-  test(
-    'should throw NotFoundException when response code is 404',
-    () async {
-      when(mockHttpClient.get(any, headers: anyNamed('headers'))).thenAnswer(
-        (_) async => http.Response('Word not found!', 404),
-      );
-      final call = wordEntryDataSource.getWordEntry;
-      expect(
-        () => call(tQueryWord),
-        throwsA(isInstanceOf<NotFoundException>()),
-      );
-    },
-  );
+  void testExceptionCase<T>(code) {
+    test(
+      'should throw ${T.runtimeType} when response code is $code',
+      () async {
+        when(mockHttpClient.get(any, headers: anyNamed('headers'))).thenAnswer(
+          (_) async => http.Response('Word not found!', code),
+        );
+        final call = wordEntryDataSource.getWordEntry;
+        expect(() => call(tQueryWord), throwsA(isInstanceOf<T>()));
+      },
+    );
+  }
 
-  test(
-    'should throw InvalidFilterException when response code is 400',
-    () async {
-      when(mockHttpClient.get(any, headers: anyNamed('headers'))).thenAnswer(
-        (_) async => http.Response('Word not found!', 400),
-      );
-      final call = wordEntryDataSource.getWordEntry;
-      expect(
-        () => call(tQueryWord),
-        throwsA(isInstanceOf<InvalidFilterException>()),
-      );
-    },
-  );
-
-  test(
-    'should throw TooLongURLException when response code is 400',
-    () async {
-      when(mockHttpClient.get(any, headers: anyNamed('headers'))).thenAnswer(
-        (_) async => http.Response('Word not found!', 414),
-      );
-      final call = wordEntryDataSource.getWordEntry;
-      expect(
-        () => call(tQueryWord),
-        throwsA(isInstanceOf<TooLongURLException>()),
-      );
-    },
-  );
-
-  test(
-    'should throw ServerException when response code is 400',
-    () async {
-      when(mockHttpClient.get(any, headers: anyNamed('headers'))).thenAnswer(
-        (_) async => http.Response('Word not found!', 500),
-      );
-      final call = wordEntryDataSource.getWordEntry;
-      expect(
-        () => call(tQueryWord),
-        throwsA(isInstanceOf<ServerException>()),
-      );
-    },
-  );
-
-  test(
-    'should throw UnknownException when response code is not 200, 400, 404, 414, 500',
-    () async {
-      when(mockHttpClient.get(any, headers: anyNamed('headers'))).thenAnswer(
-        (_) async => http.Response('Word not found!', 100),
-      );
-      final call = wordEntryDataSource.getWordEntry;
-      expect(
-        () => call(tQueryWord),
-        throwsA(isInstanceOf<UnknownException>()),
-      );
-    },
-  );
+  testExceptionCase<InvalidFilterException>(400);
+  testExceptionCase<NotFoundException>(404);
+  testExceptionCase<TooLongURLException>(414);
+  testExceptionCase<ServerException>(500);
+  testExceptionCase<UnknownException>(100);
 }
 
 RetrieveEntryModel _buildTestModel() {

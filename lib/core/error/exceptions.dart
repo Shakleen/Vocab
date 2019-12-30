@@ -11,3 +11,5 @@ class CacheException implements Exception {}
 class UnknownException implements Exception {}
 
 class DeviceOfflineException implements Exception {}
+
+class UnauthorizedException implements Exception {}

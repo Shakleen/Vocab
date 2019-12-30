@@ -39,7 +39,7 @@ WordSearchResultModel _buildModel() {
   return WordSearchResultModel(
     word: "race",
     frequency: 4.75,
-    pronunciation: PronunciationModel(all: "reɪs"),
+    pronunciation: PronunciationModel(all: "res"),
     syllables: SyllableModel(count: 1, list: ["race"]),
     results: [
       WordDetailsModel(
