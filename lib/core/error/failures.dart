@@ -23,3 +23,5 @@ class UnknownFailure extends Failure {}
 class DeviceOfflineFailure extends Failure {}
 
 class InvalidInputFailure extends Failure {}
+
+class UnauthorizedFailure extends Failure {}

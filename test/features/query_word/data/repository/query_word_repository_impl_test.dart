@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:vocab/core/error/exceptions.dart';
 import 'package:vocab/core/error/failures.dart';
 import 'package:vocab/core/network/network_info.dart';
 import 'package:vocab/features/query_word/data/data_source/word_entry_data_source.dart';
@@ -28,6 +29,21 @@ void main() {
   QueryWordRepositoryImpl repositoryImpl;
   final String tQueryWord = 'test word';
   final RetrieveEntryModel tRemoteData = _buildTestModel();
+
+  Failure matchExceptionToFailure(exception) {
+    switch (exception.runtimeType) {
+      case NotFoundException:
+        return NotFoundFailure();
+      case InvalidFilterException:
+        return InvalidFilterFailure();
+      case TooLongURLException:
+        return TooLongURLFailure();
+      case ServerException:
+        return ServerFailure();
+      case UnknownException:
+        return UnknownFailure();
+    }
+  }
 
   setUp(() {
     mockNetworkInfo = MockNetworkInfo();
@@ -63,6 +79,21 @@ void main() {
       final result = await repositoryImpl.getWordEntry(tQueryWord);
       expect(result, equals(Right(tRemoteData)));
     });
+
+    void testExceptionCase(exception) {
+      test('should return Failure object for ${exception.runtimeType}', () async {
+        setupOnlineTest();
+        when(mockWordEntryDataSource.getWordEntry(tQueryWord)).thenThrow(exception);
+        final result = await repositoryImpl.getWordEntry(tQueryWord);
+        expect(result, Left(matchExceptionToFailure(exception)));
+      });
+    }
+
+    testExceptionCase(NotFoundException());
+    testExceptionCase(InvalidFilterException());
+    testExceptionCase(TooLongURLException());
+    testExceptionCase(ServerException());
+    testExceptionCase(UnknownException());
   });
 
   group('run tests offline', () {

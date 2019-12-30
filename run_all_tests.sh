@@ -60,6 +60,9 @@ flutter test test/features/word_card/data/models/word_search_result_model_test.d
 # Data source tests
 flutter test test/features/word_card/data/data_source/remote_dictionary_test.dart
 
+# Repository tests
+flutter test test/features/word_card/data/repository/word_card_repository_impl_test.dart
+
 # ================================================================================================
 # Domain Layer
 # ================================================================================================
