@@ -68,3 +68,9 @@ flutter test test/features/word_card/data/repository/word_card_repository_impl_t
 # ================================================================================================
 # Usecase test
 flutter test test/features/word_card/domain/usecase/get_word_card_test.dart
+
+# ================================================================================================
+# Presentation Layer
+# ================================================================================================
+# bloc test
+flutter test test/features/word_card/presentation/bloc/word_card_bloc_test.dart

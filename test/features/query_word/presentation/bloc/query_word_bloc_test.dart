@@ -18,6 +18,7 @@ import 'package:vocab/features/query_word/data/models/retrieve_entry_model.dart'
 import 'package:vocab/features/query_word/data/models/sense_model.dart';
 import 'package:vocab/features/query_word/data/models/thesaurus_link_model.dart';
 import 'package:vocab/features/query_word/data/models/variant_form_model.dart';
+import 'package:vocab/core/error/error_messages.dart';
 
 class MockGetWordDefinition extends Mock implements GetWordDefinition {}
 
