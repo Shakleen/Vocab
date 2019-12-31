@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/features/query_word/domain/entities/lexical_entry.dart';
+import 'package:vocab/core/ui/widgets/headline_text.dart';
+import 'package:vocab/core/ui/widgets/title_text.dart';
 
 import 'entry_widget.dart';
-import 'headline_text.dart';
 import 'pronunciation_widget.dart';
 import 'related_entry.dart';
-import 'title_text.dart';
 
 class LexicalEntryWidget extends StatelessWidget {
   final LexicalEntry lexicalEntry;

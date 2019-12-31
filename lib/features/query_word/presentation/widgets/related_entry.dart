@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/features/query_word/domain/entities/related_entry.dart';
-
-import 'title_text.dart';
+import 'package:vocab/core/ui/widgets/title_text.dart';
 
 class RelatedEntryWidget extends StatelessWidget {
   final List<RelatedEntry> relatedEntryList;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:vocab/core/ui/widgets/subtitle_text.dart';
 import 'package:vocab/features/query_word/domain/entities/sense.dart';
-
-import 'subtitle_text.dart';
 
 class SenseWidget extends StatelessWidget {
   final Sense sense;

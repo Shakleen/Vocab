@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/features/query_word/domain/entities/pronunciation.dart';
-import 'package:vocab/features/query_word/presentation/widgets/subtitle_text.dart';
-import 'package:vocab/features/query_word/presentation/widgets/title_text.dart';
+import 'package:vocab/core/ui/widgets/title_text.dart';
+import 'package:vocab/core/ui/widgets/subtitle_text.dart';
 
 class PronunciationWidget extends StatelessWidget {
   final int index;

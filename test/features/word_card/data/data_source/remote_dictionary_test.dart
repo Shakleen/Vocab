@@ -35,7 +35,7 @@ void main() {
     setupForResponse200();
     await remoteDictionary.getWordDetails(tQueryWord);
     verify(mockHttpClient.get(
-      remoteDictionary.url,
+      remoteDictionary.url + "$tQueryWord",
       headers: {
         'Content-Type': 'application/json',
         HEADER_HOST: remoteDictionary.host,

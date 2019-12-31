@@ -4,6 +4,7 @@ import 'package:vocab/core/ui/widgets/empty_state_ui.dart';
 import 'package:vocab/core/ui/widgets/error_state_ui.dart';
 import 'package:vocab/core/ui/widgets/loading_state_ui.dart';
 import 'package:vocab/core/ui/widgets/search_bar.dart';
+import 'package:vocab/features/word_card/presentation/widgets/loaded_state_ui.dart';
 import 'package:vocab/features/word_card/presentation/bloc/bloc.dart';
 
 class WordCardBody extends StatefulWidget {
@@ -30,7 +31,7 @@ class _QueryWordBodyState extends State<WordCardBody> {
                 } else if (state is LoadingState) {
                   return LoadingStateUI();
                 } else if (state is LoadedState) {
-                  // return LoadedStateUI(retrieveEntry: state.wordCard);
+                  return LoadedStateUI(wordCard: state.wordCard);
                 } else if (state is ErrorState) {
                   return ErrorStateUI(message: state.message);
                 }

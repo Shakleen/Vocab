@@ -1,9 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:vocab/core/error/exceptions.dart';
 
 import 'package:vocab/features/word_card/data/models/word_search_result_model.dart';
+
+import 'key.dart';
 
 abstract class RemoteDictionary {
   String get host;
@@ -12,9 +13,6 @@ abstract class RemoteDictionary {
   Future<WordSearchResultModel> getWordDetails(String word);
 }
 
-final Map<String, dynamic> _keyInfo = json.decode(
-    File('lib/features/word_card/data/data_source/key.json')
-        .readAsStringSync());
 const String HEADER_HOST = "x-rapidapi-host";
 const String HEADER_KEY = "x-rapidapi-key";
 
@@ -24,10 +22,10 @@ class WordsAPIRemoteDictionary implements RemoteDictionary {
   WordsAPIRemoteDictionary({this.client});
 
   @override
-  String get host => _keyInfo[HEADER_HOST];
+  String get host => WORDS_API_HOST;
 
   @override
-  String get key => _keyInfo[HEADER_KEY];
+  String get key => WORDS_API_KEY;
 
   @override
   String get url => "https://wordsapiv1.p.rapidapi.com/words/";
@@ -35,7 +33,7 @@ class WordsAPIRemoteDictionary implements RemoteDictionary {
   @override
   Future<WordSearchResultModel> getWordDetails(String word) async {
     final response = await client.get(
-      url,
+      url + "$word",
       headers: {
         'Content-Type': 'application/json',
         HEADER_HOST: host,
