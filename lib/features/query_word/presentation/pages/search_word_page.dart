@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vocab/core/ui/widgets/search_bar.dart';
 import 'package:vocab/features/query_word/presentation/bloc/bloc.dart';
 import 'package:vocab/features/query_word/presentation/bloc/query_word_bloc.dart';
 import 'package:vocab/features/query_word/presentation/widgets/widgets_export.dart';
@@ -33,47 +34,13 @@ class SearchPageBody extends StatefulWidget {
 }
 
 class _SearchPageBodyState extends State<SearchPageBody> {
-  final TextEditingController controller = TextEditingController();
-  String _queryWord;
-
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                flex: 5,
-                child: TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    hintText: "example",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(35.0),
-                    ),
-                    hintStyle: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  keyboardType: TextInputType.text,
-                  onChanged: (String value) => _queryWord = value,
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: CircleAvatar(
-                  child: IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: _submit,
-                    color: Colors.white,
-                  ),
-                  backgroundColor: Theme.of(context).primaryColor,
-                ),
-              ),
-            ],
-          ),
+          SearchBar(),
           Expanded(
             flex: 1,
             child: BlocBuilder<QueryWordBloc, QueryWordState>(
@@ -92,13 +59,6 @@ class _SearchPageBodyState extends State<SearchPageBody> {
           ),
         ],
       ),
-    );
-  }
-
-  void _submit() {
-    controller.clear();
-    BlocProvider.of<QueryWordBloc>(context).add(
-      GetWordEntryEvent(queryWord: _queryWord),
     );
   }
 }
