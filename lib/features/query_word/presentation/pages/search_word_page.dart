@@ -40,7 +40,7 @@ class _SearchPageBodyState extends State<SearchPageBody> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: <Widget>[
-          SearchBar(),
+          SearchBar(search: _submit),
           Expanded(
             flex: 1,
             child: BlocBuilder<QueryWordBloc, QueryWordState>(
@@ -59,6 +59,12 @@ class _SearchPageBodyState extends State<SearchPageBody> {
           ),
         ],
       ),
+    );
+  }
+
+  void _submit(String word) {
+    BlocProvider.of<QueryWordBloc>(context).add(
+      GetWordEntryEvent(queryWord: word),
     );
   }
 }

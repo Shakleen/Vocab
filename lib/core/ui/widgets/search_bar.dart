@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vocab/features/query_word/presentation/bloc/bloc.dart';
 
 class SearchBar extends StatefulWidget {
-  SearchBar({Key key}) : super(key: key);
+  final Function (String) search;
+
+  SearchBar({Key key, @required this.search}) : super(key: key);
 
   @override
   _SearchBarState createState() => _SearchBarState();
@@ -39,20 +39,16 @@ class _SearchBarState extends State<SearchBar> {
           child: CircleAvatar(
             child: IconButton(
               icon: Icon(Icons.search),
-              onPressed: _submit,
+              onPressed: () {
+                controller.clear();
+                widget.search(_queryWord);
+              },
               color: Colors.white,
             ),
             backgroundColor: Theme.of(context).primaryColor,
           ),
         ),
       ],
-    );
-  }
-
-  void _submit() {
-    controller.clear();
-    BlocProvider.of<QueryWordBloc>(context).add(
-      GetWordEntryEvent(queryWord: _queryWord),
     );
   }
 }
