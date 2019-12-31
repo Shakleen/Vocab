@@ -20,7 +20,7 @@ Future<void> init() async {
   //! Feature: Query Word
   //? Presentation layer
   // Bloc
-  sl.registerFactory(
+  sl.registerFactory<QueryWordBloc>(
     () => QueryWordBloc(inputConverter: sl(), retriever: sl()),
   );
 
@@ -44,7 +44,7 @@ Future<void> init() async {
   //!Feature: Word card
   //? Presentation later
   // Bloc
-  sl.registerFactory(
+  sl.registerFactory<WordCardBloc>(
     () => WordCardBloc(converter: sl(), getWordCard: sl()),
   );
 

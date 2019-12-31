@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:vocab/core/ui/pages/search_word_page.dart';
+import 'package:vocab/features/query_word/presentation/bloc/bloc.dart';
+import 'package:vocab/features/query_word/presentation/widgets/query_word_body.dart';
 
-import 'features/query_word/presentation/pages/search_word_page.dart';
 import 'injection_container.dart' as di;
 
 void main() async {
@@ -17,7 +19,7 @@ class Vocab extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(primaryColor: Colors.blue),
-      home: SearchWordPage(),
+      home: SearchWordPage<QueryWordBloc>(body: QueryWordBody()),
     );
   }
 }

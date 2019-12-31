@@ -4,36 +4,15 @@ import 'package:vocab/core/ui/widgets/search_bar.dart';
 import 'package:vocab/features/query_word/presentation/bloc/bloc.dart';
 import 'package:vocab/features/query_word/presentation/bloc/query_word_bloc.dart';
 import 'package:vocab/features/query_word/presentation/widgets/widgets_export.dart';
-import 'package:vocab/injection_container.dart';
 
-class SearchWordPage extends StatefulWidget {
-  SearchWordPage({Key key}) : super(key: key);
-
-  @override
-  _SearchWordPageState createState() => _SearchWordPageState();
-}
-
-class _SearchWordPageState extends State<SearchWordPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Vocab App")),
-      body: BlocProvider(
-        builder: (BuildContext context) => sl<QueryWordBloc>(),
-        child: SearchPageBody(),
-      ),
-    );
-  }
-}
-
-class SearchPageBody extends StatefulWidget {
-  SearchPageBody({Key key}) : super(key: key);
+class QueryWordBody extends StatefulWidget {
+  QueryWordBody({Key key}) : super(key: key);
 
   @override
-  _SearchPageBodyState createState() => _SearchPageBodyState();
+  _QueryWordBodyState createState() => _QueryWordBodyState();
 }
 
-class _SearchPageBodyState extends State<SearchPageBody> {
+class _QueryWordBodyState extends State<QueryWordBody> {
   @override
   Widget build(BuildContext context) {
     return Container(
