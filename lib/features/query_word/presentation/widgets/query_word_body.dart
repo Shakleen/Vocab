@@ -19,21 +19,18 @@ class QueryWordBody extends StatelessWidget {
       create: (BuildContext context) => sl<QueryWordBloc>(),
       child: Scaffold(
         appBar: SearchAppBar<QueryWordBloc>(),
-        body: Container(
-          padding: const EdgeInsets.all(8.0),
-          child: BlocBuilder<QueryWordBloc, QueryWordState>(
-            builder: (BuildContext context, QueryWordState state) {
-              if (state is Empty) {
-                return EmptyStateUI();
-              } else if (state is Loading) {
-                return LoadingStateUI();
-              } else if (state is Loaded) {
-                return LoadedStateUI(retrieveEntry: state.retrieveEntry);
-              } else if (state is Error) {
-                return ErrorStateUI(message: state.message);
-              }
-            },
-          ),
+        body: BlocBuilder<QueryWordBloc, QueryWordState>(
+          builder: (BuildContext context, QueryWordState state) {
+            if (state is Empty) {
+              return EmptyStateUI();
+            } else if (state is Loading) {
+              return LoadingStateUI();
+            } else if (state is Loaded) {
+              return LoadedStateUI(retrieveEntry: state.retrieveEntry);
+            } else if (state is Error) {
+              return ErrorStateUI(message: state.message);
+            }
+          },
         ),
       ),
     );

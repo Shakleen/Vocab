@@ -18,21 +18,18 @@ class WordCardBody extends StatelessWidget {
       create: (BuildContext context) => sl<WordCardBloc>(),
       child: Scaffold(
         appBar: SearchAppBar<WordCardBloc>(),
-        body: Container(
-          padding: const EdgeInsets.all(8.0),
-          child: BlocBuilder<WordCardBloc, WordCardState>(
-            builder: (BuildContext context, WordCardState state) {
-              if (state is EmptyState) {
-                return EmptyStateUI();
-              } else if (state is LoadingState) {
-                return LoadingStateUI();
-              } else if (state is LoadedState) {
-                return LoadedStateUI(wordCard: state.wordCard);
-              } else if (state is ErrorState) {
-                return ErrorStateUI(message: state.message);
-              }
-            },
-          ),
+        body: BlocBuilder<WordCardBloc, WordCardState>(
+          builder: (BuildContext context, WordCardState state) {
+            if (state is EmptyState) {
+              return EmptyStateUI();
+            } else if (state is LoadingState) {
+              return LoadingStateUI();
+            } else if (state is LoadedState) {
+              return LoadedStateUI(wordCard: state.wordCard);
+            } else if (state is ErrorState) {
+              return ErrorStateUI(message: state.message);
+            }
+          },
         ),
       ),
     );

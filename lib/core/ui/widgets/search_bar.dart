@@ -46,7 +46,6 @@ class _SearchBarState<T extends Bloc> extends State<SearchBar<T>> {
           child: IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              controller.clear();
               BlocProvider.of<T>(context).add(_getEvent());
             },
             color: Colors.white,

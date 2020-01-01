@@ -40,6 +40,10 @@ class _BasePageState extends State<BasePage> {
         },
       ),
       body: _bodyWidgets[_selectedTab],
+      floatingActionButton: FloatingActionButton(
+        child: Text('🅥🅞🅒🅐🅑', textAlign: TextAlign.center),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

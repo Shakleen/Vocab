@@ -19,15 +19,10 @@ class HeadwordWidget extends StatelessWidget {
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List<Widget>.generate(
-              headwordEntry.lexicalEntryList.length,
-              _generate,
-            ),
-          ),
-        ],
+        children: List<Widget>.generate(
+          headwordEntry.lexicalEntryList.length,
+          _generate,
+        ),
       ),
     );
   }
@@ -37,5 +32,3 @@ class HeadwordWidget extends StatelessWidget {
         index: index + 1,
       );
 }
-
-

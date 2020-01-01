@@ -20,7 +20,7 @@ class SearchAppBar<T extends Bloc> extends StatelessWidget
           children: <Widget>[
             Container(
               child: Text(
-                'Vocab App',
+                '🅥🅞🅒🅐🅑',
                 style: Theme.of(context).textTheme.display1.copyWith(
                       color: Colors.white,
                     ),
