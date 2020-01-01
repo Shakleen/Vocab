@@ -1,14 +1,14 @@
-# vocab
+# vocab app
 
-A cross platform dictionary application build using Dart and Flutter. Uses Oxford and Merrium Webstar's Dictionary API to search for word definition and thesaurus. Also features the ability to save word information and take quizzes on saved words.
+A cross platform dictionary application build using Dart and Flutter. Uses Oxford and Words API to search for word details. Also features the ability to save word information and take quizzes on saved words.
 
-![App Screen Shots](app_demo/app_picture_1.png)
+![App Screen Shots](app_demo/app_picture_2.png)
 
 ## Features
 1. Look up word definitions from online dictionary.
 2. Save word definitions and take quizzes on them.
 
-# Developement infomation
+# Project Developement Infomation
 1. Project has **Clean Architecture** as proposed by Bob Martin (Author of Clean Code). 
 2. **Test driven development** was followed when building the project.
 3. **BLoC Pattern** used for state management.
@@ -18,11 +18,11 @@ A cross platform dictionary application build using Dart and Flutter. Uses Oxfor
 2. Dart programming language
 
 ## APIs Used
-1. Oxford Dictionary API
+1. Oxford Dictionary Online
     * Entries API
     * Lemmas API
 2. Words API
-3. Merrium Webstar API
+    * Word API
 
 ## Testing process
 1. Unit testing using mockito and bloc_test libraries.
@@ -43,3 +43,4 @@ A cross platform dictionary application build using Dart and Flutter. Uses Oxfor
 1. Thanks to Oxford, Merrium Webstar, Words for their API services.
 2. Thanks to all the amazing people who have developed the 3rd party libraries for flutter.
 3. Thanks to the poeple who have developed the useful extensions for VS Code.
+4. Special thanks to [Reso Coder](https://github.com/ResoCoder) for his amazing tutorials on flutter and dart. 
