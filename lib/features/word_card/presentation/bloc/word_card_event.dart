@@ -11,5 +11,5 @@ class GetWordCardEvent extends WordCardEvent {
   GetWordCardEvent({@required this.queryWord});
   
   @override
-  List<Object> get props => [];
+  List<Object> get props => [queryWord];
 }
