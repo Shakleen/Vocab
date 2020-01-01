@@ -19,7 +19,7 @@ class Vocab extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(primaryColor: Colors.blue),
-      home: BasePage<WordCardBloc>(body: WordCardBody()),
+      home: BasePage(),
     );
   }
 }
