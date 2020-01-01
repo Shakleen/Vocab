@@ -26,6 +26,7 @@ class LoadedStateUI extends StatelessWidget {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: List<Widget>.generate(
             wordCard.detailList.length,
             _generateWordCardWidget,
@@ -44,10 +45,11 @@ class LoadedStateUI extends StatelessWidget {
 }
 
 class WordCardWidget extends StatelessWidget {
+  final List<Widget> children = [];
   final WordCardDetails wordCardDetails;
   final int index;
 
-  const WordCardWidget({
+  WordCardWidget({
     Key key,
     @required this.index,
     @required this.wordCardDetails,
@@ -55,55 +57,59 @@ class WordCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> children = [
+    children.addAll([
       TitleText(text: 'Definition(s)'),
       Text(wordCardDetails.definition),
-    ];
+    ]);
 
-    if (wordCardDetails.exampleList != null) {
-      if (wordCardDetails.exampleList.isNotEmpty) {
-        children.addAll([
-          TitleText(text: 'Example(s)'),
-          Column(
-            children: List<Text>.from(
-              wordCardDetails.exampleList.map(
-                (String example) => Text(example),
-              ),
-            ),
-          ),
-        ]);
-      }
-    }
-
-    if (wordCardDetails.synonymList != null) {
-      if (wordCardDetails.synonymList.isNotEmpty) {
-        children.addAll([
-          TitleText(text: 'Synonym(s)'),
-          // GridView(
-          //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          //     crossAxisCount: 3,
-          //   ),
-          //   children: List<Widget>.from(wordCardDetails.synonymList.map(
-          //     (String synonym) => Text(synonym),
-          //   )),
-          // ),
-        ]);
-      }
-    }
-
-    if (wordCardDetails.antonymList != null) {
-      if (wordCardDetails.antonymList.isNotEmpty) {
-        children.addAll([
-          TitleText(text: 'Antonym(s)'),
-        ]);
-      }
-    }
+    _checkAndCreate('Example(s)', wordCardDetails.exampleList);
+    _checkAndCreate('Synonym(s)', wordCardDetails.synonymList);
+    _checkAndCreate('Antonym(s)', wordCardDetails.antonymList);
 
     return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
+      elevation: 2,
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
       ),
+    );
+  }
+
+  void _checkAndCreate(String title, List<String> list) {
+    if (list != null) if (list.isNotEmpty)
+      children.add(TitleAndWordList(title: title, wordList: list));
+  }
+}
+
+class TitleAndWordList extends StatelessWidget {
+  final String title;
+  final List<String> wordList;
+
+  const TitleAndWordList({
+    Key key,
+    @required this.title,
+    @required this.wordList,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> children = [TitleText(text: title)];
+    children.addAll(
+      List<Widget>.generate(
+        wordList.length,
+        (int index) => Text('${index+1}. ${wordList[index]}'),
+      ),
+    );
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
     );
   }
 }
