@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:bloc/bloc.dart';
 
 import 'search_bar.dart';
 
-class SearchAppBar<T extends Bloc> extends StatelessWidget
+class SearchAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  const SearchAppBar({Key key}) : super(key: key);
+  final TabBar tabBar;
+  const SearchAppBar({Key key, @required this.tabBar}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +19,17 @@ class SearchAppBar<T extends Bloc> extends StatelessWidget
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
+              alignment: Alignment.center,
               child: Text(
                 '🅥🅞🅒🅐🅑',
                 style: Theme.of(context).textTheme.display1.copyWith(
                       color: Colors.white,
                     ),
+                    textAlign: TextAlign.center,
               ),
             ),
-            SearchBar<T>(),
+            SearchBar(),
+            tabBar,
           ],
         ),
       ),
@@ -34,5 +37,5 @@ class SearchAppBar<T extends Bloc> extends StatelessWidget
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(91);
+  Size get preferredSize => Size.fromHeight(165);
 }
