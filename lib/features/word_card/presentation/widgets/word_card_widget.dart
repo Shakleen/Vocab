@@ -20,6 +20,8 @@ class WordCardWidget extends StatelessWidget {
     children.addAll([
       TitleText(text: 'Definition(s)'),
       Text(wordCardDetails.definition),
+      TitleText(text: 'Part of Speech'),
+      Text(wordCardDetails.partOfSpeech),
     ]);
 
     _checkAndCreate('Example(s)', wordCardDetails.exampleList);
