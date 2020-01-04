@@ -279,3 +279,39 @@ class ExampleDao extends DatabaseAccessor<CardDatabase> with _$ExampleDaoMixin {
   Future updateExampleId(Insertable entity) =>
       update(exampleList).replace(entity);
 }
+
+@UseDao(tables: [Cards, CardInfo])
+class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
+  final CardDatabase cardDatabase;
+
+  CardDao(this.cardDatabase) : super(cardDatabase);
+
+  Future insertCard(Insertable<Card> entity) => into(cards).insert(entity);
+
+  Future deleteCard(Insertable<Card> entity) => delete(cards).delete(entity);
+
+  Future updateCard(Insertable<Card> entity) => update(cards).replace(entity);
+
+  Future insertCardInfo(Insertable<CardInfoData> entity) => into(cardInfo).insert(entity);
+
+  Future deleteCardInfo(Insertable<CardInfoData> entity) => delete(cardInfo).delete(entity);
+
+  Future updateCardInfo(Insertable<CardInfoData> entity) => update(cardInfo).replace(entity);
+}
+
+@UseDao(tables: [Attribute])
+class AttributeDao extends DatabaseAccessor<CardDatabase>
+    with _$AttributeDaoMixin {
+  final CardDatabase cardDatabase;
+
+  AttributeDao(this.cardDatabase) : super(cardDatabase);
+
+  Future insertAttribute(Insertable<AttributeData> entity) =>
+      into(attribute).insert(entity);
+
+  Future deleteAttribute(Insertable<AttributeData> entity) =>
+      delete(attribute).delete(entity);
+
+  Future updateAttribute(Insertable<AttributeData> entity) =>
+      update(attribute).replace(entity);
+}

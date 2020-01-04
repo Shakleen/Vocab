@@ -2500,3 +2500,10 @@ mixin _$ExampleDaoMixin on DatabaseAccessor<CardDatabase> {
   $ExamplesTable get examples => db.examples;
   $ExampleListTable get exampleList => db.exampleList;
 }
+mixin _$CardDaoMixin on DatabaseAccessor<CardDatabase> {
+  $CardsTable get cards => db.cards;
+  $CardInfoTable get cardInfo => db.cardInfo;
+}
+mixin _$AttributeDaoMixin on DatabaseAccessor<CardDatabase> {
+  $AttributeTable get attribute => db.attribute;
+}
