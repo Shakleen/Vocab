@@ -11,13 +11,11 @@ class Entry extends DataClass implements Insertable<Entry> {
   final int id;
   final DateTime addedOn;
   final String pronunciation;
-  final int syllableId;
   final int wordId;
   Entry(
       {@required this.id,
       @required this.addedOn,
       @required this.pronunciation,
-      @required this.syllableId,
       @required this.wordId});
   factory Entry.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -31,8 +29,6 @@ class Entry extends DataClass implements Insertable<Entry> {
           .mapFromDatabaseResponse(data['${effectivePrefix}added_on']),
       pronunciation: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}pronunciation']),
-      syllableId: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}syllable_id']),
       wordId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}word_id']),
     );
@@ -43,7 +39,6 @@ class Entry extends DataClass implements Insertable<Entry> {
       id: serializer.fromJson<int>(json['id']),
       addedOn: serializer.fromJson<DateTime>(json['addedOn']),
       pronunciation: serializer.fromJson<String>(json['pronunciation']),
-      syllableId: serializer.fromJson<int>(json['syllableId']),
       wordId: serializer.fromJson<int>(json['wordId']),
     );
   }
@@ -54,7 +49,6 @@ class Entry extends DataClass implements Insertable<Entry> {
       'id': serializer.toJson<int>(id),
       'addedOn': serializer.toJson<DateTime>(addedOn),
       'pronunciation': serializer.toJson<String>(pronunciation),
-      'syllableId': serializer.toJson<int>(syllableId),
       'wordId': serializer.toJson<int>(wordId),
     };
   }
@@ -69,25 +63,17 @@ class Entry extends DataClass implements Insertable<Entry> {
       pronunciation: pronunciation == null && nullToAbsent
           ? const Value.absent()
           : Value(pronunciation),
-      syllableId: syllableId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(syllableId),
       wordId:
           wordId == null && nullToAbsent ? const Value.absent() : Value(wordId),
     );
   }
 
   Entry copyWith(
-          {int id,
-          DateTime addedOn,
-          String pronunciation,
-          int syllableId,
-          int wordId}) =>
+          {int id, DateTime addedOn, String pronunciation, int wordId}) =>
       Entry(
         id: id ?? this.id,
         addedOn: addedOn ?? this.addedOn,
         pronunciation: pronunciation ?? this.pronunciation,
-        syllableId: syllableId ?? this.syllableId,
         wordId: wordId ?? this.wordId,
       );
   @override
@@ -96,19 +82,14 @@ class Entry extends DataClass implements Insertable<Entry> {
           ..write('id: $id, ')
           ..write('addedOn: $addedOn, ')
           ..write('pronunciation: $pronunciation, ')
-          ..write('syllableId: $syllableId, ')
           ..write('wordId: $wordId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      id.hashCode,
-      $mrjc(
-          addedOn.hashCode,
-          $mrjc(pronunciation.hashCode,
-              $mrjc(syllableId.hashCode, wordId.hashCode)))));
+  int get hashCode => $mrjf($mrjc(id.hashCode,
+      $mrjc(addedOn.hashCode, $mrjc(pronunciation.hashCode, wordId.hashCode))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -116,7 +97,6 @@ class Entry extends DataClass implements Insertable<Entry> {
           other.id == this.id &&
           other.addedOn == this.addedOn &&
           other.pronunciation == this.pronunciation &&
-          other.syllableId == this.syllableId &&
           other.wordId == this.wordId);
 }
 
@@ -124,36 +104,30 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
   final Value<int> id;
   final Value<DateTime> addedOn;
   final Value<String> pronunciation;
-  final Value<int> syllableId;
   final Value<int> wordId;
   const EntriesCompanion({
     this.id = const Value.absent(),
     this.addedOn = const Value.absent(),
     this.pronunciation = const Value.absent(),
-    this.syllableId = const Value.absent(),
     this.wordId = const Value.absent(),
   });
   EntriesCompanion.insert({
     this.id = const Value.absent(),
     @required DateTime addedOn,
     @required String pronunciation,
-    @required int syllableId,
     @required int wordId,
   })  : addedOn = Value(addedOn),
         pronunciation = Value(pronunciation),
-        syllableId = Value(syllableId),
         wordId = Value(wordId);
   EntriesCompanion copyWith(
       {Value<int> id,
       Value<DateTime> addedOn,
       Value<String> pronunciation,
-      Value<int> syllableId,
       Value<int> wordId}) {
     return EntriesCompanion(
       id: id ?? this.id,
       addedOn: addedOn ?? this.addedOn,
       pronunciation: pronunciation ?? this.pronunciation,
-      syllableId: syllableId ?? this.syllableId,
       wordId: wordId ?? this.wordId,
     );
   }
@@ -198,15 +172,6 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
     );
   }
 
-  final VerificationMeta _syllableIdMeta = const VerificationMeta('syllableId');
-  GeneratedIntColumn _syllableId;
-  @override
-  GeneratedIntColumn get syllableId => _syllableId ??= _constructSyllableId();
-  GeneratedIntColumn _constructSyllableId() {
-    return GeneratedIntColumn('syllable_id', $tableName, false,
-        $customConstraints: 'REFERENCES Syllable(id)');
-  }
-
   final VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
   GeneratedIntColumn _wordId;
   @override
@@ -217,8 +182,7 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
   }
 
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, addedOn, pronunciation, syllableId, wordId];
+  List<GeneratedColumn> get $columns => [id, addedOn, pronunciation, wordId];
   @override
   $EntriesTable get asDslTable => this;
   @override
@@ -247,12 +211,6 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
               d.pronunciation.value, _pronunciationMeta));
     } else if (pronunciation.isRequired && isInserting) {
       context.missing(_pronunciationMeta);
-    }
-    if (d.syllableId.present) {
-      context.handle(_syllableIdMeta,
-          syllableId.isAcceptableValue(d.syllableId.value, _syllableIdMeta));
-    } else if (syllableId.isRequired && isInserting) {
-      context.missing(_syllableIdMeta);
     }
     if (d.wordId.present) {
       context.handle(
@@ -283,9 +241,6 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
     if (d.pronunciation.present) {
       map['pronunciation'] =
           Variable<String, StringType>(d.pronunciation.value);
-    }
-    if (d.syllableId.present) {
-      map['syllable_id'] = Variable<int, IntType>(d.syllableId.value);
     }
     if (d.wordId.present) {
       map['word_id'] = Variable<int, IntType>(d.wordId.value);
@@ -1708,15 +1663,15 @@ class $SyllableListTable extends SyllableList
 
 class Card extends DataClass implements Insertable<Card> {
   final int id;
-  final int questionId;
-  final int answerId;
+  final int frontId;
+  final int backId;
   final int level;
   final bool isImportant;
   final DateTime dueOn;
   Card(
       {@required this.id,
-      @required this.questionId,
-      @required this.answerId,
+      @required this.frontId,
+      @required this.backId,
       @required this.level,
       @required this.isImportant,
       @required this.dueOn});
@@ -1728,10 +1683,10 @@ class Card extends DataClass implements Insertable<Card> {
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return Card(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      questionId: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}question_id']),
-      answerId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}answer_id']),
+      frontId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}front_id']),
+      backId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}back_id']),
       level: intType.mapFromDatabaseResponse(data['${effectivePrefix}level']),
       isImportant: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}is_important']),
@@ -1743,8 +1698,8 @@ class Card extends DataClass implements Insertable<Card> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return Card(
       id: serializer.fromJson<int>(json['id']),
-      questionId: serializer.fromJson<int>(json['questionId']),
-      answerId: serializer.fromJson<int>(json['answerId']),
+      frontId: serializer.fromJson<int>(json['frontId']),
+      backId: serializer.fromJson<int>(json['backId']),
       level: serializer.fromJson<int>(json['level']),
       isImportant: serializer.fromJson<bool>(json['isImportant']),
       dueOn: serializer.fromJson<DateTime>(json['dueOn']),
@@ -1755,8 +1710,8 @@ class Card extends DataClass implements Insertable<Card> {
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'questionId': serializer.toJson<int>(questionId),
-      'answerId': serializer.toJson<int>(answerId),
+      'frontId': serializer.toJson<int>(frontId),
+      'backId': serializer.toJson<int>(backId),
       'level': serializer.toJson<int>(level),
       'isImportant': serializer.toJson<bool>(isImportant),
       'dueOn': serializer.toJson<DateTime>(dueOn),
@@ -1767,12 +1722,11 @@ class Card extends DataClass implements Insertable<Card> {
   CardsCompanion createCompanion(bool nullToAbsent) {
     return CardsCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      questionId: questionId == null && nullToAbsent
+      frontId: frontId == null && nullToAbsent
           ? const Value.absent()
-          : Value(questionId),
-      answerId: answerId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(answerId),
+          : Value(frontId),
+      backId:
+          backId == null && nullToAbsent ? const Value.absent() : Value(backId),
       level:
           level == null && nullToAbsent ? const Value.absent() : Value(level),
       isImportant: isImportant == null && nullToAbsent
@@ -1785,15 +1739,15 @@ class Card extends DataClass implements Insertable<Card> {
 
   Card copyWith(
           {int id,
-          int questionId,
-          int answerId,
+          int frontId,
+          int backId,
           int level,
           bool isImportant,
           DateTime dueOn}) =>
       Card(
         id: id ?? this.id,
-        questionId: questionId ?? this.questionId,
-        answerId: answerId ?? this.answerId,
+        frontId: frontId ?? this.frontId,
+        backId: backId ?? this.backId,
         level: level ?? this.level,
         isImportant: isImportant ?? this.isImportant,
         dueOn: dueOn ?? this.dueOn,
@@ -1802,8 +1756,8 @@ class Card extends DataClass implements Insertable<Card> {
   String toString() {
     return (StringBuffer('Card(')
           ..write('id: $id, ')
-          ..write('questionId: $questionId, ')
-          ..write('answerId: $answerId, ')
+          ..write('frontId: $frontId, ')
+          ..write('backId: $backId, ')
           ..write('level: $level, ')
           ..write('isImportant: $isImportant, ')
           ..write('dueOn: $dueOn')
@@ -1815,9 +1769,9 @@ class Card extends DataClass implements Insertable<Card> {
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
       $mrjc(
-          questionId.hashCode,
+          frontId.hashCode,
           $mrjc(
-              answerId.hashCode,
+              backId.hashCode,
               $mrjc(level.hashCode,
                   $mrjc(isImportant.hashCode, dueOn.hashCode))))));
   @override
@@ -1825,8 +1779,8 @@ class Card extends DataClass implements Insertable<Card> {
       identical(this, other) ||
       (other is Card &&
           other.id == this.id &&
-          other.questionId == this.questionId &&
-          other.answerId == this.answerId &&
+          other.frontId == this.frontId &&
+          other.backId == this.backId &&
           other.level == this.level &&
           other.isImportant == this.isImportant &&
           other.dueOn == this.dueOn);
@@ -1834,41 +1788,40 @@ class Card extends DataClass implements Insertable<Card> {
 
 class CardsCompanion extends UpdateCompanion<Card> {
   final Value<int> id;
-  final Value<int> questionId;
-  final Value<int> answerId;
+  final Value<int> frontId;
+  final Value<int> backId;
   final Value<int> level;
   final Value<bool> isImportant;
   final Value<DateTime> dueOn;
   const CardsCompanion({
     this.id = const Value.absent(),
-    this.questionId = const Value.absent(),
-    this.answerId = const Value.absent(),
+    this.frontId = const Value.absent(),
+    this.backId = const Value.absent(),
     this.level = const Value.absent(),
     this.isImportant = const Value.absent(),
     this.dueOn = const Value.absent(),
   });
   CardsCompanion.insert({
     this.id = const Value.absent(),
-    @required int questionId,
-    @required int answerId,
-    @required int level,
+    @required int frontId,
+    @required int backId,
+    this.level = const Value.absent(),
     this.isImportant = const Value.absent(),
     @required DateTime dueOn,
-  })  : questionId = Value(questionId),
-        answerId = Value(answerId),
-        level = Value(level),
+  })  : frontId = Value(frontId),
+        backId = Value(backId),
         dueOn = Value(dueOn);
   CardsCompanion copyWith(
       {Value<int> id,
-      Value<int> questionId,
-      Value<int> answerId,
+      Value<int> frontId,
+      Value<int> backId,
       Value<int> level,
       Value<bool> isImportant,
       Value<DateTime> dueOn}) {
     return CardsCompanion(
       id: id ?? this.id,
-      questionId: questionId ?? this.questionId,
-      answerId: answerId ?? this.answerId,
+      frontId: frontId ?? this.frontId,
+      backId: backId ?? this.backId,
       level: level ?? this.level,
       isImportant: isImportant ?? this.isImportant,
       dueOn: dueOn ?? this.dueOn,
@@ -1889,21 +1842,21 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
-  final VerificationMeta _questionIdMeta = const VerificationMeta('questionId');
-  GeneratedIntColumn _questionId;
+  final VerificationMeta _frontIdMeta = const VerificationMeta('frontId');
+  GeneratedIntColumn _frontId;
   @override
-  GeneratedIntColumn get questionId => _questionId ??= _constructQuestionId();
-  GeneratedIntColumn _constructQuestionId() {
-    return GeneratedIntColumn('question_id', $tableName, false,
+  GeneratedIntColumn get frontId => _frontId ??= _constructFrontId();
+  GeneratedIntColumn _constructFrontId() {
+    return GeneratedIntColumn('front_id', $tableName, false,
         $customConstraints: 'REFERENCES CardInfo(id)');
   }
 
-  final VerificationMeta _answerIdMeta = const VerificationMeta('answerId');
-  GeneratedIntColumn _answerId;
+  final VerificationMeta _backIdMeta = const VerificationMeta('backId');
+  GeneratedIntColumn _backId;
   @override
-  GeneratedIntColumn get answerId => _answerId ??= _constructAnswerId();
-  GeneratedIntColumn _constructAnswerId() {
-    return GeneratedIntColumn('answer_id', $tableName, false,
+  GeneratedIntColumn get backId => _backId ??= _constructBackId();
+  GeneratedIntColumn _constructBackId() {
+    return GeneratedIntColumn('back_id', $tableName, false,
         $customConstraints: 'REFERENCES CardInfo(id)');
   }
 
@@ -1912,11 +1865,8 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
   @override
   GeneratedIntColumn get level => _level ??= _constructLevel();
   GeneratedIntColumn _constructLevel() {
-    return GeneratedIntColumn(
-      'level',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('level', $tableName, false,
+        defaultValue: Constant(0));
   }
 
   final VerificationMeta _isImportantMeta =
@@ -1944,7 +1894,7 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
 
   @override
   List<GeneratedColumn> get $columns =>
-      [id, questionId, answerId, level, isImportant, dueOn];
+      [id, frontId, backId, level, isImportant, dueOn];
   @override
   $CardsTable get asDslTable => this;
   @override
@@ -1960,17 +1910,17 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
     } else if (id.isRequired && isInserting) {
       context.missing(_idMeta);
     }
-    if (d.questionId.present) {
-      context.handle(_questionIdMeta,
-          questionId.isAcceptableValue(d.questionId.value, _questionIdMeta));
-    } else if (questionId.isRequired && isInserting) {
-      context.missing(_questionIdMeta);
+    if (d.frontId.present) {
+      context.handle(_frontIdMeta,
+          frontId.isAcceptableValue(d.frontId.value, _frontIdMeta));
+    } else if (frontId.isRequired && isInserting) {
+      context.missing(_frontIdMeta);
     }
-    if (d.answerId.present) {
-      context.handle(_answerIdMeta,
-          answerId.isAcceptableValue(d.answerId.value, _answerIdMeta));
-    } else if (answerId.isRequired && isInserting) {
-      context.missing(_answerIdMeta);
+    if (d.backId.present) {
+      context.handle(
+          _backIdMeta, backId.isAcceptableValue(d.backId.value, _backIdMeta));
+    } else if (backId.isRequired && isInserting) {
+      context.missing(_backIdMeta);
     }
     if (d.level.present) {
       context.handle(
@@ -2007,11 +1957,11 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
     if (d.id.present) {
       map['id'] = Variable<int, IntType>(d.id.value);
     }
-    if (d.questionId.present) {
-      map['question_id'] = Variable<int, IntType>(d.questionId.value);
+    if (d.frontId.present) {
+      map['front_id'] = Variable<int, IntType>(d.frontId.value);
     }
-    if (d.answerId.present) {
-      map['answer_id'] = Variable<int, IntType>(d.answerId.value);
+    if (d.backId.present) {
+      map['back_id'] = Variable<int, IntType>(d.backId.value);
     }
     if (d.level.present) {
       map['level'] = Variable<int, IntType>(d.level.value);
@@ -2035,12 +1985,12 @@ class CardInfoData extends DataClass implements Insertable<CardInfoData> {
   final int id;
   final int entryId;
   final int senseId;
-  final int attributeId;
+  final int attributeType;
   CardInfoData(
       {@required this.id,
       @required this.entryId,
       @required this.senseId,
-      @required this.attributeId});
+      @required this.attributeType});
   factory CardInfoData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -2051,8 +2001,8 @@ class CardInfoData extends DataClass implements Insertable<CardInfoData> {
           intType.mapFromDatabaseResponse(data['${effectivePrefix}entry_id']),
       senseId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}sense_id']),
-      attributeId: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}attribute_id']),
+      attributeType: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}attribute_type']),
     );
   }
   factory CardInfoData.fromJson(Map<String, dynamic> json,
@@ -2061,7 +2011,7 @@ class CardInfoData extends DataClass implements Insertable<CardInfoData> {
       id: serializer.fromJson<int>(json['id']),
       entryId: serializer.fromJson<int>(json['entryId']),
       senseId: serializer.fromJson<int>(json['senseId']),
-      attributeId: serializer.fromJson<int>(json['attributeId']),
+      attributeType: serializer.fromJson<int>(json['attributeType']),
     );
   }
   @override
@@ -2071,7 +2021,7 @@ class CardInfoData extends DataClass implements Insertable<CardInfoData> {
       'id': serializer.toJson<int>(id),
       'entryId': serializer.toJson<int>(entryId),
       'senseId': serializer.toJson<int>(senseId),
-      'attributeId': serializer.toJson<int>(attributeId),
+      'attributeType': serializer.toJson<int>(attributeType),
     };
   }
 
@@ -2085,18 +2035,19 @@ class CardInfoData extends DataClass implements Insertable<CardInfoData> {
       senseId: senseId == null && nullToAbsent
           ? const Value.absent()
           : Value(senseId),
-      attributeId: attributeId == null && nullToAbsent
+      attributeType: attributeType == null && nullToAbsent
           ? const Value.absent()
-          : Value(attributeId),
+          : Value(attributeType),
     );
   }
 
-  CardInfoData copyWith({int id, int entryId, int senseId, int attributeId}) =>
+  CardInfoData copyWith(
+          {int id, int entryId, int senseId, int attributeType}) =>
       CardInfoData(
         id: id ?? this.id,
         entryId: entryId ?? this.entryId,
         senseId: senseId ?? this.senseId,
-        attributeId: attributeId ?? this.attributeId,
+        attributeType: attributeType ?? this.attributeType,
       );
   @override
   String toString() {
@@ -2104,14 +2055,16 @@ class CardInfoData extends DataClass implements Insertable<CardInfoData> {
           ..write('id: $id, ')
           ..write('entryId: $entryId, ')
           ..write('senseId: $senseId, ')
-          ..write('attributeId: $attributeId')
+          ..write('attributeType: $attributeType')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode,
-      $mrjc(entryId.hashCode, $mrjc(senseId.hashCode, attributeId.hashCode))));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          entryId.hashCode, $mrjc(senseId.hashCode, attributeType.hashCode))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -2119,38 +2072,38 @@ class CardInfoData extends DataClass implements Insertable<CardInfoData> {
           other.id == this.id &&
           other.entryId == this.entryId &&
           other.senseId == this.senseId &&
-          other.attributeId == this.attributeId);
+          other.attributeType == this.attributeType);
 }
 
 class CardInfoCompanion extends UpdateCompanion<CardInfoData> {
   final Value<int> id;
   final Value<int> entryId;
   final Value<int> senseId;
-  final Value<int> attributeId;
+  final Value<int> attributeType;
   const CardInfoCompanion({
     this.id = const Value.absent(),
     this.entryId = const Value.absent(),
     this.senseId = const Value.absent(),
-    this.attributeId = const Value.absent(),
+    this.attributeType = const Value.absent(),
   });
   CardInfoCompanion.insert({
     this.id = const Value.absent(),
     @required int entryId,
     @required int senseId,
-    @required int attributeId,
+    @required int attributeType,
   })  : entryId = Value(entryId),
         senseId = Value(senseId),
-        attributeId = Value(attributeId);
+        attributeType = Value(attributeType);
   CardInfoCompanion copyWith(
       {Value<int> id,
       Value<int> entryId,
       Value<int> senseId,
-      Value<int> attributeId}) {
+      Value<int> attributeType}) {
     return CardInfoCompanion(
       id: id ?? this.id,
       entryId: entryId ?? this.entryId,
       senseId: senseId ?? this.senseId,
-      attributeId: attributeId ?? this.attributeId,
+      attributeType: attributeType ?? this.attributeType,
     );
   }
 }
@@ -2187,19 +2140,22 @@ class $CardInfoTable extends CardInfo
         $customConstraints: 'REFERENCES Sense(id)');
   }
 
-  final VerificationMeta _attributeIdMeta =
-      const VerificationMeta('attributeId');
-  GeneratedIntColumn _attributeId;
+  final VerificationMeta _attributeTypeMeta =
+      const VerificationMeta('attributeType');
+  GeneratedIntColumn _attributeType;
   @override
-  GeneratedIntColumn get attributeId =>
-      _attributeId ??= _constructAttributeId();
-  GeneratedIntColumn _constructAttributeId() {
-    return GeneratedIntColumn('attribute_id', $tableName, false,
-        $customConstraints: 'REFERENCES Attribute(id)');
+  GeneratedIntColumn get attributeType =>
+      _attributeType ??= _constructAttributeType();
+  GeneratedIntColumn _constructAttributeType() {
+    return GeneratedIntColumn(
+      'attribute_type',
+      $tableName,
+      false,
+    );
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, entryId, senseId, attributeId];
+  List<GeneratedColumn> get $columns => [id, entryId, senseId, attributeType];
   @override
   $CardInfoTable get asDslTable => this;
   @override
@@ -2227,11 +2183,13 @@ class $CardInfoTable extends CardInfo
     } else if (senseId.isRequired && isInserting) {
       context.missing(_senseIdMeta);
     }
-    if (d.attributeId.present) {
-      context.handle(_attributeIdMeta,
-          attributeId.isAcceptableValue(d.attributeId.value, _attributeIdMeta));
-    } else if (attributeId.isRequired && isInserting) {
-      context.missing(_attributeIdMeta);
+    if (d.attributeType.present) {
+      context.handle(
+          _attributeTypeMeta,
+          attributeType.isAcceptableValue(
+              d.attributeType.value, _attributeTypeMeta));
+    } else if (attributeType.isRequired && isInserting) {
+      context.missing(_attributeTypeMeta);
     }
     return context;
   }
@@ -2256,8 +2214,8 @@ class $CardInfoTable extends CardInfo
     if (d.senseId.present) {
       map['sense_id'] = Variable<int, IntType>(d.senseId.value);
     }
-    if (d.attributeId.present) {
-      map['attribute_id'] = Variable<int, IntType>(d.attributeId.value);
+    if (d.attributeType.present) {
+      map['attribute_type'] = Variable<int, IntType>(d.attributeType.value);
     }
     return map;
   }
@@ -2265,165 +2223,6 @@ class $CardInfoTable extends CardInfo
   @override
   $CardInfoTable createAlias(String alias) {
     return $CardInfoTable(_db, alias);
-  }
-}
-
-class AttributeData extends DataClass implements Insertable<AttributeData> {
-  final int id;
-  final String attribute;
-  AttributeData({@required this.id, @required this.attribute});
-  factory AttributeData.fromData(
-      Map<String, dynamic> data, GeneratedDatabase db,
-      {String prefix}) {
-    final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    return AttributeData(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      attribute: stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}attribute']),
-    );
-  }
-  factory AttributeData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return AttributeData(
-      id: serializer.fromJson<int>(json['id']),
-      attribute: serializer.fromJson<String>(json['attribute']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson(
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'attribute': serializer.toJson<String>(attribute),
-    };
-  }
-
-  @override
-  AttributeCompanion createCompanion(bool nullToAbsent) {
-    return AttributeCompanion(
-      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      attribute: attribute == null && nullToAbsent
-          ? const Value.absent()
-          : Value(attribute),
-    );
-  }
-
-  AttributeData copyWith({int id, String attribute}) => AttributeData(
-        id: id ?? this.id,
-        attribute: attribute ?? this.attribute,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('AttributeData(')
-          ..write('id: $id, ')
-          ..write('attribute: $attribute')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => $mrjf($mrjc(id.hashCode, attribute.hashCode));
-  @override
-  bool operator ==(dynamic other) =>
-      identical(this, other) ||
-      (other is AttributeData &&
-          other.id == this.id &&
-          other.attribute == this.attribute);
-}
-
-class AttributeCompanion extends UpdateCompanion<AttributeData> {
-  final Value<int> id;
-  final Value<String> attribute;
-  const AttributeCompanion({
-    this.id = const Value.absent(),
-    this.attribute = const Value.absent(),
-  });
-  AttributeCompanion.insert({
-    this.id = const Value.absent(),
-    @required String attribute,
-  }) : attribute = Value(attribute);
-  AttributeCompanion copyWith({Value<int> id, Value<String> attribute}) {
-    return AttributeCompanion(
-      id: id ?? this.id,
-      attribute: attribute ?? this.attribute,
-    );
-  }
-}
-
-class $AttributeTable extends Attribute
-    with TableInfo<$AttributeTable, AttributeData> {
-  final GeneratedDatabase _db;
-  final String _alias;
-  $AttributeTable(this._db, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedIntColumn _id;
-  @override
-  GeneratedIntColumn get id => _id ??= _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
-  final VerificationMeta _attributeMeta = const VerificationMeta('attribute');
-  GeneratedTextColumn _attribute;
-  @override
-  GeneratedTextColumn get attribute => _attribute ??= _constructAttribute();
-  GeneratedTextColumn _constructAttribute() {
-    return GeneratedTextColumn('attribute', $tableName, false,
-        minTextLength: 1, $customConstraints: 'UNIQUE');
-  }
-
-  @override
-  List<GeneratedColumn> get $columns => [id, attribute];
-  @override
-  $AttributeTable get asDslTable => this;
-  @override
-  String get $tableName => _alias ?? 'attribute';
-  @override
-  final String actualTableName = 'attribute';
-  @override
-  VerificationContext validateIntegrity(AttributeCompanion d,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    if (d.id.present) {
-      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
-    } else if (id.isRequired && isInserting) {
-      context.missing(_idMeta);
-    }
-    if (d.attribute.present) {
-      context.handle(_attributeMeta,
-          attribute.isAcceptableValue(d.attribute.value, _attributeMeta));
-    } else if (attribute.isRequired && isInserting) {
-      context.missing(_attributeMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  AttributeData map(Map<String, dynamic> data, {String tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return AttributeData.fromData(data, _db, prefix: effectivePrefix);
-  }
-
-  @override
-  Map<String, Variable> entityToSql(AttributeCompanion d) {
-    final map = <String, Variable>{};
-    if (d.id.present) {
-      map['id'] = Variable<int, IntType>(d.id.value);
-    }
-    if (d.attribute.present) {
-      map['attribute'] = Variable<String, StringType>(d.attribute.value);
-    }
-    return map;
-  }
-
-  @override
-  $AttributeTable createAlias(String alias) {
-    return $AttributeTable(_db, alias);
   }
 }
 
@@ -2454,8 +2253,25 @@ abstract class _$CardDatabase extends GeneratedDatabase {
   $CardsTable get cards => _cards ??= $CardsTable(this);
   $CardInfoTable _cardInfo;
   $CardInfoTable get cardInfo => _cardInfo ??= $CardInfoTable(this);
-  $AttributeTable _attribute;
-  $AttributeTable get attribute => _attribute ??= $AttributeTable(this);
+  WordDao _wordDao;
+  WordDao get wordDao => _wordDao ??= WordDao(this as CardDatabase);
+  EntryDao _entryDao;
+  EntryDao get entryDao => _entryDao ??= EntryDao(this as CardDatabase);
+  SyllableDao _syllableDao;
+  SyllableDao get syllableDao =>
+      _syllableDao ??= SyllableDao(this as CardDatabase);
+  PartsOfSpeechDao _partsOfSpeechDao;
+  PartsOfSpeechDao get partsOfSpeechDao =>
+      _partsOfSpeechDao ??= PartsOfSpeechDao(this as CardDatabase);
+  SenseDao _senseDao;
+  SenseDao get senseDao => _senseDao ??= SenseDao(this as CardDatabase);
+  ThesaurusDao _thesaurusDao;
+  ThesaurusDao get thesaurusDao =>
+      _thesaurusDao ??= ThesaurusDao(this as CardDatabase);
+  ExampleDao _exampleDao;
+  ExampleDao get exampleDao => _exampleDao ??= ExampleDao(this as CardDatabase);
+  CardDao _cardDao;
+  CardDao get cardDao => _cardDao ??= CardDao(this as CardDatabase);
   @override
   List<TableInfo> get allTables => [
         entries,
@@ -2468,8 +2284,7 @@ abstract class _$CardDatabase extends GeneratedDatabase {
         exampleList,
         syllableList,
         cards,
-        cardInfo,
-        attribute
+        cardInfo
       ];
 }
 
@@ -2482,6 +2297,7 @@ mixin _$WordDaoMixin on DatabaseAccessor<CardDatabase> {
 }
 mixin _$EntryDaoMixin on DatabaseAccessor<CardDatabase> {
   $EntriesTable get entries => db.entries;
+  $WordsTable get words => db.words;
 }
 mixin _$SyllableDaoMixin on DatabaseAccessor<CardDatabase> {
   $SyllablesTable get syllables => db.syllables;
@@ -2500,10 +2316,20 @@ mixin _$ExampleDaoMixin on DatabaseAccessor<CardDatabase> {
   $ExamplesTable get examples => db.examples;
   $ExampleListTable get exampleList => db.exampleList;
 }
-mixin _$CardDaoMixin on DatabaseAccessor<CardDatabase> {
+mixin _$WordTotalDaoMixin on DatabaseAccessor<CardDatabase> {
+  $EntriesTable get entries => db.entries;
+  $SensesTable get senses => db.senses;
+  $WordsTable get words => db.words;
+  $ExamplesTable get examples => db.examples;
+  $PartsOfSpeechTable get partsOfSpeech => db.partsOfSpeech;
+  $SyllablesTable get syllables => db.syllables;
+  $ThesaurusListTable get thesaurusList => db.thesaurusList;
+  $ExampleListTable get exampleList => db.exampleList;
+  $SyllableListTable get syllableList => db.syllableList;
   $CardsTable get cards => db.cards;
   $CardInfoTable get cardInfo => db.cardInfo;
 }
-mixin _$AttributeDaoMixin on DatabaseAccessor<CardDatabase> {
-  $AttributeTable get attribute => db.attribute;
+mixin _$CardDaoMixin on DatabaseAccessor<CardDatabase> {
+  $CardsTable get cards => db.cards;
+  $CardInfoTable get cardInfo => db.cardInfo;
 }
