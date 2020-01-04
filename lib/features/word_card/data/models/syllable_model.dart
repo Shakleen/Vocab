@@ -1,4 +1,4 @@
-import 'package:vocab/features/word_card/domain/entities/syllable.dart';
+import 'package:vocab/core/entities/syllable.dart';
 
 import 'object_converter.dart';
 

@@ -1,4 +1,4 @@
-import 'package:vocab/features/word_card/domain/entities/pronunciation.dart';
+import 'package:vocab/core/entities/pronunciation.dart';
 
 class PronunciationModel extends Pronunciation {
   PronunciationModel({String all}) : super(all: all);

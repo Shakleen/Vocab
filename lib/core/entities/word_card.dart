@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:vocab/features/word_card/domain/entities/pronunciation.dart';
-import 'package:vocab/features/word_card/domain/entities/syllable.dart';
 import 'package:meta/meta.dart';
 
+import 'pronunciation.dart';
+import 'syllable.dart';
 import 'word_card_details.dart';
 
 class WordCard extends Equatable {

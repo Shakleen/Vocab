@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vocab/features/word_card/data/models/syllable_model.dart';
-import 'package:vocab/features/word_card/domain/entities/syllable.dart';
+import 'package:vocab/core/entities/syllable.dart';
 
 import '../../../../fixture_reader.dart';
 

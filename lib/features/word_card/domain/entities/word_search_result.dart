@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'pronunciation.dart';
-import 'syllable.dart';
+import 'package:vocab/core/entities/syllable.dart';
+import 'package:vocab/core/entities/pronunciation.dart';
 import 'word_details.dart';
 
 enum WordSearchResultKeyNames {
