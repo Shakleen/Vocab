@@ -1,6 +1,8 @@
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
+import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
+import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
 
 part 'card_database.g.dart';
 
@@ -100,162 +102,6 @@ class CardInfo extends Table {
 //! ============================================================================================================================================ !//
 //! ============================================================================================================================================ !//
 
-@UseDao(tables: [Words])
-class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
-  final CardDatabase cardDatabase;
-
-  WordDao(this.cardDatabase) : super(cardDatabase);
-
-  Future<List<Word>> getAllWord() => (select(words)
-        ..orderBy([(table) => OrderingTerm(expression: table.word)]))
-      .get();
-
-  Future<Word> getWord(String word) =>
-      (select(words)..where((table) => table.word.equals(word))).getSingle();
-
-  Future<int> insertWord(Insertable<Word> entity) => into(words).insert(entity);
-
-  Future<int> deleteWord(Insertable<Word> entity) =>
-      delete(words).delete(entity);
-
-  Future<bool> updateWord(Insertable<Word> entity) =>
-      update(words).replace(entity);
-}
-
-@UseDao(tables: [Entries, Words])
-class EntryDao extends DatabaseAccessor<CardDatabase> with _$EntryDaoMixin {
-  final CardDatabase cardDatabase;
-
-  EntryDao(this.cardDatabase) : super(cardDatabase);
-
-  Future<List<Entry>> getAllEntries() => (select(entries)
-        ..orderBy([
-          (table) =>
-              OrderingTerm(expression: table.addedOn, mode: OrderingMode.desc),
-        ]))
-      .get();
-
-  Future<Entry> getEntryById(int id) =>
-      (select(entries)..where((table) => table.id.equals(id))).getSingle();
-
-  Future<Entry> getEntryByWord(String word) async {
-    final Word getWord = await (select(words)
-          ..where((table) => table.word.equals(word)))
-        .getSingle();
-    return (select(entries)..where((table) => table.id.equals(getWord.id)))
-        .getSingle();
-  }
-
-  Future<int> insertEntry(Insertable<Entry> entity) =>
-      into(entries).insert(entity);
-
-  Future<int> deleteEntry(Insertable<Entry> entity) =>
-      delete(entries).delete(entity);
-
-  Future<bool> updateEntry(Insertable<Entry> entity) =>
-      update(entries).replace(entity);
-}
-
-@UseDao(tables: [Syllables, SyllableList])
-class SyllableDao extends DatabaseAccessor<CardDatabase>
-    with _$SyllableDaoMixin {
-  final CardDatabase cardDatabase;
-
-  SyllableDao(this.cardDatabase) : super(cardDatabase);
-
-  Future<int> insertSyllable(Insertable<Syllable> entity) =>
-      into(syllables).insert(entity);
-
-  Future<int> deleteSyllable(Insertable<Syllable> entity) =>
-      delete(syllables).delete(entity);
-
-  Future<bool> updateSyllable(Insertable<Syllable> entity) =>
-      update(syllables).replace(entity);
-
-  Future insertSyllableId(Insertable<SyllableListData> entity) =>
-      into(syllableList).insert(entity);
-
-  Future deleteSyllableId(Insertable<SyllableListData> entity) =>
-      delete(syllableList).delete(entity);
-
-  Future updateSyllableId(Insertable<SyllableListData> entity) =>
-      update(syllableList).replace(entity);
-}
-
-@UseDao(tables: [PartsOfSpeech])
-class PartsOfSpeechDao extends DatabaseAccessor<CardDatabase>
-    with _$PartsOfSpeechDaoMixin {
-  final CardDatabase cardDatabase;
-
-  PartsOfSpeechDao(this.cardDatabase) : super(cardDatabase);
-
-  Future<int> insertPartOfSpeech(Insertable<PartsOfSpeechData> entity) =>
-      into(partsOfSpeech).insert(entity);
-
-  Future<int> deletePartOfSpeech(Insertable<PartsOfSpeechData> entity) =>
-      delete(partsOfSpeech).delete(entity);
-
-  Future<bool> updatePartOfSpeech(Insertable<PartsOfSpeechData> entity) =>
-      update(partsOfSpeech).replace(entity);
-}
-
-@UseDao(tables: [Senses])
-class SenseDao extends DatabaseAccessor<CardDatabase> with _$SenseDaoMixin {
-  final CardDatabase cardDatabase;
-
-  SenseDao(this.cardDatabase) : super(cardDatabase);
-
-  Future<int> insertSense(Insertable<Sense> entity) =>
-      into(senses).insert(entity);
-
-  Future<int> deleteSense(Insertable<Sense> entity) =>
-      delete(senses).delete(entity);
-
-  Future<bool> updateSense(Insertable<Sense> entity) =>
-      update(senses).replace(entity);
-}
-
-@UseDao(tables: [ThesaurusList])
-class ThesaurusDao extends DatabaseAccessor<CardDatabase>
-    with _$ThesaurusDaoMixin {
-  final CardDatabase cardDatabase;
-
-  ThesaurusDao(this.cardDatabase) : super(cardDatabase);
-
-  Future insertThesaurus(Insertable<ThesaurusListData> entity) =>
-      into(thesaurusList).insert(entity);
-
-  Future deleteThesaurus(Insertable<ThesaurusListData> entity) =>
-      delete(thesaurusList).delete(entity);
-
-  Future updateThesaurus(Insertable<ThesaurusListData> entity) =>
-      update(thesaurusList).replace(entity);
-}
-
-@UseDao(tables: [Examples, ExampleList])
-class ExampleDao extends DatabaseAccessor<CardDatabase> with _$ExampleDaoMixin {
-  final CardDatabase cardDatabase;
-
-  ExampleDao(this.cardDatabase) : super(cardDatabase);
-
-  Future<int> insertExample(Insertable<Example> entity) =>
-      into(examples).insert(entity);
-
-  Future<int> deleteExample(Insertable<Example> entity) =>
-      delete(examples).delete(entity);
-
-  Future<bool> updateExample(Insertable<Example> entity) =>
-      update(examples).replace(entity);
-
-  Future insertExampleId(Insertable entity) => into(exampleList).insert(entity);
-
-  Future deleteExampleId(Insertable entity) =>
-      delete(exampleList).delete(entity);
-
-  Future updateExampleId(Insertable entity) =>
-      update(exampleList).replace(entity);
-}
-
 enum AttributeType {
   Spelling,
   Pronunciation,
@@ -288,14 +134,11 @@ const Map<AttributeType, int> ATTRIBUTE_TYPE_ID = {
   ThesaurusList,
   ExampleList,
   SyllableList,
-  Cards,
-  CardInfo,
 ])
-class WordTotalDao extends DatabaseAccessor<CardDatabase>
-    with _$WordTotalDaoMixin {
+class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   final CardDatabase cardDatabase;
 
-  WordTotalDao(this.cardDatabase) : super(cardDatabase);
+  WordDao(this.cardDatabase) : super(cardDatabase);
 
   Future<int> _getWordID(String word) async {
     return (await (select(words)..where((table) => table.word.equals(word)))
@@ -436,6 +279,124 @@ class WordTotalDao extends DatabaseAccessor<CardDatabase>
     return true;
   }
 
+  Future<List<String>> _makeThesaurusList(
+      {int senseID, bool isAntonym = false}) async {
+    final List<String> result = [];
+    final List<ThesaurusListData> list =
+        await ((select(thesaurusList)..where((table) => table.senseId.equals(senseID)))
+              ..where((table) => table.isAntonym.equals(isAntonym)))
+            .get();
+    list.forEach((ThesaurusListData data) async {
+      final String e = (await (select(words)
+                ..where((table) => table.id.equals(data.wordId)))
+              .getSingle())
+          .word;
+      result.add(e);
+    });
+
+    return result;
+  }
+
+  Future<WordCard> getWordCard(String word) async {
+    final List<String> sylList = [];
+    final List<WordCardDetails> detailsList = [];
+
+    //? Step 1: Get entry level details.
+    final Entry entry = await _getEntryByWord(word);
+
+    //? Step 2: get syllables
+    final List<SyllableListData> sylDataList = await (select(syllableList)
+          ..where((table) => table.entryId.equals(entry.id)))
+        .get();
+    sylDataList.forEach((SyllableListData sylListData) async {
+      final String syl = (await (select(syllables)
+                ..where((table) => table.id.equals(sylListData.syllableId)))
+              .getSingle())
+          .syllable;
+      sylList.add(syl);
+    });
+
+    //? Step 3: get sense level details.
+    final List<Sense> senseList = await (select(senses)
+          ..where((table) => table.entryId.equals(entry.id)))
+        .get();
+
+    senseList.forEach((Sense sense) async {
+      final List<String> result_exampleList = [];
+
+      //? Step 3.1: Get part of speech
+      String pos = (await (select(partsOfSpeech)
+                ..where((table) => table.id.equals(sense.partOfSpeech)))
+              .getSingle())
+          .partOfSpeech;
+
+      //? Step 3.2: Get examples
+      final List<ExampleListData> table_ExampleDataList =
+          await (select(exampleList)
+                ..where((table) => table.senseId.equals(sense.id)))
+              .get();
+      table_ExampleDataList.forEach((ExampleListData data) async {
+        final String e = (await (select(examples)
+                  ..where((table) => table.id.equals(data.exampleId)))
+                .getSingle())
+            .sentence;
+        result_exampleList.add(e);
+      });
+
+      detailsList.add(WordCardDetails(
+        synonymList: await _makeThesaurusList(senseID: sense.id),
+        antonymList:
+            await _makeThesaurusList(senseID: sense.id, isAntonym: true),
+        definition: sense.definition,
+        exampleList: result_exampleList,
+        partOfSpeech: pos,
+      ));
+    });
+
+    return WordCard(
+      word: word,
+      pronunciation: PronunciationEntity.Pronunciation(
+        all: entry.pronunciation,
+      ),
+      syllables: SyllableEntity.Syllable(
+        count: sylList.length,
+        list: sylList,
+      ),
+      detailList: detailsList,
+    );
+  }
+}
+
+@UseDao(tables: [
+  Entries,
+  Senses,
+  Words,
+  Examples,
+  PartsOfSpeech,
+  Syllables,
+  ThesaurusList,
+  ExampleList,
+  SyllableList,
+  Cards,
+  CardInfo,
+])
+class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
+  final CardDatabase cardDatabase;
+
+  CardDao(this.cardDatabase) : super(cardDatabase);
+
+  Future<int> _getWordID(String word) async {
+    return (await (select(words)..where((table) => table.word.equals(word)))
+            .getSingle())
+        .id;
+  }
+
+  Future<Entry> _getEntryByWord(String word) async {
+    int wordID = await _getWordID(word);
+    return (select(entries)..where((table) => table.id.equals(wordID)))
+        .getSingle();
+  }
+
   Future<int> _insertCard(
     int entryID,
     int senseID,
@@ -543,28 +504,6 @@ class WordTotalDao extends DatabaseAccessor<CardDatabase>
   }
 }
 
-@UseDao(tables: [Cards, CardInfo])
-class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
-  final CardDatabase cardDatabase;
-
-  CardDao(this.cardDatabase) : super(cardDatabase);
-
-  Future insertCard(Insertable<Card> entity) => into(cards).insert(entity);
-
-  Future deleteCard(Insertable<Card> entity) => delete(cards).delete(entity);
-
-  Future updateCard(Insertable<Card> entity) => update(cards).replace(entity);
-
-  Future insertCardInfo(Insertable<CardInfoData> entity) =>
-      into(cardInfo).insert(entity);
-
-  Future deleteCardInfo(Insertable<CardInfoData> entity) =>
-      delete(cardInfo).delete(entity);
-
-  Future updateCardInfo(Insertable<CardInfoData> entity) =>
-      update(cardInfo).replace(entity);
-}
-
 //! ============================================================================================================================================ !//
 //! ============================================================================================================================================ !//
 //!                                                                 Database class                                                               !//
@@ -585,20 +524,9 @@ const List<Type> _CARD_DATABASE_TABLE_LIST = [
   CardInfo,
 ];
 
-const List<Type> _CARD_DATABASE_DAO_LIST = [
-  WordDao,
-  EntryDao,
-  SyllableDao,
-  PartsOfSpeechDao,
-  SenseDao,
-  ThesaurusDao,
-  ExampleDao,
-  CardDao,
-];
-
 //? flutter packages pub run build_runner watch --delete-conflicting-outputs
 
-@UseMoor(tables: _CARD_DATABASE_TABLE_LIST, daos: _CARD_DATABASE_DAO_LIST)
+@UseMoor(tables: _CARD_DATABASE_TABLE_LIST, daos: [WordDao, CardDao])
 class CardDatabase extends _$CardDatabase {
   CardDatabase()
       : super(
