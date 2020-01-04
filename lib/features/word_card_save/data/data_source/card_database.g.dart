@@ -7,25 +7,25 @@ part of 'card_database.dart';
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
-class Entry extends DataClass implements Insertable<Entry> {
+class Entrie extends DataClass implements Insertable<Entrie> {
   final int id;
   final DateTime addedOn;
   final String pronunciation;
   final int syllableId;
   final int wordId;
-  Entry(
+  Entrie(
       {@required this.id,
       @required this.addedOn,
       @required this.pronunciation,
       @required this.syllableId,
       @required this.wordId});
-  factory Entry.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  factory Entrie.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     final stringType = db.typeSystem.forDartType<String>();
-    return Entry(
+    return Entrie(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       addedOn: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}added_on']),
@@ -37,9 +37,9 @@ class Entry extends DataClass implements Insertable<Entry> {
           intType.mapFromDatabaseResponse(data['${effectivePrefix}word_id']),
     );
   }
-  factory Entry.fromJson(Map<String, dynamic> json,
+  factory Entrie.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return Entry(
+    return Entrie(
       id: serializer.fromJson<int>(json['id']),
       addedOn: serializer.fromJson<DateTime>(json['addedOn']),
       pronunciation: serializer.fromJson<String>(json['pronunciation']),
@@ -77,13 +77,13 @@ class Entry extends DataClass implements Insertable<Entry> {
     );
   }
 
-  Entry copyWith(
+  Entrie copyWith(
           {int id,
           DateTime addedOn,
           String pronunciation,
           int syllableId,
           int wordId}) =>
-      Entry(
+      Entrie(
         id: id ?? this.id,
         addedOn: addedOn ?? this.addedOn,
         pronunciation: pronunciation ?? this.pronunciation,
@@ -92,7 +92,7 @@ class Entry extends DataClass implements Insertable<Entry> {
       );
   @override
   String toString() {
-    return (StringBuffer('Entry(')
+    return (StringBuffer('Entrie(')
           ..write('id: $id, ')
           ..write('addedOn: $addedOn, ')
           ..write('pronunciation: $pronunciation, ')
@@ -112,7 +112,7 @@ class Entry extends DataClass implements Insertable<Entry> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is Entry &&
+      (other is Entrie &&
           other.id == this.id &&
           other.addedOn == this.addedOn &&
           other.pronunciation == this.pronunciation &&
@@ -120,7 +120,7 @@ class Entry extends DataClass implements Insertable<Entry> {
           other.wordId == this.wordId);
 }
 
-class EntriesCompanion extends UpdateCompanion<Entry> {
+class EntriesCompanion extends UpdateCompanion<Entrie> {
   final Value<int> id;
   final Value<DateTime> addedOn;
   final Value<String> pronunciation;
@@ -159,7 +159,7 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
   }
 }
 
-class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
+class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entrie> {
   final GeneratedDatabase _db;
   final String _alias;
   $EntriesTable(this._db, [this._alias]);
@@ -203,11 +203,8 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
   @override
   GeneratedIntColumn get syllableId => _syllableId ??= _constructSyllableId();
   GeneratedIntColumn _constructSyllableId() {
-    return GeneratedIntColumn(
-      'syllable_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('syllable_id', $tableName, false,
+        $customConstraints: 'REFERENCES Syllable(id)');
   }
 
   final VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
@@ -215,11 +212,8 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
   @override
   GeneratedIntColumn get wordId => _wordId ??= _constructWordId();
   GeneratedIntColumn _constructWordId() {
-    return GeneratedIntColumn(
-      'word_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('word_id', $tableName, false,
+        $customConstraints: 'REFERENCES Word(id)');
   }
 
   @override
@@ -272,9 +266,9 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Entry map(Map<String, dynamic> data, {String tablePrefix}) {
+  Entrie map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Entry.fromData(data, _db, prefix: effectivePrefix);
+    return Entrie.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
@@ -450,11 +444,8 @@ class $SensesTable extends Senses with TableInfo<$SensesTable, Sense> {
   @override
   GeneratedIntColumn get entryId => _entryId ??= _constructEntryId();
   GeneratedIntColumn _constructEntryId() {
-    return GeneratedIntColumn(
-      'entry_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('entry_id', $tableName, false,
+        $customConstraints: 'REFERENCES Entry(id)');
   }
 
   final VerificationMeta _partOfSpeechMeta =
@@ -464,11 +455,8 @@ class $SensesTable extends Senses with TableInfo<$SensesTable, Sense> {
   GeneratedIntColumn get partOfSpeech =>
       _partOfSpeech ??= _constructPartOfSpeech();
   GeneratedIntColumn _constructPartOfSpeech() {
-    return GeneratedIntColumn(
-      'part_of_speech',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('part_of_speech', $tableName, false,
+        $customConstraints: 'REFERENCES PartsOfSpeech(id)');
   }
 
   final VerificationMeta _definitionMeta = const VerificationMeta('definition');
@@ -651,7 +639,8 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
   @override
   GeneratedTextColumn get word => _word ??= _constructWord();
   GeneratedTextColumn _constructWord() {
-    return GeneratedTextColumn('word', $tableName, false, minTextLength: 1);
+    return GeneratedTextColumn('word', $tableName, false,
+        minTextLength: 1, $customConstraints: 'UNIQUE');
   }
 
   @override
@@ -807,7 +796,8 @@ class $ExamplesTable extends Examples with TableInfo<$ExamplesTable, Example> {
   @override
   GeneratedTextColumn get sentence => _sentence ??= _constructSentence();
   GeneratedTextColumn _constructSentence() {
-    return GeneratedTextColumn('sentence', $tableName, false, minTextLength: 1);
+    return GeneratedTextColumn('sentence', $tableName, false,
+        minTextLength: 1, $customConstraints: 'UNIQUE');
   }
 
   @override
@@ -862,25 +852,26 @@ class $ExamplesTable extends Examples with TableInfo<$ExamplesTable, Example> {
   }
 }
 
-class PartsOfSpeech extends DataClass implements Insertable<PartsOfSpeech> {
+class PartsOfSpeechData extends DataClass
+    implements Insertable<PartsOfSpeechData> {
   final int id;
   final String partOfSpeech;
-  PartsOfSpeech({@required this.id, @required this.partOfSpeech});
-  factory PartsOfSpeech.fromData(
+  PartsOfSpeechData({@required this.id, @required this.partOfSpeech});
+  factory PartsOfSpeechData.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
-    return PartsOfSpeech(
+    return PartsOfSpeechData(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       partOfSpeech: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}part_of_speech']),
     );
   }
-  factory PartsOfSpeech.fromJson(Map<String, dynamic> json,
+  factory PartsOfSpeechData.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return PartsOfSpeech(
+    return PartsOfSpeechData(
       id: serializer.fromJson<int>(json['id']),
       partOfSpeech: serializer.fromJson<String>(json['partOfSpeech']),
     );
@@ -904,13 +895,14 @@ class PartsOfSpeech extends DataClass implements Insertable<PartsOfSpeech> {
     );
   }
 
-  PartsOfSpeech copyWith({int id, String partOfSpeech}) => PartsOfSpeech(
+  PartsOfSpeechData copyWith({int id, String partOfSpeech}) =>
+      PartsOfSpeechData(
         id: id ?? this.id,
         partOfSpeech: partOfSpeech ?? this.partOfSpeech,
       );
   @override
   String toString() {
-    return (StringBuffer('PartsOfSpeech(')
+    return (StringBuffer('PartsOfSpeechData(')
           ..write('id: $id, ')
           ..write('partOfSpeech: $partOfSpeech')
           ..write(')'))
@@ -922,12 +914,12 @@ class PartsOfSpeech extends DataClass implements Insertable<PartsOfSpeech> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is PartsOfSpeech &&
+      (other is PartsOfSpeechData &&
           other.id == this.id &&
           other.partOfSpeech == this.partOfSpeech);
 }
 
-class PartsOfSpeechCompanion extends UpdateCompanion<PartsOfSpeech> {
+class PartsOfSpeechCompanion extends UpdateCompanion<PartsOfSpeechData> {
   final Value<int> id;
   final Value<String> partOfSpeech;
   const PartsOfSpeechCompanion({
@@ -947,7 +939,7 @@ class PartsOfSpeechCompanion extends UpdateCompanion<PartsOfSpeech> {
 }
 
 class $PartsOfSpeechTable extends PartsOfSpeech
-    with TableInfo<$PartsOfSpeechTable, PartsOfSpeech> {
+    with TableInfo<$PartsOfSpeechTable, PartsOfSpeechData> {
   final GeneratedDatabase _db;
   final String _alias;
   $PartsOfSpeechTable(this._db, [this._alias]);
@@ -968,7 +960,7 @@ class $PartsOfSpeechTable extends PartsOfSpeech
       _partOfSpeech ??= _constructPartOfSpeech();
   GeneratedTextColumn _constructPartOfSpeech() {
     return GeneratedTextColumn('part_of_speech', $tableName, false,
-        minTextLength: 1);
+        minTextLength: 1, $customConstraints: 'UNIQUE');
   }
 
   @override
@@ -1002,9 +994,9 @@ class $PartsOfSpeechTable extends PartsOfSpeech
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  PartsOfSpeech map(Map<String, dynamic> data, {String tablePrefix}) {
+  PartsOfSpeechData map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return PartsOfSpeech.fromData(data, _db, prefix: effectivePrefix);
+    return PartsOfSpeechData.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
@@ -1128,7 +1120,8 @@ class $SyllablesTable extends Syllables
   @override
   GeneratedTextColumn get syllable => _syllable ??= _constructSyllable();
   GeneratedTextColumn _constructSyllable() {
-    return GeneratedTextColumn('syllable', $tableName, false, minTextLength: 1);
+    return GeneratedTextColumn('syllable', $tableName, false,
+        minTextLength: 1, $customConstraints: 'UNIQUE');
   }
 
   @override
@@ -1183,21 +1176,22 @@ class $SyllablesTable extends Syllables
   }
 }
 
-class ThesaurusList extends DataClass implements Insertable<ThesaurusList> {
+class ThesaurusListData extends DataClass
+    implements Insertable<ThesaurusListData> {
   final int senseId;
   final int wordId;
   final bool isAntonym;
-  ThesaurusList(
+  ThesaurusListData(
       {@required this.senseId,
       @required this.wordId,
       @required this.isAntonym});
-  factory ThesaurusList.fromData(
+  factory ThesaurusListData.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final boolType = db.typeSystem.forDartType<bool>();
-    return ThesaurusList(
+    return ThesaurusListData(
       senseId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}sense_id']),
       wordId:
@@ -1206,9 +1200,9 @@ class ThesaurusList extends DataClass implements Insertable<ThesaurusList> {
           .mapFromDatabaseResponse(data['${effectivePrefix}is_antonym']),
     );
   }
-  factory ThesaurusList.fromJson(Map<String, dynamic> json,
+  factory ThesaurusListData.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return ThesaurusList(
+    return ThesaurusListData(
       senseId: serializer.fromJson<int>(json['senseId']),
       wordId: serializer.fromJson<int>(json['wordId']),
       isAntonym: serializer.fromJson<bool>(json['isAntonym']),
@@ -1238,15 +1232,15 @@ class ThesaurusList extends DataClass implements Insertable<ThesaurusList> {
     );
   }
 
-  ThesaurusList copyWith({int senseId, int wordId, bool isAntonym}) =>
-      ThesaurusList(
+  ThesaurusListData copyWith({int senseId, int wordId, bool isAntonym}) =>
+      ThesaurusListData(
         senseId: senseId ?? this.senseId,
         wordId: wordId ?? this.wordId,
         isAntonym: isAntonym ?? this.isAntonym,
       );
   @override
   String toString() {
-    return (StringBuffer('ThesaurusList(')
+    return (StringBuffer('ThesaurusListData(')
           ..write('senseId: $senseId, ')
           ..write('wordId: $wordId, ')
           ..write('isAntonym: $isAntonym')
@@ -1260,13 +1254,13 @@ class ThesaurusList extends DataClass implements Insertable<ThesaurusList> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is ThesaurusList &&
+      (other is ThesaurusListData &&
           other.senseId == this.senseId &&
           other.wordId == this.wordId &&
           other.isAntonym == this.isAntonym);
 }
 
-class ThesaurusListCompanion extends UpdateCompanion<ThesaurusList> {
+class ThesaurusListCompanion extends UpdateCompanion<ThesaurusListData> {
   final Value<int> senseId;
   final Value<int> wordId;
   final Value<bool> isAntonym;
@@ -1292,7 +1286,7 @@ class ThesaurusListCompanion extends UpdateCompanion<ThesaurusList> {
 }
 
 class $ThesaurusListTable extends ThesaurusList
-    with TableInfo<$ThesaurusListTable, ThesaurusList> {
+    with TableInfo<$ThesaurusListTable, ThesaurusListData> {
   final GeneratedDatabase _db;
   final String _alias;
   $ThesaurusListTable(this._db, [this._alias]);
@@ -1301,11 +1295,8 @@ class $ThesaurusListTable extends ThesaurusList
   @override
   GeneratedIntColumn get senseId => _senseId ??= _constructSenseId();
   GeneratedIntColumn _constructSenseId() {
-    return GeneratedIntColumn(
-      'sense_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('sense_id', $tableName, false,
+        $customConstraints: 'REFERENCES Sense(id)');
   }
 
   final VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
@@ -1313,11 +1304,8 @@ class $ThesaurusListTable extends ThesaurusList
   @override
   GeneratedIntColumn get wordId => _wordId ??= _constructWordId();
   GeneratedIntColumn _constructWordId() {
-    return GeneratedIntColumn(
-      'word_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('word_id', $tableName, false,
+        $customConstraints: 'REFERENCES Word(id)');
   }
 
   final VerificationMeta _isAntonymMeta = const VerificationMeta('isAntonym');
@@ -1363,11 +1351,11 @@ class $ThesaurusListTable extends ThesaurusList
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey => {senseId, wordId, isAntonym};
   @override
-  ThesaurusList map(Map<String, dynamic> data, {String tablePrefix}) {
+  ThesaurusListData map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return ThesaurusList.fromData(data, _db, prefix: effectivePrefix);
+    return ThesaurusListData.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
@@ -1391,24 +1379,25 @@ class $ThesaurusListTable extends ThesaurusList
   }
 }
 
-class ExampleList extends DataClass implements Insertable<ExampleList> {
+class ExampleListData extends DataClass implements Insertable<ExampleListData> {
   final int senseId;
   final int exampleId;
-  ExampleList({@required this.senseId, @required this.exampleId});
-  factory ExampleList.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  ExampleListData({@required this.senseId, @required this.exampleId});
+  factory ExampleListData.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
-    return ExampleList(
+    return ExampleListData(
       senseId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}sense_id']),
       exampleId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}example_id']),
     );
   }
-  factory ExampleList.fromJson(Map<String, dynamic> json,
+  factory ExampleListData.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return ExampleList(
+    return ExampleListData(
       senseId: serializer.fromJson<int>(json['senseId']),
       exampleId: serializer.fromJson<int>(json['exampleId']),
     );
@@ -1434,13 +1423,13 @@ class ExampleList extends DataClass implements Insertable<ExampleList> {
     );
   }
 
-  ExampleList copyWith({int senseId, int exampleId}) => ExampleList(
+  ExampleListData copyWith({int senseId, int exampleId}) => ExampleListData(
         senseId: senseId ?? this.senseId,
         exampleId: exampleId ?? this.exampleId,
       );
   @override
   String toString() {
-    return (StringBuffer('ExampleList(')
+    return (StringBuffer('ExampleListData(')
           ..write('senseId: $senseId, ')
           ..write('exampleId: $exampleId')
           ..write(')'))
@@ -1452,12 +1441,12 @@ class ExampleList extends DataClass implements Insertable<ExampleList> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is ExampleList &&
+      (other is ExampleListData &&
           other.senseId == this.senseId &&
           other.exampleId == this.exampleId);
 }
 
-class ExampleListCompanion extends UpdateCompanion<ExampleList> {
+class ExampleListCompanion extends UpdateCompanion<ExampleListData> {
   final Value<int> senseId;
   final Value<int> exampleId;
   const ExampleListCompanion({
@@ -1478,7 +1467,7 @@ class ExampleListCompanion extends UpdateCompanion<ExampleList> {
 }
 
 class $ExampleListTable extends ExampleList
-    with TableInfo<$ExampleListTable, ExampleList> {
+    with TableInfo<$ExampleListTable, ExampleListData> {
   final GeneratedDatabase _db;
   final String _alias;
   $ExampleListTable(this._db, [this._alias]);
@@ -1487,11 +1476,8 @@ class $ExampleListTable extends ExampleList
   @override
   GeneratedIntColumn get senseId => _senseId ??= _constructSenseId();
   GeneratedIntColumn _constructSenseId() {
-    return GeneratedIntColumn(
-      'sense_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('sense_id', $tableName, false,
+        $customConstraints: 'REFERENCES Sense(id)');
   }
 
   final VerificationMeta _exampleIdMeta = const VerificationMeta('exampleId');
@@ -1499,11 +1485,8 @@ class $ExampleListTable extends ExampleList
   @override
   GeneratedIntColumn get exampleId => _exampleId ??= _constructExampleId();
   GeneratedIntColumn _constructExampleId() {
-    return GeneratedIntColumn(
-      'example_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('example_id', $tableName, false,
+        $customConstraints: 'REFERENCES Example(id)');
   }
 
   @override
@@ -1534,11 +1517,11 @@ class $ExampleListTable extends ExampleList
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey => {senseId, exampleId};
   @override
-  ExampleList map(Map<String, dynamic> data, {String tablePrefix}) {
+  ExampleListData map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return ExampleList.fromData(data, _db, prefix: effectivePrefix);
+    return ExampleListData.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
@@ -1559,24 +1542,26 @@ class $ExampleListTable extends ExampleList
   }
 }
 
-class SyllableList extends DataClass implements Insertable<SyllableList> {
+class SyllableListData extends DataClass
+    implements Insertable<SyllableListData> {
   final int entryId;
   final int syllableId;
-  SyllableList({@required this.entryId, @required this.syllableId});
-  factory SyllableList.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  SyllableListData({@required this.entryId, @required this.syllableId});
+  factory SyllableListData.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
-    return SyllableList(
+    return SyllableListData(
       entryId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}entry_id']),
       syllableId: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}syllable_id']),
     );
   }
-  factory SyllableList.fromJson(Map<String, dynamic> json,
+  factory SyllableListData.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return SyllableList(
+    return SyllableListData(
       entryId: serializer.fromJson<int>(json['entryId']),
       syllableId: serializer.fromJson<int>(json['syllableId']),
     );
@@ -1602,13 +1587,13 @@ class SyllableList extends DataClass implements Insertable<SyllableList> {
     );
   }
 
-  SyllableList copyWith({int entryId, int syllableId}) => SyllableList(
+  SyllableListData copyWith({int entryId, int syllableId}) => SyllableListData(
         entryId: entryId ?? this.entryId,
         syllableId: syllableId ?? this.syllableId,
       );
   @override
   String toString() {
-    return (StringBuffer('SyllableList(')
+    return (StringBuffer('SyllableListData(')
           ..write('entryId: $entryId, ')
           ..write('syllableId: $syllableId')
           ..write(')'))
@@ -1620,12 +1605,12 @@ class SyllableList extends DataClass implements Insertable<SyllableList> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is SyllableList &&
+      (other is SyllableListData &&
           other.entryId == this.entryId &&
           other.syllableId == this.syllableId);
 }
 
-class SyllableListCompanion extends UpdateCompanion<SyllableList> {
+class SyllableListCompanion extends UpdateCompanion<SyllableListData> {
   final Value<int> entryId;
   final Value<int> syllableId;
   const SyllableListCompanion({
@@ -1646,7 +1631,7 @@ class SyllableListCompanion extends UpdateCompanion<SyllableList> {
 }
 
 class $SyllableListTable extends SyllableList
-    with TableInfo<$SyllableListTable, SyllableList> {
+    with TableInfo<$SyllableListTable, SyllableListData> {
   final GeneratedDatabase _db;
   final String _alias;
   $SyllableListTable(this._db, [this._alias]);
@@ -1655,11 +1640,8 @@ class $SyllableListTable extends SyllableList
   @override
   GeneratedIntColumn get entryId => _entryId ??= _constructEntryId();
   GeneratedIntColumn _constructEntryId() {
-    return GeneratedIntColumn(
-      'entry_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('entry_id', $tableName, false,
+        $customConstraints: 'REFERENCES Entry(id)');
   }
 
   final VerificationMeta _syllableIdMeta = const VerificationMeta('syllableId');
@@ -1667,11 +1649,8 @@ class $SyllableListTable extends SyllableList
   @override
   GeneratedIntColumn get syllableId => _syllableId ??= _constructSyllableId();
   GeneratedIntColumn _constructSyllableId() {
-    return GeneratedIntColumn(
-      'syllable_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('syllable_id', $tableName, false,
+        $customConstraints: 'REFERENCES Syllable(id)');
   }
 
   @override
@@ -1702,11 +1681,11 @@ class $SyllableListTable extends SyllableList
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey => {entryId, syllableId};
   @override
-  SyllableList map(Map<String, dynamic> data, {String tablePrefix}) {
+  SyllableListData map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return SyllableList.fromData(data, _db, prefix: effectivePrefix);
+    return SyllableListData.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
@@ -1915,11 +1894,8 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
   @override
   GeneratedIntColumn get questionId => _questionId ??= _constructQuestionId();
   GeneratedIntColumn _constructQuestionId() {
-    return GeneratedIntColumn(
-      'question_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('question_id', $tableName, false,
+        $customConstraints: 'REFERENCES CardInfo(id)');
   }
 
   final VerificationMeta _answerIdMeta = const VerificationMeta('answerId');
@@ -1927,11 +1903,8 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
   @override
   GeneratedIntColumn get answerId => _answerId ??= _constructAnswerId();
   GeneratedIntColumn _constructAnswerId() {
-    return GeneratedIntColumn(
-      'answer_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('answer_id', $tableName, false,
+        $customConstraints: 'REFERENCES CardInfo(id)');
   }
 
   final VerificationMeta _levelMeta = const VerificationMeta('level');
@@ -2058,21 +2031,21 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
   }
 }
 
-class CardInfo extends DataClass implements Insertable<CardInfo> {
+class CardInfoData extends DataClass implements Insertable<CardInfoData> {
   final int id;
   final int entryId;
   final int senseId;
   final int attributeId;
-  CardInfo(
+  CardInfoData(
       {@required this.id,
       @required this.entryId,
       @required this.senseId,
       @required this.attributeId});
-  factory CardInfo.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  factory CardInfoData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
-    return CardInfo(
+    return CardInfoData(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       entryId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}entry_id']),
@@ -2082,9 +2055,9 @@ class CardInfo extends DataClass implements Insertable<CardInfo> {
           .mapFromDatabaseResponse(data['${effectivePrefix}attribute_id']),
     );
   }
-  factory CardInfo.fromJson(Map<String, dynamic> json,
+  factory CardInfoData.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return CardInfo(
+    return CardInfoData(
       id: serializer.fromJson<int>(json['id']),
       entryId: serializer.fromJson<int>(json['entryId']),
       senseId: serializer.fromJson<int>(json['senseId']),
@@ -2118,8 +2091,8 @@ class CardInfo extends DataClass implements Insertable<CardInfo> {
     );
   }
 
-  CardInfo copyWith({int id, int entryId, int senseId, int attributeId}) =>
-      CardInfo(
+  CardInfoData copyWith({int id, int entryId, int senseId, int attributeId}) =>
+      CardInfoData(
         id: id ?? this.id,
         entryId: entryId ?? this.entryId,
         senseId: senseId ?? this.senseId,
@@ -2127,7 +2100,7 @@ class CardInfo extends DataClass implements Insertable<CardInfo> {
       );
   @override
   String toString() {
-    return (StringBuffer('CardInfo(')
+    return (StringBuffer('CardInfoData(')
           ..write('id: $id, ')
           ..write('entryId: $entryId, ')
           ..write('senseId: $senseId, ')
@@ -2142,14 +2115,14 @@ class CardInfo extends DataClass implements Insertable<CardInfo> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is CardInfo &&
+      (other is CardInfoData &&
           other.id == this.id &&
           other.entryId == this.entryId &&
           other.senseId == this.senseId &&
           other.attributeId == this.attributeId);
 }
 
-class CardInfoCompanion extends UpdateCompanion<CardInfo> {
+class CardInfoCompanion extends UpdateCompanion<CardInfoData> {
   final Value<int> id;
   final Value<int> entryId;
   final Value<int> senseId;
@@ -2182,7 +2155,8 @@ class CardInfoCompanion extends UpdateCompanion<CardInfo> {
   }
 }
 
-class $CardInfoTable extends CardInfo with TableInfo<$CardInfoTable, CardInfo> {
+class $CardInfoTable extends CardInfo
+    with TableInfo<$CardInfoTable, CardInfoData> {
   final GeneratedDatabase _db;
   final String _alias;
   $CardInfoTable(this._db, [this._alias]);
@@ -2200,11 +2174,8 @@ class $CardInfoTable extends CardInfo with TableInfo<$CardInfoTable, CardInfo> {
   @override
   GeneratedIntColumn get entryId => _entryId ??= _constructEntryId();
   GeneratedIntColumn _constructEntryId() {
-    return GeneratedIntColumn(
-      'entry_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('entry_id', $tableName, false,
+        $customConstraints: 'REFERENCES Entry(id)');
   }
 
   final VerificationMeta _senseIdMeta = const VerificationMeta('senseId');
@@ -2212,11 +2183,8 @@ class $CardInfoTable extends CardInfo with TableInfo<$CardInfoTable, CardInfo> {
   @override
   GeneratedIntColumn get senseId => _senseId ??= _constructSenseId();
   GeneratedIntColumn _constructSenseId() {
-    return GeneratedIntColumn(
-      'sense_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('sense_id', $tableName, false,
+        $customConstraints: 'REFERENCES Sense(id)');
   }
 
   final VerificationMeta _attributeIdMeta =
@@ -2226,11 +2194,8 @@ class $CardInfoTable extends CardInfo with TableInfo<$CardInfoTable, CardInfo> {
   GeneratedIntColumn get attributeId =>
       _attributeId ??= _constructAttributeId();
   GeneratedIntColumn _constructAttributeId() {
-    return GeneratedIntColumn(
-      'attribute_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('attribute_id', $tableName, false,
+        $customConstraints: 'REFERENCES Attribute(id)');
   }
 
   @override
@@ -2274,9 +2239,9 @@ class $CardInfoTable extends CardInfo with TableInfo<$CardInfoTable, CardInfo> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  CardInfo map(Map<String, dynamic> data, {String tablePrefix}) {
+  CardInfoData map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return CardInfo.fromData(data, _db, prefix: effectivePrefix);
+    return CardInfoData.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
@@ -2303,24 +2268,25 @@ class $CardInfoTable extends CardInfo with TableInfo<$CardInfoTable, CardInfo> {
   }
 }
 
-class Attribute extends DataClass implements Insertable<Attribute> {
+class AttributeData extends DataClass implements Insertable<AttributeData> {
   final int id;
   final String attribute;
-  Attribute({@required this.id, @required this.attribute});
-  factory Attribute.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  AttributeData({@required this.id, @required this.attribute});
+  factory AttributeData.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
-    return Attribute(
+    return AttributeData(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       attribute: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}attribute']),
     );
   }
-  factory Attribute.fromJson(Map<String, dynamic> json,
+  factory AttributeData.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return Attribute(
+    return AttributeData(
       id: serializer.fromJson<int>(json['id']),
       attribute: serializer.fromJson<String>(json['attribute']),
     );
@@ -2344,13 +2310,13 @@ class Attribute extends DataClass implements Insertable<Attribute> {
     );
   }
 
-  Attribute copyWith({int id, String attribute}) => Attribute(
+  AttributeData copyWith({int id, String attribute}) => AttributeData(
         id: id ?? this.id,
         attribute: attribute ?? this.attribute,
       );
   @override
   String toString() {
-    return (StringBuffer('Attribute(')
+    return (StringBuffer('AttributeData(')
           ..write('id: $id, ')
           ..write('attribute: $attribute')
           ..write(')'))
@@ -2362,12 +2328,12 @@ class Attribute extends DataClass implements Insertable<Attribute> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is Attribute &&
+      (other is AttributeData &&
           other.id == this.id &&
           other.attribute == this.attribute);
 }
 
-class AttributeCompanion extends UpdateCompanion<Attribute> {
+class AttributeCompanion extends UpdateCompanion<AttributeData> {
   final Value<int> id;
   final Value<String> attribute;
   const AttributeCompanion({
@@ -2387,7 +2353,7 @@ class AttributeCompanion extends UpdateCompanion<Attribute> {
 }
 
 class $AttributeTable extends Attribute
-    with TableInfo<$AttributeTable, Attribute> {
+    with TableInfo<$AttributeTable, AttributeData> {
   final GeneratedDatabase _db;
   final String _alias;
   $AttributeTable(this._db, [this._alias]);
@@ -2406,7 +2372,7 @@ class $AttributeTable extends Attribute
   GeneratedTextColumn get attribute => _attribute ??= _constructAttribute();
   GeneratedTextColumn _constructAttribute() {
     return GeneratedTextColumn('attribute', $tableName, false,
-        minTextLength: 1);
+        minTextLength: 1, $customConstraints: 'UNIQUE');
   }
 
   @override
@@ -2438,9 +2404,9 @@ class $AttributeTable extends Attribute
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Attribute map(Map<String, dynamic> data, {String tablePrefix}) {
+  AttributeData map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Attribute.fromData(data, _db, prefix: effectivePrefix);
+    return AttributeData.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
@@ -2505,4 +2471,20 @@ abstract class _$CardDatabase extends GeneratedDatabase {
         cardInfo,
         attribute
       ];
+}
+
+// **************************************************************************
+// DaoGenerator
+// **************************************************************************
+
+mixin _$WordDaoMixin on DatabaseAccessor<CardDatabase> {
+  $EntriesTable get entries => db.entries;
+  $SensesTable get senses => db.senses;
+  $WordsTable get words => db.words;
+  $ExamplesTable get examples => db.examples;
+  $PartsOfSpeechTable get partsOfSpeech => db.partsOfSpeech;
+  $SyllablesTable get syllables => db.syllables;
+  $ThesaurusListTable get thesaurusList => db.thesaurusList;
+  $ExampleListTable get exampleList => db.exampleList;
+  $SyllableListTable get syllableList => db.syllableList;
 }

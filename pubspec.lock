@@ -49,7 +49,7 @@ packages:
       name: bloc_test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -210,7 +210,7 @@ packages:
       name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   fixnum:
     dependency: transitive
     description:
@@ -248,7 +248,7 @@ packages:
       name: get_it
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.3"
+    version: "3.1.0"
   glob:
     dependency: transitive
     description:
@@ -276,7 +276,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.0+2"
+    version: "0.12.0+3"
   http_multi_server:
     dependency: transitive
     description:
@@ -687,7 +687,7 @@ packages:
       name: vm_service
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.4"
+    version: "2.3.1"
   watcher:
     dependency: transitive
     description:
