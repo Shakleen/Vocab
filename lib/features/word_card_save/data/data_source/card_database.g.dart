@@ -7,25 +7,25 @@ part of 'card_database.dart';
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
-class Entrie extends DataClass implements Insertable<Entrie> {
+class Entry extends DataClass implements Insertable<Entry> {
   final int id;
   final DateTime addedOn;
   final String pronunciation;
   final int syllableId;
   final int wordId;
-  Entrie(
+  Entry(
       {@required this.id,
       @required this.addedOn,
       @required this.pronunciation,
       @required this.syllableId,
       @required this.wordId});
-  factory Entrie.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  factory Entry.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     final stringType = db.typeSystem.forDartType<String>();
-    return Entrie(
+    return Entry(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       addedOn: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}added_on']),
@@ -37,9 +37,9 @@ class Entrie extends DataClass implements Insertable<Entrie> {
           intType.mapFromDatabaseResponse(data['${effectivePrefix}word_id']),
     );
   }
-  factory Entrie.fromJson(Map<String, dynamic> json,
+  factory Entry.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return Entrie(
+    return Entry(
       id: serializer.fromJson<int>(json['id']),
       addedOn: serializer.fromJson<DateTime>(json['addedOn']),
       pronunciation: serializer.fromJson<String>(json['pronunciation']),
@@ -77,13 +77,13 @@ class Entrie extends DataClass implements Insertable<Entrie> {
     );
   }
 
-  Entrie copyWith(
+  Entry copyWith(
           {int id,
           DateTime addedOn,
           String pronunciation,
           int syllableId,
           int wordId}) =>
-      Entrie(
+      Entry(
         id: id ?? this.id,
         addedOn: addedOn ?? this.addedOn,
         pronunciation: pronunciation ?? this.pronunciation,
@@ -92,7 +92,7 @@ class Entrie extends DataClass implements Insertable<Entrie> {
       );
   @override
   String toString() {
-    return (StringBuffer('Entrie(')
+    return (StringBuffer('Entry(')
           ..write('id: $id, ')
           ..write('addedOn: $addedOn, ')
           ..write('pronunciation: $pronunciation, ')
@@ -112,7 +112,7 @@ class Entrie extends DataClass implements Insertable<Entrie> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is Entrie &&
+      (other is Entry &&
           other.id == this.id &&
           other.addedOn == this.addedOn &&
           other.pronunciation == this.pronunciation &&
@@ -120,7 +120,7 @@ class Entrie extends DataClass implements Insertable<Entrie> {
           other.wordId == this.wordId);
 }
 
-class EntriesCompanion extends UpdateCompanion<Entrie> {
+class EntriesCompanion extends UpdateCompanion<Entry> {
   final Value<int> id;
   final Value<DateTime> addedOn;
   final Value<String> pronunciation;
@@ -159,7 +159,7 @@ class EntriesCompanion extends UpdateCompanion<Entrie> {
   }
 }
 
-class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entrie> {
+class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
   final GeneratedDatabase _db;
   final String _alias;
   $EntriesTable(this._db, [this._alias]);
@@ -266,9 +266,9 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entrie> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Entrie map(Map<String, dynamic> data, {String tablePrefix}) {
+  Entry map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Entrie.fromData(data, _db, prefix: effectivePrefix);
+    return Entry.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
@@ -2478,13 +2478,25 @@ abstract class _$CardDatabase extends GeneratedDatabase {
 // **************************************************************************
 
 mixin _$WordDaoMixin on DatabaseAccessor<CardDatabase> {
-  $EntriesTable get entries => db.entries;
-  $SensesTable get senses => db.senses;
   $WordsTable get words => db.words;
-  $ExamplesTable get examples => db.examples;
-  $PartsOfSpeechTable get partsOfSpeech => db.partsOfSpeech;
+}
+mixin _$EntryDaoMixin on DatabaseAccessor<CardDatabase> {
+  $EntriesTable get entries => db.entries;
+}
+mixin _$SyllableDaoMixin on DatabaseAccessor<CardDatabase> {
   $SyllablesTable get syllables => db.syllables;
-  $ThesaurusListTable get thesaurusList => db.thesaurusList;
-  $ExampleListTable get exampleList => db.exampleList;
   $SyllableListTable get syllableList => db.syllableList;
+}
+mixin _$PartsOfSpeechDaoMixin on DatabaseAccessor<CardDatabase> {
+  $PartsOfSpeechTable get partsOfSpeech => db.partsOfSpeech;
+}
+mixin _$SenseDaoMixin on DatabaseAccessor<CardDatabase> {
+  $SensesTable get senses => db.senses;
+}
+mixin _$ThesaurusDaoMixin on DatabaseAccessor<CardDatabase> {
+  $ThesaurusListTable get thesaurusList => db.thesaurusList;
+}
+mixin _$ExampleDaoMixin on DatabaseAccessor<CardDatabase> {
+  $ExamplesTable get examples => db.examples;
+  $ExampleListTable get exampleList => db.exampleList;
 }

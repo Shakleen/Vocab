@@ -1,4 +1,5 @@
 import 'package:moor_flutter/moor_flutter.dart';
+import 'package:vocab/core/entities/word_card.dart';
 
 part 'card_database.g.dart';
 
@@ -8,6 +9,7 @@ part 'card_database.g.dart';
 //! ============================================================================================================================================ !//
 //! ============================================================================================================================================ !//
 
+@DataClassName('Entry')
 class Entries extends Table {
   IntColumn get id => integer().autoIncrement()();
   DateTimeColumn get addedOn => dateTime()();
@@ -147,21 +149,133 @@ class CardDatabase extends _$CardDatabase {
 //! ============================================================================================================================================ !//
 //! ============================================================================================================================================ !//
 
-const List<Type> _WORD_DAO_TABLE_LIST = [
-  Entries,
-  Senses,
-  Words,
-  Examples,
-  PartsOfSpeech,
-  Syllables,
-  ThesaurusList,
-  ExampleList,
-  SyllableList,
-];
-
-@UseDao(tables: _WORD_DAO_TABLE_LIST)
+@UseDao(tables: [Words])
 class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   final CardDatabase cardDatabase;
 
   WordDao(this.cardDatabase) : super(cardDatabase);
+
+  Future<int> insertWord(Insertable<Word> entity) => into(words).insert(entity);
+
+  Future<int> deleteWord(Insertable<Word> entity) =>
+      delete(words).delete(entity);
+
+  Future<bool> updateWord(Insertable<Word> entity) =>
+      update(words).replace(entity);
+}
+
+@UseDao(tables: [Entries])
+class EntryDao extends DatabaseAccessor<CardDatabase> with _$EntryDaoMixin {
+  final CardDatabase cardDatabase;
+
+  EntryDao(this.cardDatabase) : super(cardDatabase);
+
+  Future<int> insertEntry(Insertable<Entry> entity) =>
+      into(entries).insert(entity);
+
+  Future<int> deleteEntry(Insertable<Entry> entity) =>
+      delete(entries).delete(entity);
+
+  Future<bool> updateEntry(Insertable<Entry> entity) =>
+      update(entries).replace(entity);
+}
+
+@UseDao(tables: [Syllables, SyllableList])
+class SyllableDao extends DatabaseAccessor<CardDatabase>
+    with _$SyllableDaoMixin {
+  final CardDatabase cardDatabase;
+
+  SyllableDao(this.cardDatabase) : super(cardDatabase);
+
+  Future<int> insertSyllable(Insertable<Syllable> entity) =>
+      into(syllables).insert(entity);
+
+  Future<int> deleteSyllable(Insertable<Syllable> entity) =>
+      delete(syllables).delete(entity);
+
+  Future<bool> updateSyllable(Insertable<Syllable> entity) =>
+      update(syllables).replace(entity);
+
+  Future insertSyllableId(Insertable<SyllableListData> entity) =>
+      into(syllableList).insert(entity);
+
+  Future deleteSyllableId(Insertable<SyllableListData> entity) =>
+      delete(syllableList).delete(entity);
+
+  Future updateSyllableId(Insertable<SyllableListData> entity) =>
+      update(syllableList).replace(entity);
+}
+
+@UseDao(tables: [PartsOfSpeech])
+class PartsOfSpeechDao extends DatabaseAccessor<CardDatabase>
+    with _$PartsOfSpeechDaoMixin {
+  final CardDatabase cardDatabase;
+
+  PartsOfSpeechDao(this.cardDatabase) : super(cardDatabase);
+
+  Future<int> insertPartOfSpeech(Insertable<PartsOfSpeechData> entity) =>
+      into(partsOfSpeech).insert(entity);
+
+  Future<int> deletePartOfSpeech(Insertable<PartsOfSpeechData> entity) =>
+      delete(partsOfSpeech).delete(entity);
+
+  Future<bool> updatePartOfSpeech(Insertable<PartsOfSpeechData> entity) =>
+      update(partsOfSpeech).replace(entity);
+}
+
+@UseDao(tables: [Senses])
+class SenseDao extends DatabaseAccessor<CardDatabase> with _$SenseDaoMixin {
+  final CardDatabase cardDatabase;
+
+  SenseDao(this.cardDatabase) : super(cardDatabase);
+
+  Future<int> insertSense(Insertable<Sense> entity) =>
+      into(senses).insert(entity);
+
+  Future<int> deleteSense(Insertable<Sense> entity) =>
+      delete(senses).delete(entity);
+
+  Future<bool> updateSense(Insertable<Sense> entity) =>
+      update(senses).replace(entity);
+}
+
+@UseDao(tables: [ThesaurusList])
+class ThesaurusDao extends DatabaseAccessor<CardDatabase>
+    with _$ThesaurusDaoMixin {
+  final CardDatabase cardDatabase;
+
+  ThesaurusDao(this.cardDatabase) : super(cardDatabase);
+
+  Future insertThesaurus(Insertable<ThesaurusListData> entity) =>
+      into(thesaurusList).insert(entity);
+
+  Future deleteThesaurus(Insertable<ThesaurusListData> entity) =>
+      delete(thesaurusList).delete(entity);
+
+  Future updateThesaurus(Insertable<ThesaurusListData> entity) =>
+      update(thesaurusList).replace(entity);
+}
+
+@UseDao(tables: [Examples, ExampleList])
+class ExampleDao extends DatabaseAccessor<CardDatabase> with _$ExampleDaoMixin {
+  final CardDatabase cardDatabase;
+
+  ExampleDao(this.cardDatabase) : super(cardDatabase);
+
+  Future<int> insertExample(Insertable<Example> entity) =>
+      into(examples).insert(entity);
+
+  Future<int> deleteExample(Insertable<Example> entity) =>
+      delete(examples).delete(entity);
+
+  Future<bool> updateExample(Insertable<Example> entity) =>
+      update(examples).replace(entity);
+
+  Future insertExampleId(Insertable entity) => into(exampleList).insert(entity);
+
+  Future deleteExampleId(Insertable entity) =>
+      delete(exampleList).delete(entity);
+
+  Future updateExampleId(Insertable entity) =>
+      update(exampleList).replace(entity);
 }
