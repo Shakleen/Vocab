@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vocab/core/navigation/routes.dart';
+import 'package:vocab/core/ui/widgets/headline_text.dart';
 import 'package:vocab/core/ui/widgets/search_app_bar.dart';
+import 'package:vocab/core/ui/widgets/side_drawer.dart';
 import 'package:vocab/features/query_word/presentation/bloc/query_word_bloc.dart';
 import 'package:vocab/features/query_word/presentation/widgets/query_word_body.dart';
 import 'package:vocab/features/word_card/presentation/bloc/bloc.dart';
@@ -50,6 +53,7 @@ class _BasePageState extends State<BasePage> with TickerProviderStateMixin {
                 ],
               ),
             ),
+            drawer: SideDrawer(page: Page.HomePage),
             body: TabBarView(
               controller: _controller,
               children: <Widget>[QueryWordBody(), WordCardBody()],
@@ -60,3 +64,5 @@ class _BasePageState extends State<BasePage> with TickerProviderStateMixin {
     );
   }
 }
+
+

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'app_title.dart';
 import 'search_bar.dart';
 
-class SearchAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
+class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   final TabBar tabBar;
   const SearchAppBar({Key key, @required this.tabBar}) : super(key: key);
 
@@ -18,16 +18,7 @@ class SearchAppBar extends StatelessWidget
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              child: Text(
-                '🅥🅞🅒🅐🅑',
-                style: Theme.of(context).textTheme.display1.copyWith(
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
-              ),
-            ),
+            AppTitle(),
             SearchBar(),
             tabBar,
           ],

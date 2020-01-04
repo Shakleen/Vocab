@@ -1,0 +1,1 @@
+enum Page { HomePage, CardPage }
