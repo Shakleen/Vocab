@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:vocab/features/word_card/domain/entities/word_card.dart';
+import 'package:vocab/core/entities/word_card.dart';
 
 abstract class WordCardState extends Equatable {
   const WordCardState();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/core/ui/widgets/display_word_text.dart';
 import 'package:vocab/core/ui/widgets/headline_text.dart';
-import 'package:vocab/features/word_card/domain/entities/word_card.dart';
+import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/features/word_card/presentation/widgets/word_card_widget.dart';
 
 class LoadedStateUI extends StatelessWidget {

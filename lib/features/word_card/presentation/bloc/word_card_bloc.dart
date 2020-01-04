@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:vocab/core/error/error_messages.dart';
 import 'package:vocab/core/error/failures.dart';
 import 'package:vocab/core/util/input_converter.dart';
-import 'package:vocab/features/word_card/domain/entities/word_card.dart';
+import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/features/word_card/domain/usecase/get_word_card.dart';
 import './bloc.dart';
 import 'package:meta/meta.dart';
