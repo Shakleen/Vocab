@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:vocab/core/entities/word_card.dart';
 
 class FormValuesInheritedWidget extends InheritedWidget {
-  final Map<String, dynamic> formValues;
+  final WordCard wordCard;
 
   FormValuesInheritedWidget({
     Key key,
-    @required this.formValues,
+    @required this.wordCard,
     @required Widget child,
   }) : super(key: key, child: child);
 
@@ -13,5 +14,5 @@ class FormValuesInheritedWidget extends InheritedWidget {
       context.dependOnInheritedWidgetOfExactType() as FormValuesInheritedWidget;
 
   @override
-  bool updateShouldNotify(FormValuesInheritedWidget old) => formValues != old.formValues;
+  bool updateShouldNotify(FormValuesInheritedWidget old) => wordCard != old.wordCard;
 }

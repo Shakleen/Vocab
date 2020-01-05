@@ -4,6 +4,8 @@ import 'package:vocab/core/ui/widgets/headline_text.dart';
 import 'sense_form.dart';
 
 class SenseFormList extends StatefulWidget {
+  final Map<String, dynamic> values = {};
+  
   SenseFormList({Key key}) : super(key: key);
 
   @override

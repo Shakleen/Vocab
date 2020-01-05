@@ -5,7 +5,12 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
   final bool isNullable;
 
-  CustomTextField({Key key, this.helperText, this.labelText, this.isNullable = false}) : super(key: key);
+  CustomTextField({
+    Key key,
+    this.helperText,
+    this.labelText,
+    this.isNullable = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +18,6 @@ class CustomTextField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: controller,
-        onChanged: _handleOnChange,
         onSaved: _handleOnSaved,
         validator: _validate,
         keyboardType: TextInputType.text,
@@ -30,8 +34,6 @@ class CustomTextField extends StatelessWidget {
       ),
     );
   }
-
-  void _handleOnChange(String value) {}
 
   void _handleOnSaved(String newValue) {}
 
