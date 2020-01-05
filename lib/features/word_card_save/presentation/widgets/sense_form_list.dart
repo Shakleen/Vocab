@@ -25,6 +25,7 @@ class _SenseFormListState extends State<SenseFormList> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: _children,
     );
   }

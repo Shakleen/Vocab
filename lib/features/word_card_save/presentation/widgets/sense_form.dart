@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vocab/core/ui/widgets/headline_text.dart';
 
 import 'custom_text_field.dart';
 import 'increasing_text_fields.dart';
@@ -41,25 +42,39 @@ class _SenseFormState extends State<SenseForm> {
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      leading: IconButton(
-        icon: Icon(Icons.add),
-        onPressed: widget.addField,
-        color: Theme.of(context).primaryColor,
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  // IconButton(
+                  //   icon: Icon(Icons.add),
+                  //   onPressed: widget.addField,
+                  //   color: Theme.of(context).primaryColor,
+                  // ),
+                  HeadlineText(text: 'Sense'),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () => widget.removeField(widget.index),
+                    color: Theme.of(context).errorColor,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(children: children),
+            )
+          ],
+        ),
       ),
-      title: Text('Sense'),
-      trailing: IconButton(
-        icon: Icon(Icons.cancel),
-        onPressed: () => widget.removeField(widget.index),
-        color: Theme.of(context).errorColor,
-      ),
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(children: children),
-        )
-      ],
     );
   }
 }
-

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/display_word_text.dart';
-import 'package:vocab/core/ui/widgets/headline_text.dart';
 import 'package:vocab/features/word_card_save/presentation/widgets/custom_text_field.dart';
 import 'package:vocab/features/word_card_save/presentation/widgets/sense_form_list.dart';
 
@@ -37,9 +36,8 @@ class _CardFormPageState extends State<CardFormPage> {
           children: [
             Center(
                 child: DisplayWordText(
-              text: widget.initialWordCard == null
-                  ? 'Enter New Word'
-                  : 'Edit Existing Word',
+              text:
+                  widget.initialWordCard == null ? 'Add new' : 'Edit existing',
             )),
             CustomTextField(
               labelText: 'Word',
@@ -53,7 +51,6 @@ class _CardFormPageState extends State<CardFormPage> {
               labelText: 'Syllables',
               helperText: 'e.g. ex-am-ple',
             ),
-            Center(child: HeadlineText(text: 'Senses')),
             SenseFormList(),
           ],
         ),
@@ -63,4 +60,3 @@ class _CardFormPageState extends State<CardFormPage> {
 
   void _submit() {}
 }
-
