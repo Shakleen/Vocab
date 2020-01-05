@@ -19,9 +19,6 @@ class _CardFormPageState extends State<CardFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String headline = widget.initialWordCard == null
-        ? 'Enter New Word'
-        : 'Edit Existing Word';
     return Scaffold(
       appBar: AppBar(
         title: AppTitle(),
@@ -36,8 +33,13 @@ class _CardFormPageState extends State<CardFormPage> {
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(8.0),
-          children: <Widget>[
-            Center(child: DisplayWordText(text: headline)),
+          children: [
+            Center(
+                child: DisplayWordText(
+              text: widget.initialWordCard == null
+                  ? 'Enter New Word'
+                  : 'Edit Existing Word',
+            )),
             CustomTextField(
               labelText: 'Word',
               helperText: 'e.g. example',
@@ -50,7 +52,8 @@ class _CardFormPageState extends State<CardFormPage> {
               labelText: 'Syllables',
               helperText: 'e.g. ex-am-ple',
             ),
-            SenseForm(),
+            Center(child: HeadlineText(text: 'Senses')),
+            SenseForms(),
           ],
         ),
       ),
@@ -60,13 +63,75 @@ class _CardFormPageState extends State<CardFormPage> {
   void _submit() {}
 }
 
+class SenseForms extends StatefulWidget {
+  SenseForms({Key key}) : super(key: key);
+
+  @override
+  _SenseFormsState createState() => _SenseFormsState();
+}
+
+class _SenseFormsState extends State<SenseForms> {
+  final List<Widget> _children = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _children.add(SenseForm(
+      index: _children.length,
+      addField: _addNewSenseForm,
+      removeField: _removeSenseForm,
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: _children,
+    );
+  }
+
+  void _addNewSenseForm() {
+    setState(() {
+      _children.add(SenseForm(
+        index: _children.length,
+        addField: _addNewSenseForm,
+        removeField: _removeSenseForm,
+      ));
+    });
+  }
+
+  void _removeSenseForm(int index) {
+    setState(() {
+      _children.removeAt(index);
+    });
+  }
+}
+
 class SenseForm extends StatelessWidget {
-  const SenseForm({Key key}) : super(key: key);
+  final Function addField, removeField;
+  final int index;
+
+  const SenseForm({
+    Key key,
+    @required this.index,
+    @required this.addField,
+    @required this.removeField,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: HeadlineText(text: 'Sense #1'),
+      leading: IconButton(
+        icon: Icon(Icons.add),
+        onPressed: addField,
+        color: Theme.of(context).primaryColor,
+      ),
+      title: Text('Sense'),
+      trailing: IconButton(
+        icon: Icon(Icons.cancel),
+        onPressed: () => removeField(index),
+        color: Theme.of(context).errorColor,
+      ),
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -80,19 +145,6 @@ class SenseForm extends StatelessWidget {
                 labelText: 'Part of speech',
                 helperText: 'Noun',
               ),
-              // CustomTextField(
-              //   labelText: 'Example sentences',
-              //   helperText:
-              //       'e.g. The teacher gave many examples for the students to understand',
-              // ),
-              // CustomTextField(
-              //   labelText: 'Synonyms',
-              //   helperText: 'e.g. ',
-              // ),
-              // CustomTextField(
-              //   labelText: 'Antonyms',
-              //   helperText: 'e.g. ',
-              // ),
               IncreasingTextFields(title: 'Example'),
               IncreasingTextFields(title: 'Synonym'),
               IncreasingTextFields(title: 'Antonym'),
