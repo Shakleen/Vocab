@@ -18,7 +18,6 @@ class CustomTextField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: controller,
-        onSaved: _handleOnSaved,
         validator: _validate,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
@@ -34,8 +33,6 @@ class CustomTextField extends StatelessWidget {
       ),
     );
   }
-
-  void _handleOnSaved(String newValue) {}
 
   String _validate(String value) {
     if (isNullable == false) {

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:vocab/core/entities/pronunciation.dart';
+import 'package:vocab/core/entities/syllable.dart';
 import 'package:vocab/core/entities/word_card.dart';
+import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/display_word_text.dart';
 import 'package:vocab/features/word_card_save/presentation/widgets/custom_text_field.dart';
@@ -24,14 +27,12 @@ class _CardFormPageState extends State<CardFormPage> {
     'details': [],
   };
   CustomTextField wordField, pronunciationField, syllablesField;
+  SenseFormList senseFormList;
 
   @override
   void initState() {
     super.initState();
-    wordField = CustomTextField(
-      labelText: 'Word',
-      helperText: 'e.g. example',
-    );
+    wordField = CustomTextField(labelText: 'Word', helperText: 'e.g. example');
     pronunciationField = CustomTextField(
       labelText: 'Pronunciation',
       helperText: 'Audio file link',
@@ -40,6 +41,7 @@ class _CardFormPageState extends State<CardFormPage> {
       labelText: 'Syllables',
       helperText: 'e.g. ex-am-ple',
     );
+    senseFormList = SenseFormList();
   }
 
   @override
@@ -61,14 +63,13 @@ class _CardFormPageState extends State<CardFormPage> {
           children: [
             Center(
                 child: DisplayWordText(
-              text: widget.initialWordCard == null
-                  ? 'Add new'
-                  : 'Edit existing',
+              text:
+                  widget.initialWordCard == null ? 'Add new' : 'Edit existing',
             )),
             wordField,
             pronunciationField,
             syllablesField,
-            SenseFormList(),
+            senseFormList,
           ],
         ),
       ),
@@ -79,10 +80,23 @@ class _CardFormPageState extends State<CardFormPage> {
     // if (!_formKey.currentState.validate()) return;
     final String word = wordField.controller.value.text;
     final String pronunciation = pronunciationField.controller.value.text;
-    final List<String> syllables = syllablesField.controller.value.text.split('-');
+    final List<String> syllables =
+        syllablesField.controller.value.text.split('-');
+
+    // Inform sense form list to populate values.
+    List<WordCardDetails> details = senseFormList.getSenseValues();
+
+    // Get sense form list values.
 
     print(word);
     print(pronunciation);
     print(syllables);
+
+    final WordCard wordCard = WordCard(
+      word: word,
+      pronunciation: Pronunciation(all: pronunciation),
+      syllables: Syllable(count: syllables.length, list: syllables),
+      detailList: details,
+    );
   }
 }

@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/ui/widgets/headline_text.dart';
 
 import 'sense_form.dart';
 
 class SenseFormList extends StatefulWidget {
-  final Map<String, dynamic> values = {};
-  
+  final List<Map> senseValues = [];
+  final List<Widget> _children = [];
+
   SenseFormList({Key key}) : super(key: key);
 
   @override
   _SenseFormListState createState() => _SenseFormListState();
+
+  List<WordCardDetails> getSenseValues() {
+    // _children.forEach((SenseForm form) {
+    // TODO: Get Data from each sense forms
+    // });
+  }
 }
 
 class _SenseFormListState extends State<SenseFormList> {
-  final List<Widget> _children = [];
-
   @override
   void initState() {
     super.initState();
-    _children.addAll([
+    widget._children.addAll([
       Row(
         children: <Widget>[
           Expanded(child: HeadlineText(text: 'Senses')),
@@ -29,10 +35,7 @@ class _SenseFormListState extends State<SenseFormList> {
           ),
         ],
       ),
-      SenseForm(
-        index: _children.length,
-        removeField: _removeSenseForm,
-      ),
+      SenseForm(removeField: _removeSenseForm),
     ]);
   }
 
@@ -40,22 +43,19 @@ class _SenseFormListState extends State<SenseFormList> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: _children,
+      children: widget._children,
     );
   }
 
   void _addNewSenseForm() {
     setState(() {
-      _children.add(SenseForm(
-        index: _children.length,
-        removeField: _removeSenseForm,
-      ));
+      widget._children.add(SenseForm(removeField: _removeSenseForm));
     });
   }
 
-  void _removeSenseForm(int index) {
+  void _removeSenseForm(SenseForm obj) {
     setState(() {
-      _children.removeAt(index);
+      widget._children.remove(obj);
     });
   }
 }
