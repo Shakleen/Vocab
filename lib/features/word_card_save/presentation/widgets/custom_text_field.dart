@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final String helperText, labelText;
   final TextEditingController controller = TextEditingController();
+  final bool isNullable;
 
-  CustomTextField({Key key, this.helperText, this.labelText}) : super(key: key);
+  CustomTextField({Key key, this.helperText, this.labelText, this.isNullable = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +14,8 @@ class CustomTextField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         onChanged: _handleOnChange,
+        onSaved: _handleOnSaved,
+        validator: _validate,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -29,4 +32,12 @@ class CustomTextField extends StatelessWidget {
   }
 
   void _handleOnChange(String value) {}
+
+  void _handleOnSaved(String newValue) {}
+
+  String _validate(String value) {
+    if (isNullable == false) {
+      if (value.isEmpty) return "Can not be empty!";
+    }
+  }
 }

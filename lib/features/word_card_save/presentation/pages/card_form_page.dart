@@ -15,7 +15,8 @@ class CardFormPage extends StatefulWidget {
 }
 
 class _CardFormPageState extends State<CardFormPage> {
-  final GlobalKey _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  final Map<String, dynamic> _formValues = {};
 
   @override
   Widget build(BuildContext context) {
@@ -58,5 +59,8 @@ class _CardFormPageState extends State<CardFormPage> {
     );
   }
 
-  void _submit() {}
+  void _submit() {
+    if (!_formKey.currentState.validate()) return;
+    _formKey.currentState.save();
+  }
 }
