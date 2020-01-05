@@ -30,7 +30,6 @@ class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
         ],
       ),
       AdditiveTextField(
-        index: 0,
         labelText: widget.title,
         removeField: _removeField,
       ),
@@ -50,15 +49,14 @@ class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
     setState(() {
       fields.add(AdditiveTextField(
         labelText: widget.title,
-        index: fields.length,
         removeField: _removeField,
       ));
     });
   }
 
-  void _removeField(int index) {
+  void _removeField(AdditiveTextField obj) {
     setState(() {
-      fields.removeAt(index);
+      fields.remove(obj);
     });
   }
 }

@@ -21,10 +21,7 @@ class SenseForm extends StatelessWidget {
     IncreasingTextFields(title: 'Antonym'),
   ];
 
-  SenseForm({
-    Key key,
-    @required this.removeField,
-  }) : super(key: key);
+  SenseForm({Key key, @required this.removeField}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -59,5 +56,15 @@ class SenseForm extends StatelessWidget {
     );
   }
 
-  WordCardDetails getSenseFormValues() {}
+  WordCardDetails getSenseFormValues() {
+    String definition, partOfSpeech;
+
+    final defField = _children[0];
+    if (defField is CustomTextField) definition = defField.controller.text;
+    
+    final posField = _children[1];
+    if (posField is CustomTextField) definition = posField.controller.text;
+
+    // TODO: Handle increasing text field type for example, synonyms and antonyms
+  }
 }
