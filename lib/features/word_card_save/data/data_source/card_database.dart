@@ -22,7 +22,8 @@ class Entries extends Table {
 
 class Senses extends Table {
   IntColumn get id => integer().nullable().autoIncrement()();
-  IntColumn get entryId => integer().customConstraint('REFERENCES entries(id)')();
+  IntColumn get entryId =>
+      integer().customConstraint('REFERENCES entries(id)')();
   IntColumn get partOfSpeech =>
       integer().customConstraint('REFERENCES parts_of_speech(id)')();
   TextColumn get definition => text()();
@@ -52,7 +53,8 @@ class Syllables extends Table {
 }
 
 class ThesaurusList extends Table {
-  IntColumn get senseId => integer().customConstraint('REFERENCES senses(id)')();
+  IntColumn get senseId =>
+      integer().customConstraint('REFERENCES senses(id)')();
   IntColumn get wordId => integer().customConstraint('REFERENCES words(id)')();
   BoolColumn get isAntonym => boolean().withDefault(Constant(false))();
 
@@ -61,7 +63,8 @@ class ThesaurusList extends Table {
 }
 
 class ExampleList extends Table {
-  IntColumn get senseId => integer().customConstraint('REFERENCES senses(id)')();
+  IntColumn get senseId =>
+      integer().customConstraint('REFERENCES senses(id)')();
   IntColumn get exampleId =>
       integer().customConstraint('REFERENCES examples(id)')();
 
@@ -70,7 +73,8 @@ class ExampleList extends Table {
 }
 
 class SyllableList extends Table {
-  IntColumn get entryId => integer().customConstraint('REFERENCES entries(id)')();
+  IntColumn get entryId =>
+      integer().customConstraint('REFERENCES entries(id)')();
   IntColumn get syllableId =>
       integer().customConstraint('REFERENCES syllables(id)')();
 
@@ -91,8 +95,10 @@ class Cards extends Table {
 
 class CardInfo extends Table {
   IntColumn get id => integer().nullable().autoIncrement()();
-  IntColumn get entryId => integer().customConstraint('REFERENCES entries(id)')();
-  IntColumn get senseId => integer().customConstraint('REFERENCES senses(id)')();
+  IntColumn get entryId =>
+      integer().customConstraint('REFERENCES entries(id)')();
+  IntColumn get senseId =>
+      integer().customConstraint('REFERENCES senses(id)')();
   IntColumn get attributeType => integer()();
 }
 
@@ -364,6 +370,17 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       ),
       detailList: detailsList,
     );
+  }
+
+  Future<List<String>> getSavedWords() async {
+    return (await (select(words).join(
+      [
+        leftOuterJoin(entries, entries.id.equalsExp(words.id)),
+      ],
+    )).get())
+        .map(
+      (row) => row.readTable(words).word,
+    ).toList();
   }
 }
 

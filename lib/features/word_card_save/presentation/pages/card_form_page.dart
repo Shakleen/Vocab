@@ -105,5 +105,7 @@ class _CardFormPageState extends State<CardFormPage> {
 
     final bool result = await _wordDao.insertWordCard(wordCard);
     print('Insertion result: $result');
+
+    if (result) Navigator.pop(context);
   }
 }
