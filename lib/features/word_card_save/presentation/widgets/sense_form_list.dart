@@ -16,9 +16,7 @@ class SenseFormList extends StatefulWidget {
   List<WordCardDetails> getSenseValues() {
     final List<WordCardDetails> returnList = [];
     _children.forEach((Widget child) {
-      if (child is SenseForm) {
-        returnList.add(child.getSenseFormValues());
-      }
+      if (child is SenseForm) returnList.add(child.getSenseFormValues());
     });
     return returnList;
   }

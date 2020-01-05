@@ -16,7 +16,11 @@ class AdditiveTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _field = CustomTextField(helperText: helperText, labelText: labelText);
+    _field = CustomTextField(
+      helperText: helperText,
+      labelText: labelText,
+      isNullable: true,
+    );
     return Row(
       children: <Widget>[
         Expanded(child: _field),

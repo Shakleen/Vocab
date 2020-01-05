@@ -6,7 +6,7 @@ import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/display_word_text.dart';
 import 'package:vocab/features/word_card_save/presentation/widgets/custom_text_field.dart';
-import 'package:vocab/features/word_card_save/presentation/widgets/form_values_inherited_widget.dart';
+import 'package:vocab/features/word_card_save/presentation/widgets/increasing_text_fields.dart';
 import 'package:vocab/features/word_card_save/presentation/widgets/sense_form_list.dart';
 
 class CardFormPage extends StatefulWidget {
@@ -20,13 +20,8 @@ class CardFormPage extends StatefulWidget {
 
 class _CardFormPageState extends State<CardFormPage> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  final Map<String, dynamic> _formValues = {
-    'word': '',
-    'pronunciation': '',
-    'syllables': '',
-    'details': [],
-  };
-  CustomTextField wordField, pronunciationField, syllablesField;
+  CustomTextField wordField, pronunciationField;
+  IncreasingTextFields syllablesField;
   SenseFormList senseFormList;
 
   @override
@@ -37,10 +32,7 @@ class _CardFormPageState extends State<CardFormPage> {
       labelText: 'Pronunciation',
       helperText: 'Audio file link',
     );
-    syllablesField = CustomTextField(
-      labelText: 'Syllables',
-      helperText: 'e.g. ex-am-ple',
-    );
+    syllablesField = IncreasingTextFields(title: 'Syllable');
     senseFormList = SenseFormList();
   }
 
@@ -50,10 +42,7 @@ class _CardFormPageState extends State<CardFormPage> {
       appBar: AppBar(
         title: AppTitle(),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.done),
-            onPressed: _submit,
-          )
+          IconButton(icon: Icon(Icons.done), onPressed: _submit)
         ],
       ),
       body: Form(
@@ -62,10 +51,12 @@ class _CardFormPageState extends State<CardFormPage> {
           padding: const EdgeInsets.all(8.0),
           children: [
             Center(
-                child: DisplayWordText(
-              text:
-                  widget.initialWordCard == null ? 'Add new' : 'Edit existing',
-            )),
+              child: DisplayWordText(
+                text: widget.initialWordCard == null
+                    ? 'Add new'
+                    : 'Edit existing',
+              ),
+            ),
             wordField,
             pronunciationField,
             syllablesField,
@@ -77,16 +68,11 @@ class _CardFormPageState extends State<CardFormPage> {
   }
 
   void _submit() {
-    // if (!_formKey.currentState.validate()) return;
+    if (!_formKey.currentState.validate()) return;
     final String word = wordField.controller.value.text;
     final String pronunciation = pronunciationField.controller.value.text;
-    final List<String> syllables =
-        syllablesField.controller.value.text.split('-');
-
-    // Inform sense form list to populate values.
-    List<WordCardDetails> details = senseFormList.getSenseValues();
-
-    // Get sense form list values.
+    final List<String> syllables = syllablesField.getFormTextStrings();
+    final List<WordCardDetails> details = senseFormList.getSenseValues();
 
     print(word);
     print(pronunciation);
