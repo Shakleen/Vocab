@@ -3,6 +3,7 @@ import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/display_word_text.dart';
 import 'package:vocab/core/ui/widgets/headline_text.dart';
+import 'package:vocab/core/ui/widgets/title_text.dart';
 
 class CardFormPage extends StatefulWidget {
   final WordCard initialWordCard;
@@ -65,7 +66,7 @@ class SenseForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text('Sense #1'),
+      title: HeadlineText(text: 'Sense #1'),
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -113,20 +114,26 @@ class IncreasingTextFields extends StatefulWidget {
 }
 
 class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
-  final List<AdditiveTextField> fields = [];
+  final List<Widget> fields = [];
 
   @override
   void initState() {
     super.initState();
-    fields.add(AdditiveTextField(
-      labelText: widget.title,
-      addField: _addNewField,
-    ));
+    fields.addAll([
+      TitleText(text: widget.title),
+      AdditiveTextField(
+        index: 0,
+        labelText: widget.title,
+        addField: _addNewField,
+        removeField: _removeField,
+      ),
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: fields,
     );
@@ -136,21 +143,32 @@ class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
     setState(() {
       fields.add(AdditiveTextField(
         labelText: widget.title,
+        index: fields.length,
         addField: _addNewField,
+        removeField: _removeField,
       ));
+    });
+  }
+
+  void _removeField(int index) {
+    setState(() {
+      fields.removeAt(index);
     });
   }
 }
 
 class AdditiveTextField extends StatelessWidget {
   final String helperText, labelText;
-  Function addField;
+  final Function addField, removeField;
+  final int index;
 
   AdditiveTextField({
     Key key,
     this.helperText,
     this.labelText,
+    @required this.index,
     @required this.addField,
+    @required this.removeField,
   }) : super(key: key);
 
   @override
@@ -167,7 +185,7 @@ class AdditiveTextField extends StatelessWidget {
         ),
         IconButton(
           icon: Icon(Icons.cancel),
-          onPressed: () {},
+          onPressed: () => removeField(index),
           color: Theme.of(context).errorColor,
         ),
       ],
