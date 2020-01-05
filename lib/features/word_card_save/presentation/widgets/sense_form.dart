@@ -58,13 +58,32 @@ class SenseForm extends StatelessWidget {
 
   WordCardDetails getSenseFormValues() {
     String definition, partOfSpeech;
+    List<String> examples, synonyms, antonyms;
 
     final defField = _children[0];
     if (defField is CustomTextField) definition = defField.controller.text;
-    
-    final posField = _children[1];
-    if (posField is CustomTextField) definition = posField.controller.text;
 
-    // TODO: Handle increasing text field type for example, synonyms and antonyms
+    final posField = _children[1];
+    if (posField is CustomTextField) partOfSpeech = posField.controller.text;
+
+    final examplesField = _children[2];
+    if (examplesField is IncreasingTextFields)
+      examples = examplesField.getFormTextStrings();
+
+    final synonymsField = _children[3];
+    if (synonymsField is IncreasingTextFields)
+      synonyms = synonymsField.getFormTextStrings();
+
+    final antonymsField = _children[4];
+    if (antonymsField is IncreasingTextFields)
+      antonyms = antonymsField.getFormTextStrings();
+
+    return WordCardDetails(
+      definition: definition,
+      partOfSpeech: partOfSpeech,
+      exampleList: examples,
+      synonymList: synonyms,
+      antonymList: antonyms,
+    );
   }
 }

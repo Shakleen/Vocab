@@ -5,6 +5,7 @@ import 'custom_text_field.dart';
 class AdditiveTextField extends StatelessWidget {
   final String helperText, labelText;
   final Function(AdditiveTextField) removeField;
+  CustomTextField _field;
 
   AdditiveTextField({
     Key key,
@@ -15,11 +16,10 @@ class AdditiveTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _field = CustomTextField(helperText: helperText, labelText: labelText);
     return Row(
       children: <Widget>[
-        Expanded(
-          child: CustomTextField(helperText: helperText, labelText: labelText),
-        ),
+        Expanded(child: _field),
         IconButton(
           icon: Icon(Icons.cancel),
           onPressed: () => removeField(this),
@@ -28,5 +28,8 @@ class AdditiveTextField extends StatelessWidget {
       ],
     );
   }
-}
 
+  String getText() {
+    return _field.controller.text;
+  }
+}

@@ -5,20 +5,31 @@ import 'additive_text_field.dart';
 
 class IncreasingTextFields extends StatefulWidget {
   final String title;
+  final List<Widget> _children = [];
 
   IncreasingTextFields({Key key, @required this.title}) : super(key: key);
 
   @override
   _IncreasingTextFieldsState createState() => _IncreasingTextFieldsState();
+
+  List<String> getFormTextStrings() {
+    final List<String> formTexts = [];
+
+    _children.forEach((Widget child) {
+      if (child is AdditiveTextField) {
+        formTexts.add(child.getText());
+      }
+    });
+
+    return formTexts;
+  }
 }
 
 class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
-  final List<Widget> fields = [];
-
   @override
   void initState() {
     super.initState();
-    fields.addAll([
+    widget._children.addAll([
       Row(
         children: <Widget>[
           Expanded(child: TitleText(text: widget.title)),
@@ -29,10 +40,7 @@ class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
           ),
         ],
       ),
-      AdditiveTextField(
-        labelText: widget.title,
-        removeField: _removeField,
-      ),
+      AdditiveTextField(labelText: widget.title, removeField: _removeField),
     ]);
   }
 
@@ -41,22 +49,21 @@ class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: fields,
+      children: widget._children,
     );
   }
 
   void _addNewField() {
     setState(() {
-      fields.add(AdditiveTextField(
-        labelText: widget.title,
-        removeField: _removeField,
-      ));
+      widget._children.add(
+        AdditiveTextField(labelText: widget.title, removeField: _removeField),
+      );
     });
   }
 
   void _removeField(AdditiveTextField obj) {
     setState(() {
-      fields.remove(obj);
+      widget._children.remove(obj);
     });
   }
 }

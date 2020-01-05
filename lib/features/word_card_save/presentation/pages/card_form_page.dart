@@ -92,6 +92,20 @@ class _CardFormPageState extends State<CardFormPage> {
     print(pronunciation);
     print(syllables);
 
+    details.forEach((WordCardDetails details) {
+      print('Definition: ${details.definition}');
+      print('POS: ${details.partOfSpeech}');
+
+      print('Examples');
+      details.exampleList.forEach((String e) => print(e));
+      print('Synonyms');
+      details.synonymList.forEach((String e) => print(e));
+      print('Antonyms');
+      details.antonymList.forEach((String e) => print(e));
+
+      print('\n\n');
+    });
+
     final WordCard wordCard = WordCard(
       word: word,
       pronunciation: Pronunciation(all: pronunciation),

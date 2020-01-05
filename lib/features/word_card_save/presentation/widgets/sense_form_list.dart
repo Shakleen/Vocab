@@ -14,9 +14,13 @@ class SenseFormList extends StatefulWidget {
   _SenseFormListState createState() => _SenseFormListState();
 
   List<WordCardDetails> getSenseValues() {
-    // _children.forEach((SenseForm form) {
-    // TODO: Get Data from each sense forms
-    // });
+    final List<WordCardDetails> returnList = [];
+    _children.forEach((Widget child) {
+      if (child is SenseForm) {
+        returnList.add(child.getSenseFormValues());
+      }
+    });
+    return returnList;
   }
 }
 
