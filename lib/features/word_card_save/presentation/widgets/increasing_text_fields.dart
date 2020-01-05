@@ -19,11 +19,19 @@ class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
   void initState() {
     super.initState();
     fields.addAll([
-      TitleText(text: widget.title),
+      Row(
+        children: <Widget>[
+          Expanded(child: TitleText(text: widget.title)),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: _addNewField,
+            color: Colors.blue,
+          ),
+        ],
+      ),
       AdditiveTextField(
         index: 0,
         labelText: widget.title,
-        addField: _addNewField,
         removeField: _removeField,
       ),
     ]);
@@ -43,7 +51,6 @@ class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
       fields.add(AdditiveTextField(
         labelText: widget.title,
         index: fields.length,
-        addField: _addNewField,
         removeField: _removeField,
       ));
     });
@@ -55,4 +62,3 @@ class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
     });
   }
 }
-

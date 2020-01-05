@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vocab/core/ui/widgets/headline_text.dart';
 
 import 'sense_form.dart';
 
@@ -15,11 +16,22 @@ class _SenseFormListState extends State<SenseFormList> {
   @override
   void initState() {
     super.initState();
-    _children.add(SenseForm(
-      index: _children.length,
-      addField: _addNewSenseForm,
-      removeField: _removeSenseForm,
-    ));
+    _children.addAll([
+      Row(
+        children: <Widget>[
+          Expanded(child: HeadlineText(text: 'Senses')),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: _addNewSenseForm,
+            color: Colors.blue,
+          ),
+        ],
+      ),
+      SenseForm(
+        index: _children.length,
+        removeField: _removeSenseForm,
+      ),
+    ]);
   }
 
   @override
@@ -34,7 +46,6 @@ class _SenseFormListState extends State<SenseFormList> {
     setState(() {
       _children.add(SenseForm(
         index: _children.length,
-        addField: _addNewSenseForm,
         removeField: _removeSenseForm,
       ));
     });
@@ -46,4 +57,3 @@ class _SenseFormListState extends State<SenseFormList> {
     });
   }
 }
-

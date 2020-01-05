@@ -5,13 +5,12 @@ import 'custom_text_field.dart';
 import 'increasing_text_fields.dart';
 
 class SenseForm extends StatefulWidget {
-  final Function addField, removeField;
+  final Function removeField;
   final int index;
 
   const SenseForm({
     Key key,
     @required this.index,
-    @required this.addField,
     @required this.removeField,
   }) : super(key: key);
 
@@ -54,11 +53,6 @@ class _SenseFormState extends State<SenseForm> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  // IconButton(
-                  //   icon: Icon(Icons.add),
-                  //   onPressed: widget.addField,
-                  //   color: Theme.of(context).primaryColor,
-                  // ),
                   HeadlineText(text: 'Sense'),
                   IconButton(
                     icon: Icon(Icons.delete),
