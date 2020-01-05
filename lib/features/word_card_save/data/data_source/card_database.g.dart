@@ -13,7 +13,7 @@ class Entry extends DataClass implements Insertable<Entry> {
   final String pronunciation;
   final int wordId;
   Entry(
-      {@required this.id,
+      {this.id,
       @required this.addedOn,
       @required this.pronunciation,
       @required this.wordId});
@@ -142,7 +142,7 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
   @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
+    return GeneratedIntColumn('id', $tableName, true,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
@@ -178,7 +178,7 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
   GeneratedIntColumn get wordId => _wordId ??= _constructWordId();
   GeneratedIntColumn _constructWordId() {
     return GeneratedIntColumn('word_id', $tableName, false,
-        $customConstraints: 'REFERENCES Word(id)');
+        $customConstraints: 'REFERENCES words(id)');
   }
 
   @override
@@ -260,7 +260,7 @@ class Sense extends DataClass implements Insertable<Sense> {
   final int partOfSpeech;
   final String definition;
   Sense(
-      {@required this.id,
+      {this.id,
       @required this.entryId,
       @required this.partOfSpeech,
       @required this.definition});
@@ -390,7 +390,7 @@ class $SensesTable extends Senses with TableInfo<$SensesTable, Sense> {
   @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
+    return GeneratedIntColumn('id', $tableName, true,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
@@ -400,7 +400,7 @@ class $SensesTable extends Senses with TableInfo<$SensesTable, Sense> {
   GeneratedIntColumn get entryId => _entryId ??= _constructEntryId();
   GeneratedIntColumn _constructEntryId() {
     return GeneratedIntColumn('entry_id', $tableName, false,
-        $customConstraints: 'REFERENCES Entry(id)');
+        $customConstraints: 'REFERENCES entries(id)');
   }
 
   final VerificationMeta _partOfSpeechMeta =
@@ -411,7 +411,7 @@ class $SensesTable extends Senses with TableInfo<$SensesTable, Sense> {
       _partOfSpeech ??= _constructPartOfSpeech();
   GeneratedIntColumn _constructPartOfSpeech() {
     return GeneratedIntColumn('part_of_speech', $tableName, false,
-        $customConstraints: 'REFERENCES PartsOfSpeech(id)');
+        $customConstraints: 'REFERENCES parts_of_speech(id)');
   }
 
   final VerificationMeta _definitionMeta = const VerificationMeta('definition');
@@ -501,7 +501,7 @@ class $SensesTable extends Senses with TableInfo<$SensesTable, Sense> {
 class Word extends DataClass implements Insertable<Word> {
   final int id;
   final String word;
-  Word({@required this.id, @required this.word});
+  Word({this.id, @required this.word});
   factory Word.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -585,7 +585,7 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
   @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
+    return GeneratedIntColumn('id', $tableName, true,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
@@ -653,7 +653,7 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
 class Example extends DataClass implements Insertable<Example> {
   final int id;
   final String sentence;
-  Example({@required this.id, @required this.sentence});
+  Example({this.id, @required this.sentence});
   factory Example.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -742,7 +742,7 @@ class $ExamplesTable extends Examples with TableInfo<$ExamplesTable, Example> {
   @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
+    return GeneratedIntColumn('id', $tableName, true,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
@@ -811,7 +811,7 @@ class PartsOfSpeechData extends DataClass
     implements Insertable<PartsOfSpeechData> {
   final int id;
   final String partOfSpeech;
-  PartsOfSpeechData({@required this.id, @required this.partOfSpeech});
+  PartsOfSpeechData({this.id, @required this.partOfSpeech});
   factory PartsOfSpeechData.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -903,7 +903,7 @@ class $PartsOfSpeechTable extends PartsOfSpeech
   @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
+    return GeneratedIntColumn('id', $tableName, true,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
@@ -976,7 +976,7 @@ class $PartsOfSpeechTable extends PartsOfSpeech
 class Syllable extends DataClass implements Insertable<Syllable> {
   final int id;
   final String syllable;
-  Syllable({@required this.id, @required this.syllable});
+  Syllable({this.id, @required this.syllable});
   factory Syllable.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -1066,7 +1066,7 @@ class $SyllablesTable extends Syllables
   @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
+    return GeneratedIntColumn('id', $tableName, true,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
@@ -1251,7 +1251,7 @@ class $ThesaurusListTable extends ThesaurusList
   GeneratedIntColumn get senseId => _senseId ??= _constructSenseId();
   GeneratedIntColumn _constructSenseId() {
     return GeneratedIntColumn('sense_id', $tableName, false,
-        $customConstraints: 'REFERENCES Sense(id)');
+        $customConstraints: 'REFERENCES senses(id)');
   }
 
   final VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
@@ -1260,7 +1260,7 @@ class $ThesaurusListTable extends ThesaurusList
   GeneratedIntColumn get wordId => _wordId ??= _constructWordId();
   GeneratedIntColumn _constructWordId() {
     return GeneratedIntColumn('word_id', $tableName, false,
-        $customConstraints: 'REFERENCES Word(id)');
+        $customConstraints: 'REFERENCES words(id)');
   }
 
   final VerificationMeta _isAntonymMeta = const VerificationMeta('isAntonym');
@@ -1432,7 +1432,7 @@ class $ExampleListTable extends ExampleList
   GeneratedIntColumn get senseId => _senseId ??= _constructSenseId();
   GeneratedIntColumn _constructSenseId() {
     return GeneratedIntColumn('sense_id', $tableName, false,
-        $customConstraints: 'REFERENCES Sense(id)');
+        $customConstraints: 'REFERENCES senses(id)');
   }
 
   final VerificationMeta _exampleIdMeta = const VerificationMeta('exampleId');
@@ -1441,7 +1441,7 @@ class $ExampleListTable extends ExampleList
   GeneratedIntColumn get exampleId => _exampleId ??= _constructExampleId();
   GeneratedIntColumn _constructExampleId() {
     return GeneratedIntColumn('example_id', $tableName, false,
-        $customConstraints: 'REFERENCES Example(id)');
+        $customConstraints: 'REFERENCES examples(id)');
   }
 
   @override
@@ -1596,7 +1596,7 @@ class $SyllableListTable extends SyllableList
   GeneratedIntColumn get entryId => _entryId ??= _constructEntryId();
   GeneratedIntColumn _constructEntryId() {
     return GeneratedIntColumn('entry_id', $tableName, false,
-        $customConstraints: 'REFERENCES Entry(id)');
+        $customConstraints: 'REFERENCES entries(id)');
   }
 
   final VerificationMeta _syllableIdMeta = const VerificationMeta('syllableId');
@@ -1605,7 +1605,7 @@ class $SyllableListTable extends SyllableList
   GeneratedIntColumn get syllableId => _syllableId ??= _constructSyllableId();
   GeneratedIntColumn _constructSyllableId() {
     return GeneratedIntColumn('syllable_id', $tableName, false,
-        $customConstraints: 'REFERENCES Syllable(id)');
+        $customConstraints: 'REFERENCES syllables(id)');
   }
 
   @override
@@ -1669,7 +1669,7 @@ class Card extends DataClass implements Insertable<Card> {
   final bool isImportant;
   final DateTime dueOn;
   Card(
-      {@required this.id,
+      {this.id,
       @required this.frontId,
       @required this.backId,
       @required this.level,
@@ -1838,7 +1838,7 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
   @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
+    return GeneratedIntColumn('id', $tableName, true,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
@@ -1848,7 +1848,7 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
   GeneratedIntColumn get frontId => _frontId ??= _constructFrontId();
   GeneratedIntColumn _constructFrontId() {
     return GeneratedIntColumn('front_id', $tableName, false,
-        $customConstraints: 'REFERENCES CardInfo(id)');
+        $customConstraints: 'REFERENCES card_info(id)');
   }
 
   final VerificationMeta _backIdMeta = const VerificationMeta('backId');
@@ -1857,7 +1857,7 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
   GeneratedIntColumn get backId => _backId ??= _constructBackId();
   GeneratedIntColumn _constructBackId() {
     return GeneratedIntColumn('back_id', $tableName, false,
-        $customConstraints: 'REFERENCES CardInfo(id)');
+        $customConstraints: 'REFERENCES card_info(id)');
   }
 
   final VerificationMeta _levelMeta = const VerificationMeta('level');
@@ -1987,7 +1987,7 @@ class CardInfoData extends DataClass implements Insertable<CardInfoData> {
   final int senseId;
   final int attributeType;
   CardInfoData(
-      {@required this.id,
+      {this.id,
       @required this.entryId,
       @required this.senseId,
       @required this.attributeType});
@@ -2118,7 +2118,7 @@ class $CardInfoTable extends CardInfo
   @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
+    return GeneratedIntColumn('id', $tableName, true,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
@@ -2128,7 +2128,7 @@ class $CardInfoTable extends CardInfo
   GeneratedIntColumn get entryId => _entryId ??= _constructEntryId();
   GeneratedIntColumn _constructEntryId() {
     return GeneratedIntColumn('entry_id', $tableName, false,
-        $customConstraints: 'REFERENCES Entry(id)');
+        $customConstraints: 'REFERENCES entries(id)');
   }
 
   final VerificationMeta _senseIdMeta = const VerificationMeta('senseId');
@@ -2137,7 +2137,7 @@ class $CardInfoTable extends CardInfo
   GeneratedIntColumn get senseId => _senseId ??= _constructSenseId();
   GeneratedIntColumn _constructSenseId() {
     return GeneratedIntColumn('sense_id', $tableName, false,
-        $customConstraints: 'REFERENCES Sense(id)');
+        $customConstraints: 'REFERENCES senses(id)');
   }
 
   final VerificationMeta _attributeTypeMeta =

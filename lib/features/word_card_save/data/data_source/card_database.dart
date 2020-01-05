@@ -14,46 +14,46 @@ part 'card_database.g.dart';
 
 @DataClassName('Entry')
 class Entries extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().nullable().autoIncrement()();
   DateTimeColumn get addedOn => dateTime()();
   TextColumn get pronunciation => text()();
-  IntColumn get wordId => integer().customConstraint('REFERENCES Word(id)')();
+  IntColumn get wordId => integer().customConstraint('REFERENCES words(id)')();
 }
 
 class Senses extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get entryId => integer().customConstraint('REFERENCES Entry(id)')();
+  IntColumn get id => integer().nullable().autoIncrement()();
+  IntColumn get entryId => integer().customConstraint('REFERENCES entries(id)')();
   IntColumn get partOfSpeech =>
-      integer().customConstraint('REFERENCES PartsOfSpeech(id)')();
+      integer().customConstraint('REFERENCES parts_of_speech(id)')();
   TextColumn get definition => text()();
 }
 
 class Words extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().nullable().autoIncrement()();
   TextColumn get word => text().withLength(min: 1).customConstraint('UNIQUE')();
 }
 
 class Examples extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().nullable().autoIncrement()();
   TextColumn get sentence =>
       text().withLength(min: 1).customConstraint('UNIQUE')();
 }
 
 class PartsOfSpeech extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().nullable().autoIncrement()();
   TextColumn get partOfSpeech =>
       text().withLength(min: 1).customConstraint('UNIQUE')();
 }
 
 class Syllables extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().nullable().autoIncrement()();
   TextColumn get syllable =>
       text().withLength(min: 1).customConstraint('UNIQUE')();
 }
 
 class ThesaurusList extends Table {
-  IntColumn get senseId => integer().customConstraint('REFERENCES Sense(id)')();
-  IntColumn get wordId => integer().customConstraint('REFERENCES Word(id)')();
+  IntColumn get senseId => integer().customConstraint('REFERENCES senses(id)')();
+  IntColumn get wordId => integer().customConstraint('REFERENCES words(id)')();
   BoolColumn get isAntonym => boolean().withDefault(Constant(false))();
 
   @override
@@ -61,38 +61,38 @@ class ThesaurusList extends Table {
 }
 
 class ExampleList extends Table {
-  IntColumn get senseId => integer().customConstraint('REFERENCES Sense(id)')();
+  IntColumn get senseId => integer().customConstraint('REFERENCES senses(id)')();
   IntColumn get exampleId =>
-      integer().customConstraint('REFERENCES Example(id)')();
+      integer().customConstraint('REFERENCES examples(id)')();
 
   @override
   Set<Column> get primaryKey => {senseId, exampleId};
 }
 
 class SyllableList extends Table {
-  IntColumn get entryId => integer().customConstraint('REFERENCES Entry(id)')();
+  IntColumn get entryId => integer().customConstraint('REFERENCES entries(id)')();
   IntColumn get syllableId =>
-      integer().customConstraint('REFERENCES Syllable(id)')();
+      integer().customConstraint('REFERENCES syllables(id)')();
 
   @override
   Set<Column> get primaryKey => {entryId, syllableId};
 }
 
 class Cards extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().nullable().autoIncrement()();
   IntColumn get frontId =>
-      integer().customConstraint('REFERENCES CardInfo(id)')();
+      integer().customConstraint('REFERENCES card_info(id)')();
   IntColumn get backId =>
-      integer().customConstraint('REFERENCES CardInfo(id)')();
+      integer().customConstraint('REFERENCES card_info(id)')();
   IntColumn get level => integer().withDefault(Constant(0))();
   BoolColumn get isImportant => boolean().withDefault(Constant(false))();
   DateTimeColumn get dueOn => dateTime()();
 }
 
 class CardInfo extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get entryId => integer().customConstraint('REFERENCES Entry(id)')();
-  IntColumn get senseId => integer().customConstraint('REFERENCES Sense(id)')();
+  IntColumn get id => integer().nullable().autoIncrement()();
+  IntColumn get entryId => integer().customConstraint('REFERENCES entries(id)')();
+  IntColumn get senseId => integer().customConstraint('REFERENCES senses(id)')();
   IntColumn get attributeType => integer()();
 }
 
