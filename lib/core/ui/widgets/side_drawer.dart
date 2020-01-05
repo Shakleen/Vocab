@@ -25,7 +25,7 @@ class SideDrawer extends StatelessWidget {
             title: Text('Home Page'),
             selected: page == Page.HomePage,
             onTap: () {
-              Navigator.pushNamed(context, Page.HomePage.toString());
+              Navigator.pushReplacementNamed(context, Page.HomePage.toString());
             },
           ),
           ListTile(
@@ -33,7 +33,7 @@ class SideDrawer extends StatelessWidget {
             title: Text('Card Page'),
             selected: page == Page.CardPage,
             onTap: () {
-              Navigator.pushNamed(context, Page.CardPage.toString());
+              Navigator.pushReplacementNamed(context, Page.CardPage.toString());
             },
           ),
         ],

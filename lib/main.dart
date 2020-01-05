@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vocab/core/navigation/routes.dart';
-import 'package:vocab/core/ui/pages/base_page.dart';
-import 'core/ui/pages/card_page.dart';
 import 'injection_container.dart' as di;
 
 void main() async {
@@ -18,11 +16,8 @@ class Vocab extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(primaryColor: Colors.blue),
-      home: BasePage(),
-      routes: {
-        Page.HomePage.toString() : (BuildContext context) => BasePage(),
-        Page.CardPage.toString() : (BuildContext context) => CardPage(),
-      },
+      initialRoute: '${Page.HomePage}',
+      onGenerateRoute: generateRoute,
     );
   }
 }
