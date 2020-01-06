@@ -8,8 +8,10 @@ import 'package:vocab/core/ui/widgets/display_word_text.dart';
 import 'package:vocab/features/word_card_save/data/data_source/card_database.dart'
     as db;
 import 'package:vocab/features/word_card_save/presentation/widgets/custom_text_field.dart';
-import 'package:vocab/features/word_card_save/presentation/widgets/increasing_text_fields.dart';
 import 'package:vocab/features/word_card_save/presentation/widgets/sense_form_list.dart';
+import 'package:vocab/injection_container.dart';
+
+const String SEPERATOR = ", ";
 
 class CardFormPage extends StatefulWidget {
   final WordCard initialWordCard;
@@ -22,15 +24,15 @@ class CardFormPage extends StatefulWidget {
 
 class _CardFormPageState extends State<CardFormPage> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  CustomTextField wordField, pronunciationField;
-  IncreasingTextFields syllablesField;
+  CustomTextField wordField, pronunciationField, syllablesField;
   SenseFormList senseFormList;
   db.WordDao _wordDao;
 
   @override
   void initState() {
     super.initState();
-    _wordDao = db.CardDatabase().wordDao;
+    db.CardDatabase cardDatabase = sl();
+    _wordDao = cardDatabase.wordDao;
     wordField = CustomTextField(
       initValue: widget.initialWordCard?.word,
       labelText: 'Word',
@@ -41,9 +43,10 @@ class _CardFormPageState extends State<CardFormPage> {
       labelText: 'Pronunciation',
       helperText: 'Audio file link',
     );
-    syllablesField = IncreasingTextFields(
-      title: 'Syllable',
-      initValue: widget.initialWordCard?.syllables.list,
+    syllablesField = CustomTextField(
+      initValue: widget.initialWordCard?.syllables.list?.join(SEPERATOR),
+      labelText: "Syllables",
+      helperText: "Separate each value with a comma",
     );
     senseFormList = SenseFormList(
       initSenses: widget.initialWordCard?.detailList,
@@ -85,7 +88,7 @@ class _CardFormPageState extends State<CardFormPage> {
     if (!_formKey.currentState.validate()) return;
     final String word = wordField.controller.value.text;
     final String pronunciation = pronunciationField.controller.value.text;
-    final List<String> syllables = syllablesField.getFormTextStrings();
+    final List<String> syllables = syllablesField.controller.value.text?.split(SEPERATOR);
     final List<WordCardDetails> details = senseFormList.getSenseValues();
 
     print(word);

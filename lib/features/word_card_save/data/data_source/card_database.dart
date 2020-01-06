@@ -174,7 +174,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     if (searchEntry != null) {
       return searchEntry.id;
     } else {
-      return into(entries).insert(
+      return await into(entries).insert(
         Entry(
           wordId: wordID,
           addedOn: DateTime.now(),
@@ -198,7 +198,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     if (searchSyllable != null) {
       return searchSyllable.id;
     } else {
-      return into(syllables).insert(Syllable(syllable: inputSyllable));
+      return await into(syllables).insert(Syllable(syllable: inputSyllable));
     }
   }
 
@@ -210,7 +210,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     if (pos != null) {
       return pos.id;
     } else {
-      return into(partsOfSpeech).insert(
+      return await into(partsOfSpeech).insert(
         PartsOfSpeechData(partOfSpeech: partOfSpeech),
       );
     }
@@ -223,18 +223,18 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     if (searchExample != null) {
       return searchExample.id;
     } else {
-      return into(examples).insert(Example(sentence: inputExample));
+      return await into(examples).insert(Example(sentence: inputExample));
     }
   }
 
   Future<void> _linkEntryAndSyllable(int entryID, int syllableID) async {
-    into(syllableList).insert(
+    await into(syllableList).insert(
       SyllableListData(entryId: entryID, syllableId: syllableID),
     );
   }
 
   Future<void> _linkSenseAndExample(int exampleID, int senseID) async {
-    into(exampleList).insert(
+    await into(exampleList).insert(
       ExampleListData(exampleId: exampleID, senseId: senseID),
     );
   }
@@ -244,7 +244,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     int wordID, {
     bool isAntonym = false,
   }) async {
-    into(thesaurusList).insert(
+    await into(thesaurusList).insert(
       ThesaurusListData(
         senseId: senseID,
         wordId: wordID,
@@ -273,13 +273,13 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     // First get the Syllable ID.
     // Next use the Syllable ID and entry ID to link the entry and
     // the syllable.
-    wordCard.syllables.list.forEach((String s) async {
+    for (final String s in wordCard.syllables.list) {
       final int syllableID = await _getExistingOrNewSyllableID(s);
-      _linkEntryAndSyllable(entryID, syllableID);
-    });
+      await _linkEntryAndSyllable(entryID, syllableID);
+    }
 
     //? Step 4: Dealing with senses list data
-    wordCard.detailList.forEach((WordCardDetails wordCardDetails) async {
+    for (final WordCardDetails wordCardDetails in wordCard.detailList) {
       //? Step 4.1: Dealing with Part of Speech String
       //? ==============================================================
       // Same as word
@@ -299,27 +299,27 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       //? Step 4.3: Dealing with Examples data
       //? ==============================================================
       // Same as syllables
-      wordCardDetails.exampleList.forEach((String example) async {
+      for (final String example in wordCardDetails.exampleList) {
         final int exampleID = await _getExistingOrNewExampleID(example);
-        _linkSenseAndExample(exampleID, senseID);
-      });
+        await _linkSenseAndExample(exampleID, senseID);
+      }
 
       //? Step 4.4: Store synonyms into thesaurus table
       //? ==============================================================
       // Same as syllables
-      wordCardDetails.synonymList.forEach((String synonym) async {
+      for (final String synonym in wordCardDetails.synonymList) {
         final int synonymWordID = await _getExistingOrNewWordID(synonym);
-        _linkSenseAndThesaurus(senseID, synonymWordID);
-      });
+        await _linkSenseAndThesaurus(senseID, synonymWordID);
+      }
 
       //? Step 4.5: Store antonyms into thesaurus table
       //? ==============================================================
       // Same as syllables
-      wordCardDetails.antonymList.forEach((String antonym) async {
+      for (final String antonym in wordCardDetails.antonymList) {
         final int antonymWordID = await _getExistingOrNewWordID(antonym);
-        _linkSenseAndThesaurus(senseID, antonymWordID, isAntonym: true);
-      });
-    });
+        await _linkSenseAndThesaurus(senseID, antonymWordID, isAntonym: true);
+      }
+    }
 
     return true;
   }

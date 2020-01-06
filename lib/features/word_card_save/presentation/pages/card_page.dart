@@ -8,6 +8,7 @@ import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/side_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:vocab/features/word_card_save/data/data_source/card_database.dart';
+import 'package:vocab/injection_container.dart';
 
 class CardPage extends StatefulWidget {
   CardPage({Key key}) : super(key: key);
@@ -41,7 +42,7 @@ class _CardPageState extends State<CardPage> with TickerProviderStateMixin {
             icon: Icon(Icons.add),
             tooltip: 'Add new word entry',
             onPressed: () {
-              Navigator.pushNamed(context, '${Page.CardFormPage}', arguments: _buildWordCard());
+              Navigator.pushNamed(context, '${Page.CardFormPage}');
             },
           ),
         ],
@@ -54,8 +55,8 @@ class _CardPageState extends State<CardPage> with TickerProviderStateMixin {
         ),
       ),
       drawer: SideDrawer(page: Page.CardPage),
-      body: Provider(
-        create: (BuildContext context) => CardDatabase(),
+      body: Provider<CardDatabase>(
+        create: (BuildContext context) => sl(),
         child: TabBarView(
           controller: _controller,
           children: <Widget>[Container(), ViewSavedWords()],
@@ -90,84 +91,4 @@ class ViewSavedWords extends StatelessWidget {
       },
     );
   }
-}
-
-WordCard _buildWordCard() {
-  return WordCard(
-    word: "race",
-    detailList: [
-      WordCardDetails(
-        definition: "compete in a race",
-        partOfSpeech: "verb",
-        synonymList: ["run"],
-        exampleList: ["let's race and see who gets there first"],
-      ),
-      WordCardDetails(
-        definition:
-            "the flow of air that is driven backwards by an aircraft propeller",
-        partOfSpeech: "noun",
-        synonymList: ["airstream", "backwash", "slipstream", "wash"],
-      ),
-      WordCardDetails(
-        definition: "cause to move fast or to rush or race",
-        partOfSpeech: "verb",
-        synonymList: ["rush"],
-        exampleList: ["The psychologist raced the rats through a long maze"],
-      ),
-      WordCardDetails(
-        definition: "move hurridly",
-        partOfSpeech: "verb",
-        synonymList: [
-          "belt along",
-          "bucket along",
-          "cannonball along",
-          "hasten",
-          "hie",
-          "hotfoot",
-          "pelt along",
-          "rush",
-          "rush along",
-          "speed",
-          "step on it"
-        ],
-        exampleList: ["The cars raced down the street"],
-      ),
-      WordCardDetails(
-        definition: "a canal for a current of water",
-        partOfSpeech: "noun",
-        synonymList: ["raceway"],
-      ),
-      WordCardDetails(
-        definition:
-            "(biology) a taxonomic group that is a division of a species; usually arises as a consequence of geographical isolation within a species",
-        partOfSpeech: "noun",
-        synonymList: ["subspecies"],
-      ),
-      WordCardDetails(
-        definition: "a contest of speed",
-        partOfSpeech: "noun",
-        exampleList: ["the race is to the swift"],
-      ),
-      WordCardDetails(
-        definition: "any competition",
-        partOfSpeech: "noun",
-        exampleList: ["the race for the presidency"],
-      ),
-      WordCardDetails(
-        definition:
-            "people who are believed to belong to the same genetic stock",
-        partOfSpeech: "noun",
-        exampleList: [
-          "some biologists doubt that there are important genetic differences between races of human beings"
-        ],
-      ),
-      WordCardDetails(
-        definition:
-            "to work as fast as possible towards a goal, sometimes in competition with others",
-        partOfSpeech: "verb",
-      ),
-    ],
-    syllables: s.Syllable(count: 1, list: ["race"]),
-    pronunciation: Pronunciation(all: "res"),
-  );
 }

@@ -3,12 +3,13 @@ import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/ui/widgets/headline_text.dart';
 
 import 'custom_text_field.dart';
-import 'increasing_text_fields.dart';
+
+const String SEPERATOR = ", ";
 
 class SenseForm extends StatelessWidget {
   final WordCardDetails initSense;
   final Function(SenseForm) removeField;
-  final List<Widget> _children;
+  final List<CustomTextField> _children;
 
   SenseForm({
     Key key,
@@ -25,17 +26,20 @@ class SenseForm extends StatelessWidget {
             helperText: 'Noun',
             initValue: initSense.partOfSpeech,
           ),
-          IncreasingTextFields(
-            title: 'Example',
-            initValue: initSense.exampleList,
+          CustomTextField(
+            labelText: 'Examples',
+            helperText: 'Giving an instance of',
+            initValue: initSense.exampleList?.join(SEPERATOR),
           ),
-          IncreasingTextFields(
-            title: 'Synonym',
-            initValue: initSense.synonymList,
+          CustomTextField(
+            labelText: 'Synonyms',
+            helperText: 'Noun',
+            initValue: initSense.synonymList?.join(SEPERATOR),
           ),
-          IncreasingTextFields(
-            title: 'Antonym',
-            initValue: initSense.antonymList,
+          CustomTextField(
+            labelText: 'Antonyms',
+            helperText: 'Giving an instance of',
+            initValue: initSense.antonymList?.join(SEPERATOR),
           ),
         ],
         super(key: key);
@@ -74,26 +78,11 @@ class SenseForm extends StatelessWidget {
   }
 
   WordCardDetails getSenseFormValues() {
-    String definition, partOfSpeech;
-    List<String> examples, synonyms, antonyms;
-
-    final defField = _children[0];
-    if (defField is CustomTextField) definition = defField.controller.text;
-
-    final posField = _children[1];
-    if (posField is CustomTextField) partOfSpeech = posField.controller.text;
-
-    final examplesField = _children[2];
-    if (examplesField is IncreasingTextFields)
-      examples = examplesField.getFormTextStrings();
-
-    final synonymsField = _children[3];
-    if (synonymsField is IncreasingTextFields)
-      synonyms = synonymsField.getFormTextStrings();
-
-    final antonymsField = _children[4];
-    if (antonymsField is IncreasingTextFields)
-      antonyms = antonymsField.getFormTextStrings();
+    final String definition = _children[0].controller.text;
+    final String partOfSpeech = _children[1].controller.text;
+    final List<String> examples = _children[2].controller.text?.split(SEPERATOR);
+    final List<String> synonyms = _children[3].controller.text?.split(SEPERATOR);
+    final List<String> antonyms = _children[4].controller.text?.split(SEPERATOR);
 
     return WordCardDetails(
       definition: definition,

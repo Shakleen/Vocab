@@ -22,9 +22,14 @@ class CustomTextField extends StatelessWidget {
         controller: controller,
         validator: _validate,
         keyboardType: TextInputType.text,
+        minLines: 1,
+        maxLines: 300,
         decoration: InputDecoration(
+          labelStyle: TextStyle(
+            color: Theme.of(context).primaryColor,
+          ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(35.0),
+            borderRadius: BorderRadius.circular(5.0),
           ),
           hintStyle: TextStyle(
             color: Theme.of(context).primaryColor,
