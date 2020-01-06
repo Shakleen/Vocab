@@ -3,6 +3,7 @@ import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
 import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
+import 'package:sqflite/src/exception.dart';
 
 part 'card_database.g.dart';
 
@@ -146,139 +147,177 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
 
   WordDao(this.cardDatabase) : super(cardDatabase);
 
+  Future<Word> _getWordFromString(String inputWord) async {
+    return (select(words)..where((table) => table.word.equals(inputWord)))
+        .getSingle();
+  }
+
   Future<int> _getWordID(String word) async {
-    return (await (select(words)..where((table) => table.word.equals(word)))
-            .getSingle())
-        .id;
+    return (await _getWordFromString(word)).id;
+  }
+
+  Future<int> _getExistingOrNewWordID(String inputWord) async {
+    final Word searchedWord = await (_getWordFromString(inputWord));
+
+    if (searchedWord != null) {
+      return searchedWord.id;
+    } else {
+      return await into(words).insert(Word(word: inputWord));
+    }
+  }
+
+  Future<int> _getExistingOrNewEntryID(int wordID, WordCard wordCard) async {
+    final Entry searchEntry = await (select(entries)
+          ..where((table) => table.wordId.equals(wordID)))
+        .getSingle();
+
+    if (searchEntry != null) {
+      return searchEntry.id;
+    } else {
+      return into(entries).insert(
+        Entry(
+          wordId: wordID,
+          addedOn: DateTime.now(),
+          pronunciation: wordCard.pronunciation.all,
+        ),
+      );
+    }
   }
 
   Future<Entry> _getEntryByWord(String word) async {
-    int wordID = await _getWordID(word);
+    final int wordID = await _getWordID(word);
     return (select(entries)..where((table) => table.id.equals(wordID)))
         .getSingle();
   }
 
-  Future<int> _getWordIDofExistingOrNew(String word) async {
-    int wordID = -1;
+  Future<int> _getExistingOrNewSyllableID(String inputSyllable) async {
+    final Syllable searchSyllable = await (select(syllables)
+          ..where((table) => table.syllable.equals(inputSyllable)))
+        .getSingle();
 
-    try {
-      wordID = await into(words).insert(Word(word: word));
-    } catch (e) {
-      print(e);
-      wordID = await _getWordID(word);
+    if (searchSyllable != null) {
+      return searchSyllable.id;
+    } else {
+      return into(syllables).insert(Syllable(syllable: inputSyllable));
     }
-
-    return wordID;
   }
 
-  Future<int> _getSyllableIDofExistingOrNew(String syllable) async {
-    int syllableID = -1;
+  Future<int> _getExistingOrNewPartOfSpeechID(String partOfSpeech) async {
+    final PartsOfSpeechData pos = await (select(partsOfSpeech)
+          ..where((table) => table.partOfSpeech.equals(partOfSpeech)))
+        .getSingle();
 
-    try {
-      syllableID = await into(syllables).insert(Syllable(syllable: syllable));
-    } catch (e) {
-      syllableID = (await (select(syllables)
-                ..where((table) => table.syllable.equals(syllable)))
-              .getSingle())
-          .id;
+    if (pos != null) {
+      return pos.id;
+    } else {
+      return into(partsOfSpeech).insert(
+        PartsOfSpeechData(partOfSpeech: partOfSpeech),
+      );
     }
-
-    return syllableID;
   }
 
-  Future<int> _getPartOfSpeechIDofExistingOrNew(String partOfSpeech) async {
-    int partOfSpeechID = -1;
-
-    try {
-      partOfSpeechID = await into(partsOfSpeech).insert(PartsOfSpeechData(
-        partOfSpeech: partOfSpeech,
-      ));
-    } catch (e) {
-      partOfSpeechID = (await (select(partsOfSpeech)
-                ..where((table) => table.partOfSpeech.equals(partOfSpeech)))
-              .getSingle())
-          .id;
+  Future<int> _getExistingOrNewExampleID(String inputExample) async {
+    final Example searchExample = await (select(examples)
+          ..where((table) => table.sentence.equals(inputExample)))
+        .getSingle();
+    if (searchExample != null) {
+      return searchExample.id;
+    } else {
+      return into(examples).insert(Example(sentence: inputExample));
     }
-
-    return partOfSpeechID;
   }
 
-  Future<int> _getExampleIDofExistingOrNew(String example) async {
-    int exampleID = -1;
+  Future<void> _linkEntryAndSyllable(int entryID, int syllableID) async {
+    into(syllableList).insert(
+      SyllableListData(entryId: entryID, syllableId: syllableID),
+    );
+  }
 
-    try {
-      exampleID = await into(examples).insert(Example(sentence: example));
-    } catch (e) {
-      exampleID = (await (select(examples)
-                ..where((table) => table.sentence.equals(example)))
-              .getSingle())
-          .id;
-    }
+  Future<void> _linkSenseAndExample(int exampleID, int senseID) async {
+    into(exampleList).insert(
+      ExampleListData(exampleId: exampleID, senseId: senseID),
+    );
+  }
 
-    return exampleID;
+  Future<void> _linkSenseAndThesaurus(
+    int senseID,
+    int wordID, {
+    bool isAntonym = false,
+  }) async {
+    into(thesaurusList).insert(
+      ThesaurusListData(
+        senseId: senseID,
+        wordId: wordID,
+        isAntonym: isAntonym,
+      ),
+    );
   }
 
   Future<bool> insertWordCard(WordCard wordCard) async {
-    //? Step 1: Store word into Words table.
-    int wordID = await _getWordIDofExistingOrNew(wordCard.word);
+    //? Step 1: Dealing with Word String
+    //? ==============================================================
+    // Do either of the following.
+    // If word exists in table, then get the word ID.
+    // Else insert word into table and then get the word ID.
+    final int wordID = await _getExistingOrNewWordID(wordCard.word);
 
-    //? Step 2: Store date, pronunciation and wordID into Words table
-    int entryID = await into(entries).insert(Entry(
-      wordId: wordID,
-      addedOn: DateTime.now(),
-      pronunciation: wordCard.pronunciation.all,
-    ));
+    //? Step 2: Dealing with Entry data
+    //? ==============================================================
+    // Do either of the following.
+    // If entry exists in table, then get the entry ID.
+    // Else insert entry into table and then get the entry ID.
+    final int entryID = await _getExistingOrNewEntryID(wordID, wordCard);
 
-    //? Step 3: Store and link each syllable with entry.
+    //? Step 3: Dealing with the syllable data
+    //? ==============================================================
+    // First get the Syllable ID.
+    // Next use the Syllable ID and entry ID to link the entry and
+    // the syllable.
     wordCard.syllables.list.forEach((String s) async {
-      //? Step 3.1: Store syllable part into Syllable table
-      int syllableID = await _getSyllableIDofExistingOrNew(s);
-
-      //? Step 3.2: Link entries and syllable part using SyllableList table
-      await into(syllableList).insert(SyllableListData(
-        entryId: entryID,
-        syllableId: syllableID,
-      ));
+      final int syllableID = await _getExistingOrNewSyllableID(s);
+      _linkEntryAndSyllable(entryID, syllableID);
     });
 
-    //? Step 4: Store sense and related details
+    //? Step 4: Dealing with senses list data
     wordCard.detailList.forEach((WordCardDetails wordCardDetails) async {
-      //? Step 4.1: Store part of speech data or get ID if already exists
-      int partOfSpeechID = await _getPartOfSpeechIDofExistingOrNew(
+      //? Step 4.1: Dealing with Part of Speech String
+      //? ==============================================================
+      // Same as word
+      final int partOfSpeechID = await _getExistingOrNewPartOfSpeechID(
         wordCardDetails.partOfSpeech,
       );
 
-      //? Step 4.2: Store sense into Sense table
+      //? Step 4.2: Dealing with Sense data
+      //? ==============================================================
+      // Same as entry
       int senseID = await into(senses).insert(Sense(
         definition: wordCardDetails.definition,
         entryId: entryID,
         partOfSpeech: partOfSpeechID,
       ));
 
-      //? Step 4.3: Store sense examples into example table
+      //? Step 4.3: Dealing with Examples data
+      //? ==============================================================
+      // Same as syllables
       wordCardDetails.exampleList.forEach((String example) async {
-        int exampleID = await _getExampleIDofExistingOrNew(example);
-        await into(exampleList)
-            .insert(ExampleListData(exampleId: exampleID, senseId: senseID));
+        final int exampleID = await _getExistingOrNewExampleID(example);
+        _linkSenseAndExample(exampleID, senseID);
       });
 
       //? Step 4.4: Store synonyms into thesaurus table
+      //? ==============================================================
+      // Same as syllables
       wordCardDetails.synonymList.forEach((String synonym) async {
-        int synonymWordID = await _getWordIDofExistingOrNew(synonym);
-
-        await into(thesaurusList)
-            .insert(ThesaurusListData(senseId: senseID, wordId: synonymWordID));
+        final int synonymWordID = await _getExistingOrNewWordID(synonym);
+        _linkSenseAndThesaurus(senseID, synonymWordID);
       });
 
       //? Step 4.5: Store antonyms into thesaurus table
+      //? ==============================================================
+      // Same as syllables
       wordCardDetails.antonymList.forEach((String antonym) async {
-        int antonymWordID = await _getWordIDofExistingOrNew(antonym);
-
-        await into(thesaurusList).insert(ThesaurusListData(
-          senseId: senseID,
-          wordId: antonymWordID,
-          isAntonym: true,
-        ));
+        final int antonymWordID = await _getExistingOrNewWordID(antonym);
+        _linkSenseAndThesaurus(senseID, antonymWordID, isAntonym: true);
       });
     });
 
@@ -373,14 +412,15 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   }
 
   Future<List<String>> getSavedWords() async {
-    return (await (select(words).join(
+    return (await (select(entries).join(
       [
-        leftOuterJoin(entries, entries.id.equalsExp(words.id)),
+        leftOuterJoin(words, words.id.equalsExp(entries.id)),
       ],
     )).get())
         .map(
-      (row) => row.readTable(words).word,
-    ).toList();
+          (row) => row.readTable(words).word,
+        )
+        .toList();
   }
 }
 
