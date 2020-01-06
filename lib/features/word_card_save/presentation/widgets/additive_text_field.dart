@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'custom_text_field.dart';
 
 class AdditiveTextField extends StatelessWidget {
+  final String initValue;
   final String helperText, labelText;
   final Function(AdditiveTextField) removeField;
   CustomTextField _field;
 
   AdditiveTextField({
     Key key,
+    this.initValue,
     this.helperText,
     this.labelText,
     @required this.removeField,
@@ -17,6 +19,7 @@ class AdditiveTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _field = CustomTextField(
+      initValue: initValue,
       helperText: helperText,
       labelText: labelText,
       isNullable: true,

@@ -5,9 +5,14 @@ import 'additive_text_field.dart';
 
 class IncreasingTextFields extends StatefulWidget {
   final String title;
+  final List<String> initValue;
   final List<Widget> _children = [];
 
-  IncreasingTextFields({Key key, @required this.title}) : super(key: key);
+  IncreasingTextFields({
+    Key key,
+    @required this.title,
+    this.initValue,
+  }) : super(key: key);
 
   @override
   _IncreasingTextFieldsState createState() => _IncreasingTextFieldsState();
@@ -17,7 +22,8 @@ class IncreasingTextFields extends StatefulWidget {
 
     _children.forEach((Widget child) {
       if (child is AdditiveTextField) {
-        formTexts.add(child.getText());
+        final String str = child.getText();
+        if (str.isNotEmpty) formTexts.add(str);
       }
     });
 
@@ -29,7 +35,7 @@ class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
   @override
   void initState() {
     super.initState();
-    widget._children.addAll([
+    widget._children.add(
       Row(
         children: <Widget>[
           Expanded(child: TitleText(text: widget.title)),
@@ -40,8 +46,22 @@ class _IncreasingTextFieldsState extends State<IncreasingTextFields> {
           ),
         ],
       ),
-      AdditiveTextField(labelText: widget.title, removeField: _removeField),
-    ]);
+    );
+
+    if (widget.initValue == null) {
+      widget._children.add(AdditiveTextField(
+        labelText: widget.title,
+        removeField: _removeField,
+      ));
+    } else {
+      widget.initValue.forEach((String value) {
+        widget._children.add(AdditiveTextField(
+          initValue: value,
+          labelText: widget.title,
+          removeField: _removeField,
+        ));
+      });
+    }
   }
 
   @override

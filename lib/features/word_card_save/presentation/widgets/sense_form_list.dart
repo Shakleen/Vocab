@@ -5,10 +5,11 @@ import 'package:vocab/core/ui/widgets/headline_text.dart';
 import 'sense_form.dart';
 
 class SenseFormList extends StatefulWidget {
+  final List<WordCardDetails> initSenses;
   final List<Map> senseValues = [];
   final List<Widget> _children = [];
 
-  SenseFormList({Key key}) : super(key: key);
+  SenseFormList({Key key, this.initSenses}) : super(key: key);
 
   @override
   _SenseFormListState createState() => _SenseFormListState();
@@ -26,7 +27,8 @@ class _SenseFormListState extends State<SenseFormList> {
   @override
   void initState() {
     super.initState();
-    widget._children.addAll([
+
+    widget._children.add(
       Row(
         children: <Widget>[
           Expanded(child: HeadlineText(text: 'Senses')),
@@ -37,8 +39,16 @@ class _SenseFormListState extends State<SenseFormList> {
           ),
         ],
       ),
-      SenseForm(removeField: _removeSenseForm),
-    ]);
+    );
+    if (widget.initSenses == null) {
+      widget._children.add(SenseForm(removeField: _removeSenseForm));
+    } else {
+      widget.initSenses.forEach((WordCardDetails sense) {
+        widget._children.add(
+          SenseForm(removeField: _removeSenseForm, initSense: sense),
+        );
+      });
+    }
   }
 
   @override

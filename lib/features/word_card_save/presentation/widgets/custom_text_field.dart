@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
-  final String helperText, labelText;
-  final TextEditingController controller = TextEditingController();
+  final String helperText, labelText, initValue;
+  final TextEditingController controller;
   final bool isNullable;
 
   CustomTextField({
     Key key,
+    this.initValue,
     this.helperText,
     this.labelText,
     this.isNullable = false,
-  }) : super(key: key);
+  })  : controller = TextEditingController(text: initValue),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

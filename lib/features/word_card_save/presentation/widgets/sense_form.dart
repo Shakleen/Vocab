@@ -6,22 +6,39 @@ import 'custom_text_field.dart';
 import 'increasing_text_fields.dart';
 
 class SenseForm extends StatelessWidget {
+  final WordCardDetails initSense;
   final Function(SenseForm) removeField;
-  final List<Widget> _children = [
-    CustomTextField(
-      labelText: 'Definition',
-      helperText: 'Giving an instance of',
-    ),
-    CustomTextField(
-      labelText: 'Part of speech',
-      helperText: 'Noun',
-    ),
-    IncreasingTextFields(title: 'Example'),
-    IncreasingTextFields(title: 'Synonym'),
-    IncreasingTextFields(title: 'Antonym'),
-  ];
+  final List<Widget> _children;
 
-  SenseForm({Key key, @required this.removeField}) : super(key: key);
+  SenseForm({
+    Key key,
+    @required this.removeField,
+    this.initSense,
+  })  : _children = [
+          CustomTextField(
+            labelText: 'Definition',
+            helperText: 'Giving an instance of',
+            initValue: initSense.definition,
+          ),
+          CustomTextField(
+            labelText: 'Part of speech',
+            helperText: 'Noun',
+            initValue: initSense.partOfSpeech,
+          ),
+          IncreasingTextFields(
+            title: 'Example',
+            initValue: initSense.exampleList,
+          ),
+          IncreasingTextFields(
+            title: 'Synonym',
+            initValue: initSense.synonymList,
+          ),
+          IncreasingTextFields(
+            title: 'Antonym',
+            initValue: initSense.antonymList,
+          ),
+        ],
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

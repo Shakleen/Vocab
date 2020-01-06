@@ -31,13 +31,23 @@ class _CardFormPageState extends State<CardFormPage> {
   void initState() {
     super.initState();
     _wordDao = db.CardDatabase().wordDao;
-    wordField = CustomTextField(labelText: 'Word', helperText: 'e.g. example');
+    wordField = CustomTextField(
+      initValue: widget.initialWordCard?.word,
+      labelText: 'Word',
+      helperText: 'e.g. example',
+    );
     pronunciationField = CustomTextField(
+      initValue: widget.initialWordCard?.pronunciation.all,
       labelText: 'Pronunciation',
       helperText: 'Audio file link',
     );
-    syllablesField = IncreasingTextFields(title: 'Syllable');
-    senseFormList = SenseFormList();
+    syllablesField = IncreasingTextFields(
+      title: 'Syllable',
+      initValue: widget.initialWordCard?.syllables.list,
+    );
+    senseFormList = SenseFormList(
+      initSenses: widget.initialWordCard?.detailList,
+    );
   }
 
   @override
