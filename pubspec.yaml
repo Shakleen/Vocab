@@ -20,6 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  intl: ^0.16.1
   path: ^1.6.4
   path_provider: ^1.5.1
   get_it: ^3.0.3

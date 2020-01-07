@@ -19,7 +19,7 @@ class ViewSavedWords extends StatelessWidget {
             return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
-                return WordTile(word: snapshot.data[index]);
+                return WordTile(wordSummary: snapshot.data[index]);
               },
             );
           }

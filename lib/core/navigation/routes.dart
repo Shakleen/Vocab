@@ -18,13 +18,19 @@ Route generateRoute(RouteSettings settings) {
       builder: (BuildContext context) => CardPage(),
     );
   } else if (settings.name == '${Page.CardFormPage}') {
-    final WordCard wordCard = _getWordCard(settings);
+    final args = settings.arguments;
 
-    return MaterialPageRoute(
-      builder: (BuildContext context) => CardFormPage(
-        initialWordCard: wordCard,
-      ),
-    );
+    if (args is Map) {
+      final bool isEditing = args['isEditing'];
+      final WordCard wordCard = args['wordCard'];
+
+      return MaterialPageRoute(
+        builder: (BuildContext context) => CardFormPage(
+          initialWordCard: wordCard,
+          isEditing: isEditing,
+        ),
+      );
+    }
   } else if (settings.name == '${Page.ShowWordInfoPage}') {
     final String word = settings.arguments;
 
@@ -36,8 +42,4 @@ Route generateRoute(RouteSettings settings) {
   return MaterialPageRoute(
     builder: (BuildContext context) => ErrorRoutePage(),
   );
-}
-
-WordCard _getWordCard(RouteSettings settings) {
-  return settings.arguments is WordCard ? settings.arguments : null;
 }

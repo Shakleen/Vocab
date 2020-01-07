@@ -1,15 +1,14 @@
-
 import 'package:flutter/material.dart';
 import 'package:vocab/core/database/card_database.dart';
 import 'package:provider/provider.dart';
+import 'package:vocab/core/entities/word_details_summary.dart';
 import 'package:vocab/core/navigation/routes.dart';
+import 'package:vocab/core/util/formatter.dart';
 
 class WordTile extends StatefulWidget {
-  final String word;
-  final int senseCount;
+  final WordDetailsSummary wordSummary;
 
-  const WordTile({Key key, @required this.word, this.senseCount = 0})
-      : super(key: key);
+  const WordTile({Key key, @required this.wordSummary}) : super(key: key);
 
   @override
   _WordTileState createState() => _WordTileState();
@@ -18,9 +17,13 @@ class WordTile extends StatefulWidget {
 class _WordTileState extends State<WordTile> {
   @override
   Widget build(BuildContext context) {
+    final String formattedDate = getFormattedDateTime(
+      widget.wordSummary.addedOn,
+    );
+
     return Dismissible(
       direction: DismissDirection.endToStart,
-      key: ValueKey(widget.word),
+      key: ValueKey(widget.wordSummary.word),
       background: Container(
         color: Theme.of(context).errorColor,
         child: Padding(
@@ -37,16 +40,17 @@ class _WordTileState extends State<WordTile> {
           leading: CircleAvatar(
             backgroundColor: Theme.of(context).primaryColor,
             child: Text(
-              '${widget.senseCount}',
+              '${widget.wordSummary.senses}',
             ),
           ),
-          title: Text(widget.word),
+          title: Text(widget.wordSummary.word),
+          subtitle: Text('Added on $formattedDate'),
         ),
         onTap: () {
           Navigator.pushNamed(
             context,
             '${Page.ShowWordInfoPage}',
-            arguments: widget.word,
+            arguments: widget.wordSummary.word,
           );
         },
         splashColor: Theme.of(context).primaryColorLight,
@@ -66,7 +70,7 @@ class _WordTileState extends State<WordTile> {
               color: Theme.of(context).errorColor,
             ),
           ),
-          content: Text('Do you really want to delete "${widget.word}?"'),
+          content: Text('Do you really want to delete "${widget.wordSummary.word}?"'),
           actions: <Widget>[
             RaisedButton(
               child: Text("Delete"),
@@ -88,7 +92,7 @@ class _WordTileState extends State<WordTile> {
   void _handleOnDismissed(DismissDirection direction) async {
     final bool result = await Provider.of<CardDatabase>(context, listen: false)
         .wordDao
-        .deleteWordCard(widget.word);
+        .deleteWordCard(widget.wordSummary.word);
     print('Deletion result: $result');
   }
 }

@@ -26,7 +26,10 @@ class ShowWordInfoPage extends StatelessWidget {
               Navigator.pushNamed(
                 context,
                 '${Page.CardFormPage}',
-                arguments: snapshot.data,
+                arguments: {
+                  'wordCard': snapshot.data,
+                  'isEditing': true,
+                },
               );
             };
           }

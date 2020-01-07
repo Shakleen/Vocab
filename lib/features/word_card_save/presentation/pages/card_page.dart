@@ -36,7 +36,13 @@ class _CardPageState extends State<CardPage> with TickerProviderStateMixin {
             icon: Icon(Icons.add),
             tooltip: 'Add new word entry',
             onPressed: () {
-              Navigator.pushNamed(context, '${Page.CardFormPage}');
+              Navigator.pushNamed(
+                context,
+                '${Page.CardFormPage}',
+                arguments: {
+                  'isEditing': false,
+                },
+              );
             },
           ),
         ],
@@ -53,5 +59,3 @@ class _CardPageState extends State<CardPage> with TickerProviderStateMixin {
     );
   }
 }
-
-

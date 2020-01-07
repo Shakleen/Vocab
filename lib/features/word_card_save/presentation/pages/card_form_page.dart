@@ -14,8 +14,13 @@ const String SEPERATOR = " | ";
 
 class CardFormPage extends StatefulWidget {
   final WordCard initialWordCard;
+  final bool isEditing;
 
-  CardFormPage({Key key, this.initialWordCard}) : super(key: key);
+  CardFormPage({
+    Key key,
+    this.initialWordCard,
+    this.isEditing = false,
+  }) : super(key: key);
 
   @override
   _CardFormPageState createState() => _CardFormPageState();
@@ -68,9 +73,7 @@ class _CardFormPageState extends State<CardFormPage> {
           children: [
             Center(
               child: DisplayWordText(
-                text: widget.initialWordCard == null
-                    ? 'Add new'
-                    : 'Edit existing',
+                text: widget.isEditing ? 'Edit existing' : 'Add new',
               ),
             ),
             wordField,
@@ -91,24 +94,6 @@ class _CardFormPageState extends State<CardFormPage> {
         syllablesField.controller.value.text?.split(SEPERATOR);
     final List<WordCardDetails> details = senseFormList.getSenseValues();
 
-    // print(word);
-    // print(pronunciation);
-    // print(syllables);
-
-    // details.forEach((WordCardDetails details) {
-    //   print('Definition: ${details.definition}');
-    //   print('POS: ${details.partOfSpeech}');
-
-    //   print('Examples');
-    //   details.exampleList.forEach((String e) => print(e));
-    //   print('Synonyms');
-    //   details.synonymList.forEach((String e) => print(e));
-    //   print('Antonyms');
-    //   details.antonymList.forEach((String e) => print(e));
-
-    //   print('\n\n');
-    // });
-
     final WordCard wordCard = WordCard(
       word: word,
       pronunciation: Pronunciation(all: pronunciation),
@@ -116,8 +101,15 @@ class _CardFormPageState extends State<CardFormPage> {
       detailList: details,
     );
 
-    final bool result = await _wordDao.insertWordCard(wordCard);
-    print('Insertion result: $result');
+    bool result;
+
+    if (widget.isEditing) {
+      result = await _wordDao.updateWordCard(wordCard);
+      print('Update result: $result');
+    } else {
+      result = await _wordDao.insertWordCard(wordCard);
+      print('Insertion result: $result');
+    }
 
     if (result) Navigator.pop(context);
   }

@@ -17,7 +17,10 @@ class SaveWordButton extends StatelessWidget {
             Navigator.pushNamed(
               context,
               '${Page.CardFormPage}',
-              arguments: state.wordCard,
+                arguments: {
+                  'wordCard': state.wordCard,
+                  'isEditing': false,
+                },
             );
           };
         }

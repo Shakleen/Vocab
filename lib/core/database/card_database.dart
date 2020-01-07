@@ -4,6 +4,7 @@ import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
 import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
 import 'package:sqflite/src/exception.dart';
+import 'package:vocab/core/entities/word_details_summary.dart';
 
 part 'card_database.g.dart';
 
@@ -253,33 +254,9 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     );
   }
 
-  Future<bool> insertWordCard(WordCard wordCard) async {
-    //? Step 1: Dealing with Word String
-    //? ==============================================================
-    // Do either of the following.
-    // If word exists in table, then get the word ID.
-    // Else insert word into table and then get the word ID.
-    final int wordID = await _getExistingOrNewWordID(wordCard.word);
-
-    //? Step 2: Dealing with Entry data
-    //? ==============================================================
-    // Do either of the following.
-    // If entry exists in table, then get the entry ID.
-    // Else insert entry into table and then get the entry ID.
-    final int entryID = await _getExistingOrNewEntryID(wordID, wordCard);
-
-    //? Step 3: Dealing with the syllable data
-    //? ==============================================================
-    // First get the Syllable ID.
-    // Next use the Syllable ID and entry ID to link the entry and
-    // the syllable.
-    for (final String s in wordCard.syllables.list) {
-      final int syllableID = await _getExistingOrNewSyllableID(s);
-      await _linkEntryAndSyllable(entryID, syllableID);
-    }
-
-    //? Step 4: Dealing with senses list data
-    for (final WordCardDetails wordCardDetails in wordCard.detailList) {
+  Future<void> _insertEntrySenseData(
+      int entryID, List<WordCardDetails> detailList) async {
+    for (final WordCardDetails wordCardDetails in detailList) {
       //? Step 4.1: Dealing with Part of Speech String
       //? ==============================================================
       // Same as word
@@ -323,6 +300,40 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
         await _linkSenseAndThesaurus(senseID, antonymWordID, isAntonym: true);
       }
     }
+  }
+
+  Future<void> _insertEntrySyllables(
+      int entryID, List<String> syllableList) async {
+    for (final String s in syllableList) {
+      final int syllableID = await _getExistingOrNewSyllableID(s);
+      await _linkEntryAndSyllable(entryID, syllableID);
+    }
+  }
+
+  Future<bool> insertWordCard(WordCard wordCard) async {
+    //? Step 1: Dealing with Word String
+    //? ==============================================================
+    // Do either of the following.
+    // If word exists in table, then get the word ID.
+    // Else insert word into table and then get the word ID.
+    final int wordID = await _getExistingOrNewWordID(wordCard.word);
+
+    //? Step 2: Dealing with Entry data
+    //? ==============================================================
+    // Do either of the following.
+    // If entry exists in table, then get the entry ID.
+    // Else insert entry into table and then get the entry ID.
+    final int entryID = await _getExistingOrNewEntryID(wordID, wordCard);
+
+    //? Step 3: Dealing with the syllable data
+    //? ==============================================================
+    // First get the Syllable ID.
+    // Next use the Syllable ID and entry ID to link the entry and
+    // the syllable.
+    await _insertEntrySyllables(entryID, wordCard.syllables.list);
+
+    //? Step 4: Dealing with senses list data
+    await _insertEntrySenseData(entryID, wordCard.detailList);
 
     return true;
   }
@@ -450,32 +461,45 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     );
   }
 
-  Future<List<String>> getSavedWords() async {
-    return (await (select(entries).join(
-      [
-        leftOuterJoin(words, words.id.equalsExp(entries.wordId)),
-      ],
-    )).get())
-        .map(
-          (row) => row.readTable(words).word,
-        )
-        .toList();
+  Future<List<WordDetailsSummary>> getSavedWords() async {
+    final List<Entry> dbEntryList = await select(entries).get();
+    final List<WordDetailsSummary> detailSummaryList = [];
+
+    for (final Entry dbEntry in dbEntryList) {
+      final Word word = await (select(words)
+            ..where((table) => table.id.equals(dbEntry.wordId)))
+          .getSingle();
+
+      final List<Sense> dbSenseList = await (select(senses)
+            ..where((table) => table.entryId.equals(dbEntry.id)))
+          .get();
+
+      detailSummaryList.add(
+        WordDetailsSummary(
+          word: word.word,
+          addedOn: dbEntry.addedOn,
+          senses: dbSenseList.length,
+        ),
+      );
+    }
+
+    return detailSummaryList;
   }
 
   Future<int> _deleteSenseExampleLinks(int senseID) async {
-    return (delete(exampleList)
+    return await (delete(exampleList)
           ..where((table) => table.senseId.equals(senseID)))
         .go();
   }
 
   Future<int> _deleteSenseThesaurusLinks(int senseID, bool isAntonym) async {
-    return (delete(thesaurusList)
+    return await (delete(thesaurusList)
           ..where((table) => table.senseId.equals(senseID)..equals(isAntonym)))
         .go();
   }
 
   Future<int> _deleteSenseByID(int id) async {
-    return (delete(senses)..where((table) => table.id.equals(id))).go();
+    return await (delete(senses)..where((table) => table.id.equals(id))).go();
   }
 
   Future<void> _deleteEntrySenseData(int entryID) async {
@@ -497,11 +521,14 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   }
 
   Future<int> _deleteEntrySyllableLinks(int entryID) async {
-    return (delete(syllableList)..where((table) => table.entryId.equals(entryID))).go();
+    return await (delete(syllableList)
+          ..where((table) => table.entryId.equals(entryID)))
+        .go();
   }
 
   Future<int> _deleteEntryByID(int entryID) async {
-    return (delete(entries)..where((table) => table.id.equals(entryID))).go();
+    return await (delete(entries)..where((table) => table.id.equals(entryID)))
+        .go();
   }
 
   Future<bool> deleteWordCard(String word) async {
@@ -509,6 +536,30 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     await _deleteEntrySenseData(dbEntry.id);
     await _deleteEntrySyllableLinks(dbEntry.id);
     await _deleteEntryByID(dbEntry.id);
+    return true;
+  }
+
+  Future<bool> updateWordCard(WordCard wordCard) async {
+    final Entry dbEntry = await _getEntryByWord(wordCard.word);
+
+    //? Step 1: Update entry details
+    await update(entries).replace(
+      Entry(
+        id: dbEntry.id,
+        pronunciation: wordCard.pronunciation.all,
+        wordId: dbEntry.wordId,
+        addedOn: dbEntry.addedOn,
+      ),
+    );
+
+    //? Step 2: Delete and reinsert updated syllables
+    await _deleteEntrySyllableLinks(dbEntry.id);
+    await _insertEntrySyllables(dbEntry.id, wordCard.syllables.list);
+
+    //? Step 3: Delete and reinsert senses
+    await _deleteEntrySenseData(dbEntry.id);
+    await _insertEntrySenseData(dbEntry.id, wordCard.detailList);
+
     return true;
   }
 }
