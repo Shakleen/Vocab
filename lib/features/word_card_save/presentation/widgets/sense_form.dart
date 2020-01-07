@@ -4,7 +4,7 @@ import 'package:vocab/core/ui/widgets/headline_text.dart';
 
 import 'custom_text_field.dart';
 
-const String SEPERATOR = ", ";
+const String SEPERATOR = " | ";
 
 class SenseForm extends StatelessWidget {
   final WordCardDetails initSense;
@@ -19,27 +19,30 @@ class SenseForm extends StatelessWidget {
           CustomTextField(
             labelText: 'Definition',
             helperText: 'Giving an instance of',
-            initValue: initSense.definition,
+            initValue: initSense?.definition,
           ),
           CustomTextField(
             labelText: 'Part of speech',
             helperText: 'Noun',
-            initValue: initSense.partOfSpeech,
+            initValue: initSense?.partOfSpeech,
           ),
           CustomTextField(
             labelText: 'Examples',
             helperText: 'Giving an instance of',
-            initValue: initSense.exampleList?.join(SEPERATOR),
+            initValue: initSense?.exampleList?.join(SEPERATOR),
+            isNullable: true,
           ),
           CustomTextField(
             labelText: 'Synonyms',
             helperText: 'Noun',
-            initValue: initSense.synonymList?.join(SEPERATOR),
+            initValue: initSense?.synonymList?.join(SEPERATOR),
+            isNullable: true,
           ),
           CustomTextField(
             labelText: 'Antonyms',
             helperText: 'Giving an instance of',
-            initValue: initSense.antonymList?.join(SEPERATOR),
+            initValue: initSense?.antonymList?.join(SEPERATOR),
+            isNullable: true,
           ),
         ],
         super(key: key);

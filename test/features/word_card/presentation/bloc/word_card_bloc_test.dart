@@ -48,7 +48,7 @@ void main() {
   });
 
   test('Inital state should be [Empty]', () {
-    expect(bloc.state, equals(EmptyState()));
+    expect(bloc.state, equals(EmptyWordCardState()));
   });
 
   test(
@@ -72,7 +72,7 @@ void main() {
       );
     },
     act: setupBlocAct,
-    expect: [EmptyState(), ErrorState(message: INVALID_INPUT_ERROR_MESSAGE)],
+    expect: [EmptyWordCardState(), ErrorWordCardState(message: INVALID_INPUT_ERROR_MESSAGE)],
   );
 
   test('should call GetWordDefinition usecase to get word entry data',
@@ -96,9 +96,9 @@ void main() {
     },
     act: setupBlocAct,
     expect: [
-      EmptyState(),
-      LoadingState(),
-      LoadedState(wordCard: tWordCard),
+      EmptyWordCardState(),
+      LoadingWordCardState(),
+      LoadedWordCardState(wordCard: tWordCard),
     ],
   );
 
@@ -116,7 +116,7 @@ void main() {
         );
       },
       act: setupBlocAct,
-      expect: [EmptyState(), LoadingState(), ErrorState(message: message)],
+      expect: [EmptyWordCardState(), LoadingWordCardState(), ErrorWordCardState(message: message)],
     );
   }
 

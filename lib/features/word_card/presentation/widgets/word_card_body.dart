@@ -13,13 +13,13 @@ class WordCardBody extends StatelessWidget {
   Widget build(BuildContext context) =>
       BlocBuilder<WordCardBloc, WordCardState>(
         builder: (BuildContext context, WordCardState state) {
-          if (state is EmptyState) {
+          if (state is EmptyWordCardState) {
             return EmptyStateUI();
-          } else if (state is LoadingState) {
+          } else if (state is LoadingWordCardState) {
             return LoadingStateUI();
-          } else if (state is LoadedState) {
+          } else if (state is LoadedWordCardState) {
             return LoadedStateUI(wordCard: state.wordCard);
-          } else if (state is ErrorState) {
+          } else if (state is ErrorWordCardState) {
             return ErrorStateUI(message: state.message);
           }
         },

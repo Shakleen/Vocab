@@ -14,7 +14,8 @@ import 'package:vocab/features/word_card/domain/repository/word_card_repository.
 import 'package:vocab/features/word_card/domain/usecase/get_word_card.dart';
 import 'package:vocab/features/word_card/presentation/bloc/bloc.dart';
 
-import 'features/word_card_save/data/data_source/card_database.dart';
+import 'core/database/card_database.dart';
+
 
 final sl = GetIt.instance;
 

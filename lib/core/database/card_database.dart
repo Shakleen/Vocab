@@ -300,6 +300,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       //? ==============================================================
       // Same as syllables
       for (final String example in wordCardDetails.exampleList) {
+        if (example.isEmpty) continue;
         final int exampleID = await _getExistingOrNewExampleID(example);
         await _linkSenseAndExample(exampleID, senseID);
       }
@@ -308,6 +309,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       //? ==============================================================
       // Same as syllables
       for (final String synonym in wordCardDetails.synonymList) {
+        if (synonym.isEmpty) continue;
         final int synonymWordID = await _getExistingOrNewWordID(synonym);
         await _linkSenseAndThesaurus(senseID, synonymWordID);
       }
@@ -316,6 +318,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       //? ==============================================================
       // Same as syllables
       for (final String antonym in wordCardDetails.antonymList) {
+        if (antonym.isEmpty) continue;
         final int antonymWordID = await _getExistingOrNewWordID(antonym);
         await _linkSenseAndThesaurus(senseID, antonymWordID, isAntonym: true);
       }

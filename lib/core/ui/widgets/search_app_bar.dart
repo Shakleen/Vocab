@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vocab/core/ui/widgets/save_word_button.dart';
 
 import 'app_title.dart';
 import 'search_bar.dart';
@@ -19,7 +20,14 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             AppTitle(),
-            SearchBar(),
+            Expanded(
+              child: Row(
+                children: <Widget>[
+                  Expanded(child: SearchBar()),
+                  SaveWordButton(),
+                ],
+              ),
+            ),
             tabBar,
           ],
         ),

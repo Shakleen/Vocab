@@ -5,13 +5,12 @@ import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/display_word_text.dart';
-import 'package:vocab/features/word_card_save/data/data_source/card_database.dart'
-    as db;
+import 'package:vocab/core/database/card_database.dart' as db;
 import 'package:vocab/features/word_card_save/presentation/widgets/custom_text_field.dart';
 import 'package:vocab/features/word_card_save/presentation/widgets/sense_form_list.dart';
 import 'package:vocab/injection_container.dart';
 
-const String SEPERATOR = ", ";
+const String SEPERATOR = " | ";
 
 class CardFormPage extends StatefulWidget {
   final WordCard initialWordCard;
@@ -39,12 +38,12 @@ class _CardFormPageState extends State<CardFormPage> {
       helperText: 'e.g. example',
     );
     pronunciationField = CustomTextField(
-      initValue: widget.initialWordCard?.pronunciation.all,
+      initValue: widget.initialWordCard?.pronunciation?.all,
       labelText: 'Pronunciation',
       helperText: 'Audio file link',
     );
     syllablesField = CustomTextField(
-      initValue: widget.initialWordCard?.syllables.list?.join(SEPERATOR),
+      initValue: widget.initialWordCard?.syllables?.list?.join(SEPERATOR),
       labelText: "Syllables",
       helperText: "Separate each value with a comma",
     );
@@ -88,26 +87,27 @@ class _CardFormPageState extends State<CardFormPage> {
     if (!_formKey.currentState.validate()) return;
     final String word = wordField.controller.value.text;
     final String pronunciation = pronunciationField.controller.value.text;
-    final List<String> syllables = syllablesField.controller.value.text?.split(SEPERATOR);
+    final List<String> syllables =
+        syllablesField.controller.value.text?.split(SEPERATOR);
     final List<WordCardDetails> details = senseFormList.getSenseValues();
 
-    print(word);
-    print(pronunciation);
-    print(syllables);
+    // print(word);
+    // print(pronunciation);
+    // print(syllables);
 
-    details.forEach((WordCardDetails details) {
-      print('Definition: ${details.definition}');
-      print('POS: ${details.partOfSpeech}');
+    // details.forEach((WordCardDetails details) {
+    //   print('Definition: ${details.definition}');
+    //   print('POS: ${details.partOfSpeech}');
 
-      print('Examples');
-      details.exampleList.forEach((String e) => print(e));
-      print('Synonyms');
-      details.synonymList.forEach((String e) => print(e));
-      print('Antonyms');
-      details.antonymList.forEach((String e) => print(e));
+    //   print('Examples');
+    //   details.exampleList.forEach((String e) => print(e));
+    //   print('Synonyms');
+    //   details.synonymList.forEach((String e) => print(e));
+    //   print('Antonyms');
+    //   details.antonymList.forEach((String e) => print(e));
 
-      print('\n\n');
-    });
+    //   print('\n\n');
+    // });
 
     final WordCard wordCard = WordCard(
       word: word,

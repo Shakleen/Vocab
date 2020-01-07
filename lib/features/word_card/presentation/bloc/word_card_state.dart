@@ -5,29 +5,29 @@ abstract class WordCardState extends Equatable {
   const WordCardState();
 }
 
-class EmptyState extends WordCardState {
+class EmptyWordCardState extends WordCardState {
   @override
   List<Object> get props => [];
 }
 
-class LoadingState extends WordCardState {
+class LoadingWordCardState extends WordCardState {
   @override
   List<Object> get props => [];
 }
 
-class LoadedState extends WordCardState {
+class LoadedWordCardState extends WordCardState {
   final WordCard wordCard;
 
-  LoadedState({this.wordCard});
+  LoadedWordCardState({this.wordCard});
 
   @override
   List<Object> get props => [wordCard];
 }
 
-class ErrorState extends WordCardState {
+class ErrorWordCardState extends WordCardState {
   final String message;
 
-  ErrorState({this.message});
+  ErrorWordCardState({this.message});
   
   @override
   List<Object> get props => [message];

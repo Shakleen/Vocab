@@ -18,7 +18,7 @@ class WordCardBloc extends Bloc<WordCardEvent, WordCardState> {
   });
 
   @override
-  WordCardState get initialState => EmptyState();
+  WordCardState get initialState => EmptyWordCardState();
 
   @override
   Stream<WordCardState> mapEventToState(
@@ -31,20 +31,20 @@ class WordCardBloc extends Bloc<WordCardEvent, WordCardState> {
   }
 
   Stream<WordCardState> _handleInvalidInput(InvalidInputFailure l) async* {
-    yield ErrorState(message: INVALID_INPUT_ERROR_MESSAGE);
+    yield ErrorWordCardState(message: INVALID_INPUT_ERROR_MESSAGE);
   }
 
   Stream<WordCardState> _handleValidInput(String r) async* {
-    yield LoadingState();
+    yield LoadingWordCardState();
     final result = await getWordCard(Param(queryWord: r));
     yield* result.fold(_handleFailure, _handleSuccess);
   }
 
   Stream<WordCardState> _handleFailure(Failure l) async* {
-    yield ErrorState(message: getErrorMessage(l));
+    yield ErrorWordCardState(message: getErrorMessage(l));
   }
 
   Stream<WordCardState> _handleSuccess(WordCard r) async* {
-    yield LoadedState(wordCard: r);
+    yield LoadedWordCardState(wordCard: r);
   }
 }

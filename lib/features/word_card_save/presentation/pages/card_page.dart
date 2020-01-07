@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:vocab/core/entities/pronunciation.dart';
-import 'package:vocab/core/entities/syllable.dart' as s;
-import 'package:vocab/core/entities/word_card.dart';
-import 'package:vocab/core/entities/word_card_details.dart';
+import 'package:vocab/core/database/card_database.dart';
 import 'package:vocab/core/navigation/routes.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/side_drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:vocab/features/word_card_save/data/data_source/card_database.dart';
-import 'package:vocab/injection_container.dart';
 
 class CardPage extends StatefulWidget {
   CardPage({Key key}) : super(key: key);
@@ -48,19 +43,13 @@ class _CardPageState extends State<CardPage> with TickerProviderStateMixin {
         ],
         bottom: TabBar(
           controller: _controller,
-          tabs: <Widget>[
-            Tab(text: 'Statistics'),
-            Tab(text: 'Saved'),
-          ],
+          tabs: <Widget>[Tab(text: 'Statistics'), Tab(text: 'Saved')],
         ),
       ),
       drawer: SideDrawer(page: Page.CardPage),
-      body: Provider<CardDatabase>(
-        create: (BuildContext context) => sl(),
-        child: TabBarView(
-          controller: _controller,
-          children: <Widget>[Container(), ViewSavedWords()],
-        ),
+      body: TabBarView(
+        controller: _controller,
+        children: <Widget>[Container(), ViewSavedWords()],
       ),
     );
   }
