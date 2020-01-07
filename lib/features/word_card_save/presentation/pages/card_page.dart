@@ -4,6 +4,7 @@ import 'package:vocab/core/navigation/routes.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/side_drawer.dart';
 import 'package:provider/provider.dart';
+import 'package:vocab/features/word_card_save/presentation/widgets/view_saved_wrods.dart';
 
 class CardPage extends StatefulWidget {
   CardPage({Key key}) : super(key: key);
@@ -55,29 +56,4 @@ class _CardPageState extends State<CardPage> with TickerProviderStateMixin {
   }
 }
 
-class ViewSavedWords extends StatelessWidget {
-  const ViewSavedWords({Key key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Provider.of<CardDatabase>(context).wordDao.getSavedWords(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(title: Text(snapshot.data[index]));
-              },
-            );
-          }
-        }
-
-        return Container();
-      },
-    );
-  }
-}

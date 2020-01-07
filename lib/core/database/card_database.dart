@@ -417,7 +417,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   Future<List<String>> getSavedWords() async {
     return (await (select(entries).join(
       [
-        leftOuterJoin(words, words.id.equalsExp(entries.id)),
+        leftOuterJoin(words, words.id.equalsExp(entries.wordId)),
       ],
     )).get())
         .map(
