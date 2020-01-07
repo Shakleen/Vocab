@@ -186,7 +186,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
 
   Future<Entry> _getEntryByWord(String word) async {
     final int wordID = await _getWordID(word);
-    return (select(entries)..where((table) => table.id.equals(wordID)))
+    return (select(entries)..where((table) => table.wordId.equals(wordID)))
         .getSingle();
   }
 
@@ -327,79 +327,108 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     return true;
   }
 
-  Future<List<String>> _makeThesaurusList(
-      {int senseID, bool isAntonym = false}) async {
+  Future<List<SyllableListData>> _getEntrySyllableList(int entryID) async {
+    return (select(syllableList)
+          ..where((table) => table.entryId.equals(entryID)))
+        .get();
+  }
+
+  Future<Syllable> _getSyllableFromID(int syllableID) async {
+    return (select(syllables)..where((table) => table.id.equals(syllableID)))
+        .getSingle();
+  }
+
+  Future<List<Sense>> _getEntrySenseList(int entryID) async {
+    return (select(senses)..where((table) => table.entryId.equals(entryID)))
+        .get();
+  }
+
+  Future<PartsOfSpeechData> _getSensePartOfSpeech(int id) async {
+    return (select(partsOfSpeech)..where((table) => table.id.equals(id)))
+        .getSingle();
+  }
+
+  Future<List<ExampleListData>> _getSenseExampleList(int senseID) async {
+    return (select(exampleList)
+          ..where((table) => table.senseId.equals(senseID)))
+        .get();
+  }
+
+  Future<Example> _getExampleByID(int id) {
+    return (select(examples)..where((table) => table.id.equals(id)))
+        .getSingle();
+  }
+
+  Future<List<String>> _getSenseThesaurusList({
+    int senseID,
+    bool isAntonym = false,
+  }) async {
     final List<String> result = [];
     final List<ThesaurusListData> list =
         await ((select(thesaurusList)..where((table) => table.senseId.equals(senseID)))
               ..where((table) => table.isAntonym.equals(isAntonym)))
             .get();
-    list.forEach((ThesaurusListData data) async {
+    for (final ThesaurusListData data in list) {
       final String e = (await (select(words)
                 ..where((table) => table.id.equals(data.wordId)))
               .getSingle())
           .word;
       result.add(e);
-    });
+    }
 
     return result;
   }
 
   Future<WordCard> getWordCard(String word) async {
-    final List<String> sylList = [];
-    final List<WordCardDetails> detailsList = [];
+    final List<String> resultSyllableList = [];
+    final List<WordCardDetails> resultDetailsList = [];
 
     //? Step 1: Get entry level details.
     final Entry entry = await _getEntryByWord(word);
 
-    //? Step 2: get syllables
-    final List<SyllableListData> sylDataList = await (select(syllableList)
-          ..where((table) => table.entryId.equals(entry.id)))
-        .get();
-    sylDataList.forEach((SyllableListData sylListData) async {
-      final String syl = (await (select(syllables)
-                ..where((table) => table.id.equals(sylListData.syllableId)))
-              .getSingle())
-          .syllable;
-      sylList.add(syl);
-    });
+    //? Step 2: Get syllables
+    final List<SyllableListData> dbSyllableList = await _getEntrySyllableList(
+      entry.id,
+    );
+    for (final SyllableListData dbSyllable in dbSyllableList) {
+      final Syllable syllableInst = await _getSyllableFromID(
+        dbSyllable.syllableId,
+      );
+      resultSyllableList.add(syllableInst.syllable);
+    }
 
-    //? Step 3: get sense level details.
-    final List<Sense> senseList = await (select(senses)
-          ..where((table) => table.entryId.equals(entry.id)))
-        .get();
+    //? Step 3: Get sense level details.
+    final List<Sense> senseList = await _getEntrySenseList(entry.id);
 
-    senseList.forEach((Sense sense) async {
-      final List<String> result_exampleList = [];
-
+    for (final Sense sense in senseList) {
       //? Step 3.1: Get part of speech
-      String pos = (await (select(partsOfSpeech)
-                ..where((table) => table.id.equals(sense.partOfSpeech)))
-              .getSingle())
-          .partOfSpeech;
+      final PartsOfSpeechData partOfSpeechInst = await _getSensePartOfSpeech(
+        sense.partOfSpeech,
+      );
 
       //? Step 3.2: Get examples
-      final List<ExampleListData> table_ExampleDataList =
-          await (select(exampleList)
-                ..where((table) => table.senseId.equals(sense.id)))
-              .get();
-      table_ExampleDataList.forEach((ExampleListData data) async {
-        final String e = (await (select(examples)
-                  ..where((table) => table.id.equals(data.exampleId)))
-                .getSingle())
-            .sentence;
-        result_exampleList.add(e);
-      });
+      final List<String> resultExampleList = [];
+      final List<ExampleListData> dbExampleDataList =
+          await _getSenseExampleList(sense.id);
 
-      detailsList.add(WordCardDetails(
-        synonymList: await _makeThesaurusList(senseID: sense.id),
-        antonymList:
-            await _makeThesaurusList(senseID: sense.id, isAntonym: true),
+      for (final ExampleListData data in dbExampleDataList) {
+        final Example dbExample = await _getExampleByID(data.exampleId);
+        resultExampleList.add(dbExample.sentence);
+      }
+
+      resultDetailsList.add(WordCardDetails(
+        synonymList: await _getSenseThesaurusList(
+          senseID: sense.id,
+        ),
+        antonymList: await _getSenseThesaurusList(
+          senseID: sense.id,
+          isAntonym: true,
+        ),
         definition: sense.definition,
-        exampleList: result_exampleList,
-        partOfSpeech: pos,
+        exampleList: resultExampleList,
+        partOfSpeech: partOfSpeechInst.partOfSpeech,
       ));
-    });
+    }
 
     return WordCard(
       word: word,
@@ -407,10 +436,10 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
         all: entry.pronunciation,
       ),
       syllables: SyllableEntity.Syllable(
-        count: sylList.length,
-        list: sylList,
+        count: resultSyllableList.length,
+        list: resultSyllableList,
       ),
-      detailList: detailsList,
+      detailList: resultDetailsList,
     );
   }
 
