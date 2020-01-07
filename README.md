@@ -1,17 +1,25 @@
 # vocab app
 
-A cross platform dictionary application build using Dart and Flutter. Uses Oxford and Words API to search for word details. Also features the ability to save word information and take quizzes on saved words.
-
-![App Screen Shots](app_demo/app_picture_2.png)
-
-## Features
-1. Look up word definitions from online dictionary.
-2. Save word definitions and take quizzes on them.
-
-# Project Developement Infomation
+## Basic Introduction
+Vocab is a dictionary and word quiz application. It is built using Dart and Flutter framework. 
 1. Project has **Clean Architecture** as proposed by Bob Martin (Author of Clean Code). 
 2. **Test driven development** was followed when building the project.
-3. **BLoC Pattern** used for state management.
+
+## Features
+1. Look up word definitions from Oxford Dictionary.
+    * Implemented using online dictionary APIs.
+2. Save word definitions of searched words.
+    * Uses SQL based database to store word details into local storage.
+3. Allows the user to manually add word details.
+4. Take quiz on saved words.
+    * Implements spaced repetition studying.
+    * Gamification. Rewards and penalty system implemented.
+5. Back up progress and saved words.
+    * Save to Google Drive. Sync between device and drive.
+
+![App Screen Shots](app_demo/demo.png)
+
+# Project Infomation
 
 ## Technologies used
 1. Flutter framework
@@ -20,24 +28,24 @@ A cross platform dictionary application build using Dart and Flutter. Uses Oxfor
 ## APIs Used
 1. Oxford Dictionary Online
     * Entries API
-    * Lemmas API
 2. Words API
     * Word API
 
-## Testing process
-1. Unit testing using mockito and bloc_test libraries.
-2. Widget tests using the flutter widget tests functionality.
-3. Integration tests using flutter driver.
+## Database
+Used SQL based database to store the word and quiz information.
+* Library: [Moor for flutter](https://pub.dev/packages/moor_flutter)
+* Testing: Not tested yet.
 
-## Libraries used
-1. get_it
-2. flutter_bloc
-3. equatable
-4. dartz
-5. data_connection_checker
-6. http
-7. bloc_test
-8. mockito
+## State management
+Handled using BLoC pattern.
+* Library: [Flutter Bloc](https://pub.dev/packages/flutter_bloc)
+* Testing: [Bloc test](https://pub.dev/packages/bloc_test)
+
+## Miscellaneous
+1. Dependency injection: [Get it](https://pub.dev/packages/get_it)
+2. Comparison by value: [Equatable](https://pub.dev/packages/equatable)
+3. Mock testing: [Mockito](https://pub.dev/packages/mockito)
+4. Network status checking: [Data Connection checker](https://pub.dev/packages/data_connection_checker)
 
 # Acknowledgements
 1. Thanks to Oxford, Merrium Webstar, Words for their API services.
