@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/core/database/card_database.dart';
 import 'package:provider/provider.dart';
-import 'package:vocab/core/navigation/routes.dart';
+
+import 'word_tile.dart';
 
 class ViewSavedWords extends StatelessWidget {
   const ViewSavedWords({Key key}) : super(key: key);
@@ -30,33 +31,4 @@ class ViewSavedWords extends StatelessWidget {
   }
 }
 
-class WordTile extends StatelessWidget {
-  final String word;
-  final int senseCount;
 
-  const WordTile({Key key, @required this.word, this.senseCount = 0})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Theme.of(context).primaryColor,
-          child: Text(
-            '$senseCount',
-          ),
-        ),
-        title: Text(word),
-      ),
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          '${Page.ShowWordInfoPage}',
-          arguments: word,
-        );
-      },
-      splashColor: Theme.of(context).primaryColorLight,
-    );
-  }
-}

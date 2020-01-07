@@ -24,7 +24,7 @@ class SaveWordButton extends StatelessWidget {
 
         return IconButton(
           color: Colors.white,
-          disabledColor: Colors.grey[300],
+          disabledColor: Colors.grey[400],
           icon: Icon(Icons.save),
           onPressed: callBack,
         );

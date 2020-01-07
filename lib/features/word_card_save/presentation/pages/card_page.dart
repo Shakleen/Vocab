@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vocab/core/database/card_database.dart';
 import 'package:vocab/core/navigation/routes.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/side_drawer.dart';
-import 'package:provider/provider.dart';
-import 'package:vocab/features/word_card_save/presentation/widgets/view_saved_wrods.dart';
+import 'package:vocab/features/word_card_save/presentation/widgets/view_saved_words.dart';
 
 class CardPage extends StatefulWidget {
   CardPage({Key key}) : super(key: key);

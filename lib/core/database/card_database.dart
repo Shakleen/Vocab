@@ -348,7 +348,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
         .getSingle();
   }
 
-  Future<List<ExampleListData>> _getSenseExampleList(int senseID) async {
+  Future<List<ExampleListData>> _getSenseExampleLinkList(int senseID) async {
     return (select(exampleList)
           ..where((table) => table.senseId.equals(senseID)))
         .get();
@@ -359,15 +359,22 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
         .getSingle();
   }
 
+  Future<List<ThesaurusListData>> _getSenseThesaurusLinkList(
+    int senseID,
+    bool isAntonym,
+  ) async {
+    return ((select(thesaurusList)..where((table) => table.senseId.equals(senseID)))
+          ..where((table) => table.isAntonym.equals(isAntonym)))
+        .get();
+  }
+
   Future<List<String>> _getSenseThesaurusList({
     int senseID,
     bool isAntonym = false,
   }) async {
     final List<String> result = [];
     final List<ThesaurusListData> list =
-        await ((select(thesaurusList)..where((table) => table.senseId.equals(senseID)))
-              ..where((table) => table.isAntonym.equals(isAntonym)))
-            .get();
+        await _getSenseThesaurusLinkList(senseID, isAntonym);
     for (final ThesaurusListData data in list) {
       final String e = (await (select(words)
                 ..where((table) => table.id.equals(data.wordId)))
@@ -409,7 +416,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       //? Step 3.2: Get examples
       final List<String> resultExampleList = [];
       final List<ExampleListData> dbExampleDataList =
-          await _getSenseExampleList(sense.id);
+          await _getSenseExampleLinkList(sense.id);
 
       for (final ExampleListData data in dbExampleDataList) {
         final Example dbExample = await _getExampleByID(data.exampleId);
@@ -453,6 +460,56 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
           (row) => row.readTable(words).word,
         )
         .toList();
+  }
+
+  Future<int> _deleteSenseExampleLinks(int senseID) async {
+    return (delete(exampleList)
+          ..where((table) => table.senseId.equals(senseID)))
+        .go();
+  }
+
+  Future<int> _deleteSenseThesaurusLinks(int senseID, bool isAntonym) async {
+    return (delete(thesaurusList)
+          ..where((table) => table.senseId.equals(senseID)..equals(isAntonym)))
+        .go();
+  }
+
+  Future<int> _deleteSenseByID(int id) async {
+    return (delete(senses)..where((table) => table.id.equals(id))).go();
+  }
+
+  Future<void> _deleteEntrySenseData(int entryID) async {
+    final List<Sense> dbSenseList = await _getEntrySenseList(entryID);
+
+    for (final Sense dbSense in dbSenseList) {
+      //? Step 1: Handle Example links
+      await _deleteSenseExampleLinks(dbSense.id);
+
+      //? Step 2: Handle Synonym links
+      await _deleteSenseThesaurusLinks(dbSense.id, false);
+
+      //? Step 3: Handle Antonym links
+      await _deleteSenseThesaurusLinks(dbSense.id, true);
+
+      //? Step 3: Handle the sense itself.
+      await _deleteSenseByID(dbSense.id);
+    }
+  }
+
+  Future<int> _deleteEntrySyllableLinks(int entryID) async {
+    return (delete(syllableList)..where((table) => table.entryId.equals(entryID))).go();
+  }
+
+  Future<int> _deleteEntryByID(int entryID) async {
+    return (delete(entries)..where((table) => table.id.equals(entryID))).go();
+  }
+
+  Future<bool> deleteWordCard(String word) async {
+    final Entry dbEntry = await _getEntryByWord(word);
+    await _deleteEntrySenseData(dbEntry.id);
+    await _deleteEntrySyllableLinks(dbEntry.id);
+    await _deleteEntryByID(dbEntry.id);
+    return true;
   }
 }
 
