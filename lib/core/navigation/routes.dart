@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/ui/pages/base_page.dart';
 import 'package:vocab/core/ui/pages/error_route_page.dart';
-import 'package:vocab/features/word_card_save/presentation/pages/card_form_page.dart';
-import 'package:vocab/features/word_card_save/presentation/pages/card_page.dart';
-import 'package:vocab/features/word_card_save/presentation/pages/show_word_info_page.dart';
+import 'package:vocab/features/word_save/presentation/pages/card_form_page.dart';
+import 'package:vocab/features/word_save/presentation/pages/card_page.dart';
+import 'package:vocab/features/word_save/presentation/pages/show_word_info_page.dart';
 
 enum Page { HomePage, CardPage, CardFormPage, ShowWordInfoPage }
 

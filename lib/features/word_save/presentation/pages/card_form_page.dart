@@ -6,8 +6,8 @@ import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/display_word_text.dart';
 import 'package:vocab/core/database/card_database.dart' as db;
-import 'package:vocab/features/word_card_save/presentation/widgets/custom_text_field.dart';
-import 'package:vocab/features/word_card_save/presentation/widgets/sense_form_list.dart';
+import 'package:vocab/features/word_save/presentation/widgets/custom_text_field.dart';
+import 'package:vocab/features/word_save/presentation/widgets/sense_form_list.dart';
 import 'package:vocab/injection_container.dart';
 
 const String SEPERATOR = " | ";
