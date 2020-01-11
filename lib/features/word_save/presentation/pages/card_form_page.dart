@@ -111,6 +111,11 @@ class _CardFormPageState extends State<CardFormPage> {
       print('Insertion result: $result');
     }
 
-    if (result) Navigator.pop(context);
+    if (result) {
+      db.CardDatabase cardDatabase = sl();
+      db.CardDao cardDao = cardDatabase.cardDao;
+      await cardDao.insertQuizCards(wordCard);
+      Navigator.pop(context);
+    }
   }
 }

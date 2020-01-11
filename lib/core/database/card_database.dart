@@ -592,7 +592,7 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
 
   Future<Entry> _getEntryByWord(String word) async {
     int wordID = await _getWordID(word);
-    return (select(entries)..where((table) => table.id.equals(wordID)))
+    return (select(entries)..where((table) => table.wordId.equals(wordID)))
         .getSingle();
   }
 
