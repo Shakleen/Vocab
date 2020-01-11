@@ -3,6 +3,7 @@ import 'package:vocab/core/database/card_database.dart';
 import 'package:vocab/core/navigation/routes.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:provider/provider.dart';
+import 'package:vocab/features/quiz_card/presentation/widgets/quiz_card_tab.dart';
 import 'package:vocab/features/word_save/presentation/widgets/word_card_details_tab.dart';
 
 class ShowWordInfoPage extends StatefulWidget {
@@ -71,7 +72,7 @@ class _ShowWordInfoPageState extends State<ShowWordInfoPage>
             controller: _controller,
             children: <Widget>[
               WordCardDetailsTab(word: widget.word),
-              Container(),
+              QuizCardTab(),
             ],
           ),
         );
