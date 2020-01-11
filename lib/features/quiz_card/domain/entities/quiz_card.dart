@@ -7,8 +7,11 @@ class QuizCard extends Equatable {
   final bool isImportant;
   final int level;
   final int id;
+  final int frontType, backType;
 
   QuizCard({
+    this.frontType,
+    this.backType,
     this.front,
     this.back,
     this.dueDate,
@@ -19,6 +22,8 @@ class QuizCard extends Equatable {
 
   @override
   List<Object> get props => [
+        frontType,
+        backType,
         front,
         back,
         dueDate,

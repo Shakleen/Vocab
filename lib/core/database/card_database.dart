@@ -901,9 +901,7 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
         .partOfSpeech;
   }
 
-  Future<String> _getCardSideInfo(int cardInfoID) async {
-    final CardInfoData dbCardInfoData = await _getCardInfoFromID(cardInfoID);
-
+  Future<String> _getCardSideInfo(CardInfoData dbCardInfoData) async {
     if (dbCardInfoData.attributeType <= 3) {
       final Entry dbEntry = await _getEntryFromID(dbCardInfoData.entryId);
 
@@ -949,10 +947,14 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
 
     for (final Card dbCard in dbCardList) {
       //? Step 1: get card side information for front
-      final String front = await _getCardSideInfo(dbCard.frontId);
+      final CardInfoData dbFrontCardInfo =
+          await _getCardInfoFromID(dbCard.frontId);
+      final String front = await _getCardSideInfo(dbFrontCardInfo);
 
       //? Step 2: get card side information for back
-      final String back = await _getCardSideInfo(dbCard.backId);
+      final CardInfoData dbBackCardInfo =
+          await _getCardInfoFromID(dbCard.backId);
+      final String back = await _getCardSideInfo(dbBackCardInfo);
 
       //? Step 3: create quiz card and add to output list
       output.add(
@@ -977,10 +979,18 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
 
     for (final int cardID in dbQuizCardIDs) {
       final Card dbCard = await _getCardByID(cardID);
-      final String front = await _getCardSideInfo(dbCard.frontId);
-      final String back = await _getCardSideInfo(dbCard.backId);
+
+      final CardInfoData dbFrontCardInfo =
+          await _getCardInfoFromID(dbCard.frontId);
+      final String front = await _getCardSideInfo(dbFrontCardInfo);
+
+      final CardInfoData dbBackCardInfo =
+          await _getCardInfoFromID(dbCard.backId);
+      final String back = await _getCardSideInfo(dbBackCardInfo);
       output.add(
         QuizCard(
+          frontType: dbFrontCardInfo.attributeType,
+          backType: dbBackCardInfo.attributeType,
           level: dbCard.level,
           dueDate: dbCard.dueOn,
           id: dbCard.id,
@@ -992,6 +1002,20 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     }
 
     return output;
+  }
+
+  Future<bool> toggleCardImportance(int cardID) async {
+    final Card dbCard = await _getCardByID(cardID);
+    return update(cards).replace(
+      Card(
+        id: dbCard.id,
+        backId: dbCard.backId,
+        frontId: dbCard.frontId,
+        dueOn: dbCard.dueOn,
+        isImportant: !dbCard.isImportant,
+        level: dbCard.level,
+      ),
+    );
   }
 }
 
