@@ -883,7 +883,7 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           );
           return output.join(' | ');
         case 8:
-          return await _getSensePartOfSpeech(dbSense.id);
+          return await _getSensePartOfSpeech(dbSense.partOfSpeech);
       }
     }
 

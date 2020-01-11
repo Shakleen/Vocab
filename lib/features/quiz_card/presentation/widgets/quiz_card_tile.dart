@@ -13,17 +13,19 @@ class QuizCardTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        child: Text(quizCard.level.toString()),
-        backgroundColor: _chooseColor(),
-      ),
-      title: TitleText(text: quizCard.front),
-      subtitle: Text(
-        '${quizCard.back}\n${getFormattedDateTime(quizCard.dueDate)}',
-      ),
-      trailing: Icon(
-        quizCard.isImportant ? Icons.favorite : Icons.favorite_border,
+    return Card(
+      child: ListTile(
+        leading: CircleAvatar(
+          child: Text(quizCard.level.toString()),
+          backgroundColor: _chooseColor(),
+        ),
+        title: TitleText(text: quizCard.front),
+        subtitle: Text(
+          '${quizCard.back}\n${getFormattedDateTime(quizCard.dueDate)}',
+        ),
+        trailing: Icon(
+          quizCard.isImportant ? Icons.favorite : Icons.favorite_border,
+        ),
       ),
     );
   }

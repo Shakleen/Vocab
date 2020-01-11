@@ -13,7 +13,7 @@ class QuizCardTab extends StatelessWidget {
     return FutureBuilder(
       future: Provider.of<CardDatabase>(context).cardDao.getQuizCards(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.connectionState == ConnectionState.done) {
           return ListView.builder(
