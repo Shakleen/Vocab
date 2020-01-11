@@ -669,53 +669,75 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     int delay = 0;
 
     for (final Sense sense in senseList) {
-      //? Card 4: Front = Definition, Back = Example
-      await _insertCard(
-        entry.id,
-        sense.id,
-        AttributeType.Definition,
-        AttributeType.Example,
-        dueDate: DateTime.now().add(Duration(days: delay)),
-      );
+      final List<ExampleListData> dbExamples = await (select(exampleList)
+            ..where((table) => table.senseId.equals(sense.id)))
+          .get();
 
-      //? Card 5: Front = Example, Back = Definition
-      await _insertCard(
-        entry.id,
-        sense.id,
-        AttributeType.Example,
-        AttributeType.Definition,
-        dueDate: DateTime.now().add(Duration(days: delay)),
-      );
+      if (dbExamples.isNotEmpty) {
+        //? Card 4: Front = Definition, Back = Example
+        await _insertCard(
+          entry.id,
+          sense.id,
+          AttributeType.Definition,
+          AttributeType.Example,
+          dueDate: DateTime.now().add(Duration(days: delay)),
+        );
 
-      //? Card 6: Front = Example, Back = Synonyms
-      await _insertCard(
-        entry.id,
-        sense.id,
-        AttributeType.Example,
-        AttributeType.Synonyms,
-        dueDate: DateTime.now().add(Duration(days: delay)),
-      );
+        //? Card 5: Front = Example, Back = Definition
+        await _insertCard(
+          entry.id,
+          sense.id,
+          AttributeType.Example,
+          AttributeType.Definition,
+          dueDate: DateTime.now().add(Duration(days: delay)),
+        );
 
-      //? Card 7: Front = Example, Back = Antonyms
-      await _insertCard(
-        entry.id,
-        sense.id,
-        AttributeType.Example,
-        AttributeType.Antonyms,
-        dueDate: DateTime.now().add(Duration(days: delay)),
-      );
+        final List<ThesaurusListData> dbSynList = await (select(thesaurusList)
+              ..where((table) => table.senseId.equals(sense.id))
+              ..where((table) => table.isAntonym.equals(false)))
+            .get();
 
-      //? Card 8: Front = Example, Back = Part of speech
-      await _insertCard(
-        entry.id,
-        sense.id,
-        AttributeType.Example,
-        AttributeType.PartOfSpeech,
-        dueDate: DateTime.now().add(Duration(days: delay)),
-      );
+        if (dbSynList.isNotEmpty) {
+          //? Card 6: Front = Example, Back = Synonyms
+          await _insertCard(
+            entry.id,
+            sense.id,
+            AttributeType.Example,
+            AttributeType.Synonyms,
+            dueDate: DateTime.now().add(Duration(days: delay)),
+          );
+        }
 
-      delay += 1;
+        final List<ThesaurusListData> dbAntList = await (select(thesaurusList)
+              ..where((table) => table.senseId.equals(sense.id))
+              ..where((table) => table.isAntonym.equals(true)))
+            .get();
+
+        if (dbAntList.isNotEmpty) {
+          //? Card 7: Front = Example, Back = Antonyms
+          await _insertCard(
+            entry.id,
+            sense.id,
+            AttributeType.Example,
+            AttributeType.Antonyms,
+            dueDate: DateTime.now().add(Duration(days: delay)),
+          );
+        }
+
+        //? Card 8: Front = Example, Back = Part of speech
+        await _insertCard(
+          entry.id,
+          sense.id,
+          AttributeType.Example,
+          AttributeType.PartOfSpeech,
+          dueDate: DateTime.now().add(Duration(days: delay)),
+        );
+
+        delay += 1;
+      }
     }
+
+    return true;
   }
 
   Future<List<int>> _getEntryQuizCardIDs(int entryID) async {

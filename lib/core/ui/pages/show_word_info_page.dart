@@ -72,7 +72,7 @@ class _ShowWordInfoPageState extends State<ShowWordInfoPage>
             controller: _controller,
             children: <Widget>[
               WordCardDetailsTab(word: widget.word),
-              QuizCardTab(),
+              QuizCardTab(word: widget.word),
             ],
           ),
         );
