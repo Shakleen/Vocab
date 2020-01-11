@@ -5,6 +5,7 @@ import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
 import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
 import 'package:sqflite/src/exception.dart';
 import 'package:vocab/core/entities/word_details_summary.dart';
+import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 
 part 'card_database.g.dart';
 
@@ -90,8 +91,9 @@ class Cards extends Table {
       integer().customConstraint('REFERENCES card_info(id)')();
   IntColumn get backId =>
       integer().customConstraint('REFERENCES card_info(id)')();
-  IntColumn get level => integer().withDefault(Constant(0))();
-  BoolColumn get isImportant => boolean().withDefault(Constant(false))();
+  IntColumn get level => integer().nullable().withDefault(Constant(0))();
+  BoolColumn get isImportant =>
+      boolean().nullable().withDefault(Constant(false))();
   DateTimeColumn get dueOn => dateTime()();
 }
 
@@ -698,6 +700,219 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
 
       delay += 1;
     });
+  }
+
+  Future<List<CardInfoData>> _getCardsOfAnEntry(int entryID) async {
+    return (select(cardInfo)..where((table) => table.entryId.equals(entryID)))
+        .get();
+  }
+
+  Future<void> _deleteCardWithCardInfoID(int id) async {
+    await (delete(cards)..where((table) => table.frontId.equals(id))).go();
+    await (delete(cards)..where((table) => table.backId.equals(id))).go();
+  }
+
+  Future<void> _deleteCardInfoWithID(int id) async {
+    await (delete(cardInfo)..where((table) => table.id.equals(id))).go();
+  }
+
+  Future<void> _deleteCardAndCardInfo(List<CardInfoData> list) async {
+    for (final CardInfoData dbCardInfoData in list) {
+      await _deleteCardWithCardInfoID(dbCardInfoData.id);
+      await _deleteCardInfoWithID(dbCardInfoData.id);
+    }
+  }
+
+  Future<bool> deleteCardsOfAnEntry(int entryID) async {
+    final List<CardInfoData> dbCardInfoDataList =
+        await _getCardsOfAnEntry(entryID);
+    await _deleteCardAndCardInfo(dbCardInfoDataList);
+    return true;
+  }
+
+  Future<List<CardInfoData>> _getCardsOfASense(int entryID, int senseID) async {
+    return (select(cardInfo)
+          ..where((table) => table.entryId.equals(entryID))
+          ..where((table) => table.senseId.equals(senseID)))
+        .get();
+  }
+
+  Future<bool> deleteCardOfASense(int entryID, int senseID) async {
+    final List<CardInfoData> dbCardInfoDataList =
+        await _getCardsOfASense(entryID, senseID);
+    await _deleteCardAndCardInfo(dbCardInfoDataList);
+    return true;
+  }
+
+  Future<bool> deleteCardWithCardID(int cardInfoID) async {
+    final CardInfoData dbCardInfo = await (select(cardInfo)
+          ..where((table) => table.id.equals(cardInfoID)))
+        .getSingle();
+    return await deleteCardOfASense(dbCardInfo.entryId, dbCardInfo.senseId);
+  }
+
+  Future<List<Card>> _getDueCards(int no) async {
+    return (select(cards)
+          ..orderBy([
+            (table) =>
+                OrderingTerm(expression: table.dueOn, mode: OrderingMode.desc),
+            (table) =>
+                OrderingTerm(expression: table.level, mode: OrderingMode.asc),
+            (table) => OrderingTerm(
+                expression: table.isImportant, mode: OrderingMode.desc),
+          ])
+          ..limit(no))
+        .get();
+  }
+
+  Future<CardInfoData> _getCardInfoFromID(int id) async {
+    return (select(cardInfo)..where((table) => table.id.equals(id)))
+        .getSingle();
+  }
+
+  Future<Entry> _getEntryFromID(int id) async {
+    return (select(entries)..where((table) => table.id.equals(id))).getSingle();
+  }
+
+  Future<Word> _getWordByID(int id) async {
+    return (select(words)..where((table) => table.id.equals(id))).getSingle();
+  }
+
+  Future<List<String>> _getWordSyllables(int entryID) async {
+    final List<SyllableListData> dbSylList = await (select(syllableList)
+          ..where((table) => table.entryId.equals(entryID)))
+        .get();
+
+    final List<String> sylList = [];
+    for (final SyllableListData dbSylData in dbSylList) {
+      final String syl = (await (select(syllables)
+                ..where((table) => table.id.equals(dbSylData.syllableId)))
+              .getSingle())
+          .syllable;
+
+      sylList.add(syl);
+    }
+
+    return sylList;
+  }
+
+  Future<Sense> _getSenseByID(int senseID) async {
+    return (select(senses)..where((table) => table.id.equals(senseID)))
+        .getSingle();
+  }
+
+  Future<List<String>> _getSenseExamples(int id) async {
+    final List<ExampleListData> dbExampleDataList = await (select(exampleList)
+          ..where((table) => table.senseId.equals(id)))
+        .get();
+
+    final List<String> outputExampleList = [];
+    for (final ExampleListData dbExample in dbExampleDataList) {
+      final String sentence = (await (select(examples)
+                ..where((table) => table.id.equals(dbExample.exampleId)))
+              .getSingle())
+          .sentence;
+
+      outputExampleList.add(sentence);
+    }
+
+    return outputExampleList;
+  }
+
+  Future<List<String>> _getSenseThesauruses(
+    int id, {
+    bool isAntonym = false,
+  }) async {
+    final List<ThesaurusListData> dbThesaurusDataList =
+        await (select(thesaurusList)
+              ..where((table) => table.senseId.equals(id))
+              ..where((table) => table.isAntonym.equals(isAntonym)))
+            .get();
+
+    final List<String> outputList = [];
+    for (final ThesaurusListData dbThesaurus in dbThesaurusDataList) {
+      final String outputWord = (await (select(words)
+                ..where((table) => table.id.equals(dbThesaurus.wordId)))
+              .getSingle())
+          .word;
+
+      outputList.add(outputWord);
+    }
+
+    return outputList;
+  }
+
+  Future<String> _getSensePartOfSpeech(int id) async {
+    return (await (select(partsOfSpeech)..where((table) => table.id.equals(id)))
+            .getSingle())
+        .partOfSpeech;
+  }
+
+  Future<String> _getCardSideInfo(int cardInfoID) async {
+    final CardInfoData dbCardInfoData = await _getCardInfoFromID(cardInfoID);
+
+    if (dbCardInfoData.attributeType <= 3) {
+      final Entry dbEntry = await _getEntryFromID(dbCardInfoData.entryId);
+
+      switch (dbCardInfoData.attributeType) {
+        case 1:
+          final Word dbWord = await _getWordByID(dbEntry.wordId);
+          return dbWord.word;
+        case 2:
+          return dbEntry.pronunciation;
+        case 3:
+          final List<String> output = await _getWordSyllables(dbEntry.id);
+          return output.join(' | ');
+      }
+    } else {
+      final Sense dbSense = await _getSenseByID(dbCardInfoData.senseId);
+
+      switch (dbCardInfoData.attributeType) {
+        case 4:
+          final List<String> output = await _getSenseExamples(dbSense.id);
+          return output.join(' | ');
+        case 5:
+          return dbSense.definition;
+        case 6:
+          final List<String> output = await _getSenseThesauruses(dbSense.id);
+          return output.join(' | ');
+        case 7:
+          final List<String> output = await _getSenseThesauruses(
+            dbSense.id,
+            isAntonym: true,
+          );
+          return output.join(' | ');
+        case 8:
+          return await _getSensePartOfSpeech(dbSense.id);
+      }
+    }
+  }
+
+  Future<List<QuizCard>> getQuizCards({int noOfCards = 25}) async {
+    final List<Card> dbCardList = await _getDueCards(noOfCards);
+    final List<QuizCard> output = [];
+
+    for (final Card dbCard in dbCardList) {
+      //? Step 1: get card side information for front
+      final String front = await _getCardSideInfo(dbCard.frontId);
+
+      //? Step 2: get card side information for back
+      final String back = await _getCardSideInfo(dbCard.backId);
+
+      //? Step 3: create quiz card and add to output list
+      output.add(
+        QuizCard(
+          id: dbCard.id,
+          dueDate: dbCard.dueOn,
+          isImportant: dbCard.isImportant,
+          level: dbCard.level,
+          front: front,
+          back: back,
+        ),
+      );
+    }
+
+    return output;
   }
 }
 

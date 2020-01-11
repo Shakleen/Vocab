@@ -1672,8 +1672,8 @@ class Card extends DataClass implements Insertable<Card> {
       {this.id,
       @required this.frontId,
       @required this.backId,
-      @required this.level,
-      @required this.isImportant,
+      this.level,
+      this.isImportant,
       @required this.dueOn});
   factory Card.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -1865,7 +1865,7 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
   @override
   GeneratedIntColumn get level => _level ??= _constructLevel();
   GeneratedIntColumn _constructLevel() {
-    return GeneratedIntColumn('level', $tableName, false,
+    return GeneratedIntColumn('level', $tableName, true,
         defaultValue: Constant(0));
   }
 
@@ -1876,7 +1876,7 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
   GeneratedBoolColumn get isImportant =>
       _isImportant ??= _constructIsImportant();
   GeneratedBoolColumn _constructIsImportant() {
-    return GeneratedBoolColumn('is_important', $tableName, false,
+    return GeneratedBoolColumn('is_important', $tableName, true,
         defaultValue: Constant(false));
   }
 
