@@ -3,7 +3,6 @@ import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
 import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
-import 'package:sqflite/src/exception.dart';
 import 'package:vocab/core/entities/word_details_summary.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 
@@ -83,6 +82,15 @@ class SyllableList extends Table {
 
   @override
   Set<Column> get primaryKey => {entryId, syllableId};
+}
+
+class EntryQuizCards extends Table {
+  IntColumn get cardId => integer().customConstraint('REFERENCES cards(id)')();
+  IntColumn get entryId =>
+      integer().customConstraint('REFERENCES entries(id)')();
+
+  @override
+  Set<Column> get primaryKey => {cardId, entryId};
 }
 
 class Cards extends Table {
@@ -578,6 +586,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   SyllableList,
   Cards,
   CardInfo,
+  EntryQuizCards,
 ])
 class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
   final CardDatabase cardDatabase;
@@ -605,11 +614,18 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
   }) async {
     final int frontID = await _createSide(entryID, senseID, frontType);
     final int backID = await _createSide(entryID, senseID, backType);
-    return into(cards).insert(Card(
+    final int cardID = await into(cards).insert(Card(
       frontId: frontID,
       backId: backID,
       dueOn: dueDate != null ? dueDate : DateTime.now(),
     ));
+
+    await into(entryQuizCards).insert(EntryQuizCard(
+      cardId: cardID,
+      entryId: entryID,
+    ));
+
+    return cardID;
   }
 
   Future<int> _createSide(int entryID, int senseID, AttributeType type) async {
@@ -652,7 +668,7 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
 
     int delay = 0;
 
-    senseList.forEach((Sense sense) async {
+    for (final Sense sense in senseList) {
       //? Card 4: Front = Definition, Back = Example
       await _insertCard(
         entry.id,
@@ -699,48 +715,63 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
       );
 
       delay += 1;
-    });
+    }
   }
 
-  Future<List<CardInfoData>> _getCardsOfAnEntry(int entryID) async {
-    return (select(cardInfo)..where((table) => table.entryId.equals(entryID)))
-        .get();
+  Future<List<int>> _getEntryQuizCardIDs(int entryID) async {
+    return (await (select(entryQuizCards)
+              ..where((table) => table.entryId.equals(entryID)))
+            .get())
+        .map(
+          (row) => row.cardId,
+        )
+        .toList();
   }
 
-  Future<void> _deleteCardWithCardInfoID(int id) async {
-    await (delete(cards)..where((table) => table.frontId.equals(id))).go();
-    await (delete(cards)..where((table) => table.backId.equals(id))).go();
+  Future<Card> _getCardByID(int id) async {
+    return (select(cards)..where((table) => table.id.equals(id))).getSingle();
   }
 
   Future<void> _deleteCardInfoWithID(int id) async {
     await (delete(cardInfo)..where((table) => table.id.equals(id))).go();
   }
 
-  Future<void> _deleteCardAndCardInfo(List<CardInfoData> list) async {
-    for (final CardInfoData dbCardInfoData in list) {
-      await _deleteCardWithCardInfoID(dbCardInfoData.id);
-      await _deleteCardInfoWithID(dbCardInfoData.id);
-    }
+  Future<void> _deleteCardDetailsWithID(int id) async {
+    final Card dbCard = await _getCardByID(id);
+    await _deleteCardInfoWithID(dbCard.frontId);
+    await _deleteCardInfoWithID(dbCard.backId);
+  }
+
+  Future<void> _deleteCardWithID(int id) async {
+    await (delete(cards)..where((table) => table.id.equals(id))).go();
+  }
+
+  Future<void> _deleteCardAndCardInfo(int cardID) async {
+    await _deleteCardDetailsWithID(cardID);
+    await _deleteCardWithID(cardID);
   }
 
   Future<bool> deleteCardsOfAnEntry(int entryID) async {
-    final List<CardInfoData> dbCardInfoDataList =
-        await _getCardsOfAnEntry(entryID);
-    await _deleteCardAndCardInfo(dbCardInfoDataList);
+    final List<int> dbCardIDs = await _getEntryQuizCardIDs(entryID);
+    for (final int id in dbCardIDs) await _deleteCardAndCardInfo(id);
     return true;
   }
 
-  Future<List<CardInfoData>> _getCardsOfASense(int entryID, int senseID) async {
-    return (select(cardInfo)
-          ..where((table) => table.entryId.equals(entryID))
-          ..where((table) => table.senseId.equals(senseID)))
-        .get();
+  Future<void> _checkAndDeleteCardInfo(int cardInfoID, int senseID) async {
+    final CardInfoData dbCardInfoData = await (select(cardInfo)
+          ..where((table) => table.id.equals(cardInfoID)))
+        .getSingle();
+    if (dbCardInfoData.senseId == senseID)
+      await _deleteCardInfoWithID(cardInfoID);
   }
 
   Future<bool> deleteCardOfASense(int entryID, int senseID) async {
-    final List<CardInfoData> dbCardInfoDataList =
-        await _getCardsOfASense(entryID, senseID);
-    await _deleteCardAndCardInfo(dbCardInfoDataList);
+    final List<int> dbCardIDs = await _getEntryQuizCardIDs(entryID);
+    for (final int id in dbCardIDs) {
+      final Card dbCard = await _getCardByID(id);
+      await _checkAndDeleteCardInfo(dbCard.frontId, senseID);
+      await _checkAndDeleteCardInfo(dbCard.backId, senseID);
+    }
     return true;
   }
 
@@ -916,6 +947,30 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
 
     return output;
   }
+
+  Future<List<QuizCard>> getQuizCardsForWord(String word) async {
+    final Entry dbEntry = await _getEntryByWord(word);
+    final List<int> dbQuizCardIDs = await _getEntryQuizCardIDs(dbEntry.id);
+    final List<QuizCard> output = [];
+
+    for (final int cardID in dbQuizCardIDs) {
+      final Card dbCard = await _getCardByID(cardID);
+      final String front = await _getCardSideInfo(dbCard.frontId);
+      final String back = await _getCardSideInfo(dbCard.backId);
+      output.add(
+        QuizCard(
+          level: dbCard.level,
+          dueDate: dbCard.dueOn,
+          id: dbCard.id,
+          isImportant: dbCard.isImportant,
+          front: front,
+          back: back,
+        ),
+      );
+    }
+
+    return output;
+  }
 }
 
 //! ============================================================================================================================================ !//
@@ -934,6 +989,7 @@ const List<Type> _CARD_DATABASE_TABLE_LIST = [
   ThesaurusList,
   ExampleList,
   SyllableList,
+  EntryQuizCards,
   Cards,
   CardInfo,
 ];

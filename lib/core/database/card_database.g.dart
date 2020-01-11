@@ -1661,6 +1661,168 @@ class $SyllableListTable extends SyllableList
   }
 }
 
+class EntryQuizCard extends DataClass implements Insertable<EntryQuizCard> {
+  final int cardId;
+  final int entryId;
+  EntryQuizCard({@required this.cardId, @required this.entryId});
+  factory EntryQuizCard.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    return EntryQuizCard(
+      cardId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}card_id']),
+      entryId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}entry_id']),
+    );
+  }
+  factory EntryQuizCard.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return EntryQuizCard(
+      cardId: serializer.fromJson<int>(json['cardId']),
+      entryId: serializer.fromJson<int>(json['entryId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson(
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return <String, dynamic>{
+      'cardId': serializer.toJson<int>(cardId),
+      'entryId': serializer.toJson<int>(entryId),
+    };
+  }
+
+  @override
+  EntryQuizCardsCompanion createCompanion(bool nullToAbsent) {
+    return EntryQuizCardsCompanion(
+      cardId:
+          cardId == null && nullToAbsent ? const Value.absent() : Value(cardId),
+      entryId: entryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(entryId),
+    );
+  }
+
+  EntryQuizCard copyWith({int cardId, int entryId}) => EntryQuizCard(
+        cardId: cardId ?? this.cardId,
+        entryId: entryId ?? this.entryId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('EntryQuizCard(')
+          ..write('cardId: $cardId, ')
+          ..write('entryId: $entryId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(cardId.hashCode, entryId.hashCode));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is EntryQuizCard &&
+          other.cardId == this.cardId &&
+          other.entryId == this.entryId);
+}
+
+class EntryQuizCardsCompanion extends UpdateCompanion<EntryQuizCard> {
+  final Value<int> cardId;
+  final Value<int> entryId;
+  const EntryQuizCardsCompanion({
+    this.cardId = const Value.absent(),
+    this.entryId = const Value.absent(),
+  });
+  EntryQuizCardsCompanion.insert({
+    @required int cardId,
+    @required int entryId,
+  })  : cardId = Value(cardId),
+        entryId = Value(entryId);
+  EntryQuizCardsCompanion copyWith({Value<int> cardId, Value<int> entryId}) {
+    return EntryQuizCardsCompanion(
+      cardId: cardId ?? this.cardId,
+      entryId: entryId ?? this.entryId,
+    );
+  }
+}
+
+class $EntryQuizCardsTable extends EntryQuizCards
+    with TableInfo<$EntryQuizCardsTable, EntryQuizCard> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $EntryQuizCardsTable(this._db, [this._alias]);
+  final VerificationMeta _cardIdMeta = const VerificationMeta('cardId');
+  GeneratedIntColumn _cardId;
+  @override
+  GeneratedIntColumn get cardId => _cardId ??= _constructCardId();
+  GeneratedIntColumn _constructCardId() {
+    return GeneratedIntColumn('card_id', $tableName, false,
+        $customConstraints: 'REFERENCES cards(id)');
+  }
+
+  final VerificationMeta _entryIdMeta = const VerificationMeta('entryId');
+  GeneratedIntColumn _entryId;
+  @override
+  GeneratedIntColumn get entryId => _entryId ??= _constructEntryId();
+  GeneratedIntColumn _constructEntryId() {
+    return GeneratedIntColumn('entry_id', $tableName, false,
+        $customConstraints: 'REFERENCES entries(id)');
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [cardId, entryId];
+  @override
+  $EntryQuizCardsTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'entry_quiz_cards';
+  @override
+  final String actualTableName = 'entry_quiz_cards';
+  @override
+  VerificationContext validateIntegrity(EntryQuizCardsCompanion d,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    if (d.cardId.present) {
+      context.handle(
+          _cardIdMeta, cardId.isAcceptableValue(d.cardId.value, _cardIdMeta));
+    } else if (cardId.isRequired && isInserting) {
+      context.missing(_cardIdMeta);
+    }
+    if (d.entryId.present) {
+      context.handle(_entryIdMeta,
+          entryId.isAcceptableValue(d.entryId.value, _entryIdMeta));
+    } else if (entryId.isRequired && isInserting) {
+      context.missing(_entryIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {cardId, entryId};
+  @override
+  EntryQuizCard map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return EntryQuizCard.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Map<String, Variable> entityToSql(EntryQuizCardsCompanion d) {
+    final map = <String, Variable>{};
+    if (d.cardId.present) {
+      map['card_id'] = Variable<int, IntType>(d.cardId.value);
+    }
+    if (d.entryId.present) {
+      map['entry_id'] = Variable<int, IntType>(d.entryId.value);
+    }
+    return map;
+  }
+
+  @override
+  $EntryQuizCardsTable createAlias(String alias) {
+    return $EntryQuizCardsTable(_db, alias);
+  }
+}
+
 class Card extends DataClass implements Insertable<Card> {
   final int id;
   final int frontId;
@@ -2249,6 +2411,9 @@ abstract class _$CardDatabase extends GeneratedDatabase {
   $SyllableListTable _syllableList;
   $SyllableListTable get syllableList =>
       _syllableList ??= $SyllableListTable(this);
+  $EntryQuizCardsTable _entryQuizCards;
+  $EntryQuizCardsTable get entryQuizCards =>
+      _entryQuizCards ??= $EntryQuizCardsTable(this);
   $CardsTable _cards;
   $CardsTable get cards => _cards ??= $CardsTable(this);
   $CardInfoTable _cardInfo;
@@ -2268,6 +2433,7 @@ abstract class _$CardDatabase extends GeneratedDatabase {
         thesaurusList,
         exampleList,
         syllableList,
+        entryQuizCards,
         cards,
         cardInfo
       ];
@@ -2300,4 +2466,5 @@ mixin _$CardDaoMixin on DatabaseAccessor<CardDatabase> {
   $SyllableListTable get syllableList => db.syllableList;
   $CardsTable get cards => db.cards;
   $CardInfoTable get cardInfo => db.cardInfo;
+  $EntryQuizCardsTable get entryQuizCards => db.entryQuizCards;
 }
