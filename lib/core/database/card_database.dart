@@ -886,6 +886,8 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           return await _getSensePartOfSpeech(dbSense.id);
       }
     }
+
+    return null;
   }
 
   Future<List<QuizCard>> getQuizCards({int noOfCards = 25}) async {
