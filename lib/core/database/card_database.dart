@@ -964,7 +964,9 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           dueDate: dbCard.dueOn,
           isImportant: dbCard.isImportant,
           level: dbCard.level,
+          frontType: dbFrontCardInfo.attributeType,
           front: front,
+          backType: dbBackCardInfo.attributeType,
           back: back,
         ),
       );

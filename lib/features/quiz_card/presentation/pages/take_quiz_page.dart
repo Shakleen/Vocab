@@ -22,12 +22,13 @@ class TakeQuizPage extends StatelessWidget {
         ],
       ),
       body: FutureBuilder(
-        future: Provider.of<CardDatabase>().cardDao.getQuizCards(),
+        future: Provider.of<CardDatabase>(context).cardDao.getQuizCards(),
         builder: (BuildContext context, AsyncSnapshot<List<QuizCard>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
+              print('Quiz Cards fetched: ${snapshot.data.length}');
               return QuizCards(quizCards: snapshot.data);
             }
           }
