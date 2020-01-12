@@ -24,7 +24,7 @@ class QuizPage extends StatelessWidget {
         child: Icon(Icons.play_arrow),
         tooltip: "Take quiz",
         onPressed: () {
-          // TODO: Take quiz
+          Navigator.pushNamed(context, '${Page.TakeQuizPage}');
         },
       ),
       body: Container(),
