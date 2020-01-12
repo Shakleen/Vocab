@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:vocab/core/database/card_database.dart';
 import 'package:vocab/core/ui/widgets/subtitle_text.dart';
 import 'package:vocab/core/ui/widgets/title_text.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
+import 'package:provider/provider.dart';
 
 class QuizCards extends StatefulWidget {
   final List<QuizCard> quizCards;
@@ -63,9 +65,10 @@ class _QuizCardsState extends State<QuizCards> {
 
   void _buildChildren() {
     _controls = QuizControls(
+      key: ValueKey(_index),
       next: _nextCard,
       reveal: _revealAnswer,
-      level: widget.quizCards[_index].level,
+      quizCard: widget.quizCards[_index],
     );
     _children = <Widget>[
       Expanded(
@@ -249,13 +252,13 @@ class BackWidget extends StatelessWidget {
 class QuizControls extends StatefulWidget {
   final Function next;
   final Function reveal;
-  final int level;
+  final QuizCard quizCard;
 
   QuizControls({
     Key key,
     @required this.next,
     @required this.reveal,
-    @required this.level,
+    @required this.quizCard,
   }) : super(key: key);
 
   @override
@@ -288,7 +291,7 @@ class _QuizControlsState extends State<QuizControls> {
               textAlign: TextAlign.center,
             ),
             color: Colors.red,
-            onPressed: () {},
+            onPressed: _handleAgain,
           ),
           RaisedButton(
             child: Text(
@@ -296,7 +299,7 @@ class _QuizControlsState extends State<QuizControls> {
               textAlign: TextAlign.center,
             ),
             color: Colors.green,
-            onPressed: () {},
+            onPressed: _handleGood,
           ),
         ],
       );
@@ -316,14 +319,37 @@ class _QuizControlsState extends State<QuizControls> {
   }
 
   String _getTime() {
-    if (widget.level == 0) {
+    final int level = widget.quizCard.level;
+
+    if (level == 0) {
       return "10 minutes";
-    } else if (widget.level == 1) {
+    } else if (level == 1) {
       return "1 day";
-    } else if (widget.level < 15) {
-      return "${2 * widget.level - 1} day";
+    } else if (level < 15) {
+      return "${2 * level - 1} days";
     } else {
-      return "${widget.level / 15} month";
+      final double time = (level / 15);
+      return "${time.toStringAsFixed(1)} months";
     }
+  }
+
+  void _handleAgain() async {
+    await Provider.of<CardDatabase>(context, listen: false).cardDao.updateCardLevel(
+        widget.quizCard.id, 0, DateTime.now().add(Duration(minutes: 1)));
+    widget.next();
+  }
+
+  void _handleGood() async {
+    final int level = widget.quizCard.level;
+    await Provider.of<CardDatabase>(context, listen: false).cardDao.updateCardLevel(
+          widget.quizCard.id,
+          level + 1,
+          DateTime.now().add(
+            level < 1
+                ? Duration(minutes: 10)
+                : Duration(days: (level + 1) * 2 - 1),
+          ),
+        );
+    widget.next();
   }
 }

@@ -1027,6 +1027,20 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
       ),
     );
   }
+
+  Future<bool> updateCardLevel(int cardID, int level, DateTime nextDue) async {
+    final Card dbCard = await _getCardByID(cardID);
+    return update(cards).replace(
+      Card(
+        id: dbCard.id,
+        backId: dbCard.backId,
+        frontId: dbCard.frontId,
+        dueOn: nextDue,
+        isImportant: dbCard.isImportant,
+        level: level,
+      ),
+    );
+  }
 }
 
 //! ============================================================================================================================================ !//
