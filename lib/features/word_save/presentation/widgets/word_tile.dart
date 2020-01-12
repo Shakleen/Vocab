@@ -3,6 +3,7 @@ import 'package:vocab/core/database/card_database.dart';
 import 'package:provider/provider.dart';
 import 'package:vocab/core/entities/word_details_summary.dart';
 import 'package:vocab/core/navigation/routes.dart';
+import 'package:vocab/core/ui/widgets/delete_alert_dialog.dart';
 import 'package:vocab/core/util/formatter.dart';
 
 class WordTile extends StatefulWidget {
@@ -63,25 +64,9 @@ class _WordTileState extends State<WordTile> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            "Confirm delete",
-            style: TextStyle(
-              color: Theme.of(context).errorColor,
-            ),
-          ),
-          content: Text('Do you really want to delete "${widget.wordSummary.word}?"'),
-          actions: <Widget>[
-            RaisedButton(
-              child: Text("Delete"),
-              onPressed: () => Navigator.pop(context, true),
-              color: Theme.of(context).errorColor,
-            ),
-            FlatButton(
-              child: Text("Cancel"),
-              onPressed: () => Navigator.pop(context, false),
-            )
-          ],
+        return DeleteALertDIalog(
+          title: "Confirm delete",
+          content: 'Do you really want to delete "${widget.wordSummary.word}?"',
         );
       },
     );

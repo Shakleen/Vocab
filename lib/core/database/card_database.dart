@@ -758,19 +758,23 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     await (delete(cardInfo)..where((table) => table.id.equals(id))).go();
   }
 
-  Future<void> _deleteCardDetailsWithID(int id) async {
-    final Card dbCard = await _getCardByID(id);
-    await _deleteCardInfoWithID(dbCard.frontId);
-    await _deleteCardInfoWithID(dbCard.backId);
-  }
-
   Future<void> _deleteCardWithID(int id) async {
     await (delete(cards)..where((table) => table.id.equals(id))).go();
   }
 
-  Future<void> _deleteCardAndCardInfo(int cardID) async {
-    await _deleteCardDetailsWithID(cardID);
+  Future<void> _deleteEntryAndQuizCardLinker(int cardID) async {
+    await (delete(entryQuizCards)
+          ..where((table) => table.cardId.equals(cardID)))
+        .go();
+  }
+
+  Future<bool> _deleteCardAndCardInfo(int cardID) async {
+    await _deleteEntryAndQuizCardLinker(cardID);
+    final Card dbCard = await _getCardByID(cardID);
     await _deleteCardWithID(cardID);
+    await _deleteCardInfoWithID(dbCard.frontId);
+    await _deleteCardInfoWithID(dbCard.backId);
+    return true;
   }
 
   Future<bool> deleteCardsOfAnEntry(int entryID) async {
@@ -797,11 +801,8 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     return true;
   }
 
-  Future<bool> deleteCardWithCardID(int cardInfoID) async {
-    final CardInfoData dbCardInfo = await (select(cardInfo)
-          ..where((table) => table.id.equals(cardInfoID)))
-        .getSingle();
-    return await deleteCardOfASense(dbCardInfo.entryId, dbCardInfo.senseId);
+  Future<bool> deleteCardWithCardID(int cardID) async {
+    return await _deleteCardAndCardInfo(cardID);
   }
 
   Future<List<Card>> _getDueCards(int no) async {
