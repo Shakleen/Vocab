@@ -3,6 +3,7 @@ import 'package:vocab/core/navigation/routes.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/side_drawer.dart';
 import 'package:vocab/features/word_save/presentation/widgets/view_saved_words.dart';
+import 'package:vocab/features/word_save/presentation/widgets/word_statistics.dart';
 
 class CardPage extends StatefulWidget {
   CardPage({Key key}) : super(key: key);
@@ -54,7 +55,7 @@ class _CardPageState extends State<CardPage> with TickerProviderStateMixin {
       drawer: SideDrawer(page: Page.CardPage),
       body: TabBarView(
         controller: _controller,
-        children: <Widget>[Container(), ViewSavedWords()],
+        children: <Widget>[WordStatistics(), ViewSavedWords()],
       ),
     );
   }

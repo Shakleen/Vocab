@@ -276,7 +276,9 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   }
 
   Future<void> _insertEntrySenseData(
-      int entryID, List<WordCardDetails> detailList) async {
+    int entryID,
+    List<WordCardDetails> detailList,
+  ) async {
     for (final WordCardDetails wordCardDetails in detailList) {
       //? Step 4.1: Dealing with Part of Speech String
       //? ==============================================================
@@ -324,7 +326,9 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   }
 
   Future<void> _insertEntrySyllables(
-      int entryID, List<String> syllableList) async {
+    int entryID,
+    List<String> syllableList,
+  ) async {
     for (final String s in syllableList) {
       final int syllableID = await _getExistingOrNewSyllableID(s);
       await _linkEntryAndSyllable(entryID, syllableID);
