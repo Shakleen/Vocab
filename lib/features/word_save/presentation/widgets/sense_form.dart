@@ -9,46 +9,62 @@ const String SEPERATOR = " | ";
 class SenseForm extends StatelessWidget {
   final WordCardDetails initSense;
   final Function(SenseForm) removeField;
-  final List<CustomTextField> _children;
+  List<Widget> _children;
+  final List<String> _posNames = const [
+    'Noun',
+    'Pronoun',
+    'Verb',
+    'Adjective',
+    'Adverb',
+    'Preposition',
+    'Conjunction',
+    'Interjection',
+  ];
+  int _partOfSpeech = 1;
 
-  SenseForm({
-    Key key,
-    @required this.removeField,
-    this.initSense,
-  })  : _children = [
-          CustomTextField(
-            labelText: 'Definition',
-            helperText: 'Giving an instance of',
-            initValue: initSense?.definition,
-          ),
-          CustomTextField(
-            labelText: 'Part of speech',
-            helperText: 'Noun',
-            initValue: initSense?.partOfSpeech,
-          ),
-          CustomTextField(
-            labelText: 'Examples',
-            helperText: 'Giving an instance of',
-            initValue: initSense?.exampleList?.join(SEPERATOR),
-            isNullable: true,
-          ),
-          CustomTextField(
-            labelText: 'Synonyms',
-            helperText: 'Noun',
-            initValue: initSense?.synonymList?.join(SEPERATOR),
-            isNullable: true,
-          ),
-          CustomTextField(
-            labelText: 'Antonyms',
-            helperText: 'Giving an instance of',
-            initValue: initSense?.antonymList?.join(SEPERATOR),
-            isNullable: true,
-          ),
-        ],
-        super(key: key);
+  SenseForm({Key key, @required this.removeField, this.initSense})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    _children = [
+      CustomTextField(
+        labelText: 'Definition',
+        helperText: 'Giving an instance of',
+        initValue: initSense?.definition,
+      ),
+      DropdownButton<int>(
+        items: List<DropdownMenuItem>.generate(
+          _posNames.length,
+          (int index) => DropdownMenuItem(
+            child: Text(_posNames[index]),
+            value: index + 1,
+          ),
+        ),
+        onChanged: (int value) => _partOfSpeech = value,
+        icon: Icon(Icons.arrow_downward),
+        iconSize: 24,
+        elevation: 16,
+      ),
+      CustomTextField(
+        labelText: 'Examples',
+        helperText: 'Giving an instance of',
+        initValue: initSense?.exampleList?.join(SEPERATOR),
+        isNullable: true,
+      ),
+      CustomTextField(
+        labelText: 'Synonyms',
+        helperText: 'Noun',
+        initValue: initSense?.synonymList?.join(SEPERATOR),
+        isNullable: true,
+      ),
+      CustomTextField(
+        labelText: 'Antonyms',
+        helperText: 'Giving an instance of',
+        initValue: initSense?.antonymList?.join(SEPERATOR),
+        isNullable: true,
+      ),
+    ];
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -81,18 +97,18 @@ class SenseForm extends StatelessWidget {
   }
 
   WordCardDetails getSenseFormValues() {
-    final String definition = _children[0].controller.text;
-    final String partOfSpeech = _children[1].controller.text;
-    final List<String> examples = _children[2].controller.text?.split(SEPERATOR);
-    final List<String> synonyms = _children[3].controller.text?.split(SEPERATOR);
-    final List<String> antonyms = _children[4].controller.text?.split(SEPERATOR);
+    final List values = [];
+
+    for (final Widget widget in _children)
+      if (widget is CustomTextField)
+        values.add(widget.controller.text?.split(SEPERATOR));
 
     return WordCardDetails(
-      definition: definition,
-      partOfSpeech: partOfSpeech,
-      exampleList: examples,
-      synonymList: synonyms,
-      antonymList: antonyms,
+      definition: values[0],
+      partOfSpeech: ID_TO_PART_OF_SPEECH_TYPE[_partOfSpeech],
+      exampleList: values[1],
+      synonymList: values[2],
+      antonymList: values[3],
     );
   }
 }
