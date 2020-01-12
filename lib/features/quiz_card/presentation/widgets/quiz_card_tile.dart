@@ -78,7 +78,7 @@ class _QuizCardTileState extends State<QuizCardTile> {
     final bool result =
         await Provider.of<db.CardDatabase>(context, listen: false)
             .cardDao
-            .deleteCardWithCardID(widget.quizCard.id);
+            .deleteQuizCard(widget.quizCard.id);
     print('Deletion result: $result');
   }
 }

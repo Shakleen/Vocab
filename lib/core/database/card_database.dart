@@ -620,7 +620,7 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     int entryID,
     int senseID,
     AttributeType frontType,
-    AttributeType backType, 
+    AttributeType backType,
     DateTime dueDate,
   }) async {
     final int frontID = await _insertCardInfo(entryID, senseID, frontType);
@@ -771,25 +771,20 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
         .toList();
   }
 
-  Future<Card> _getCardByID(int id) async {
-    return (select(cards)..where((table) => table.id.equals(id))).getSingle();
-  }
+  Future<Card> _getCardByID(int id) async =>
+      (select(cards)..where((table) => table.id.equals(id))).getSingle();
 
-  Future<void> _deleteCardInfoWithID(int id) async {
-    await (delete(cardInfo)..where((table) => table.id.equals(id))).go();
-  }
+  Future<void> _deleteCardInfoWithID(int cardInfoID) async =>
+      (delete(cardInfo)..where((table) => table.id.equals(cardInfoID))).go();
 
-  Future<void> _deleteCardWithID(int id) async {
-    await (delete(cards)..where((table) => table.id.equals(id))).go();
-  }
+  Future<void> _deleteEntryAndQuizCardLinker(int cardID) async =>
+      (delete(entryQuizCards)..where((table) => table.cardId.equals(cardID)))
+          .go();
 
-  Future<void> _deleteEntryAndQuizCardLinker(int cardID) async {
-    await (delete(entryQuizCards)
-          ..where((table) => table.cardId.equals(cardID)))
-        .go();
-  }
+  Future<void> _deleteCardWithID(int cardID) async =>
+      (delete(cards)..where((table) => table.id.equals(cardID))).go();
 
-  Future<bool> _deleteCardAndCardInfo(int cardID) async {
+  Future<bool> deleteQuizCard(int cardID) async {
     await _deleteEntryAndQuizCardLinker(cardID);
     final Card dbCard = await _getCardByID(cardID);
     await _deleteCardWithID(cardID);
@@ -798,50 +793,44 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     return true;
   }
 
-  Future<bool> deleteCardsOfAnEntry(int entryID) async {
-    final List<int> dbCardIDs = await _getEntryQuizCardIDs(entryID);
-    for (final int id in dbCardIDs) await _deleteCardAndCardInfo(id);
-    return true;
-  }
+  // Future<bool> deleteCardsOfAnEntry(int entryID) async {
+  //   final List<int> dbCardIDs = await _getEntryQuizCardIDs(entryID);
+  //   for (final int id in dbCardIDs) await _deleteCardAndCardInfo(id);
+  //   return true;
+  // }
 
-  Future<void> _checkAndDeleteCardInfo(int cardInfoID, int senseID) async {
-    final CardInfoData dbCardInfoData = await (select(cardInfo)
-          ..where((table) => table.id.equals(cardInfoID)))
-        .getSingle();
-    if (dbCardInfoData.senseId == senseID)
-      await _deleteCardInfoWithID(cardInfoID);
-  }
+  // Future<void> _checkAndDeleteCardInfo(int cardInfoID, int senseID) async {
+  //   final CardInfoData dbCardInfoData = await (select(cardInfo)
+  //         ..where((table) => table.id.equals(cardInfoID)))
+  //       .getSingle();
+  //   if (dbCardInfoData.senseId == senseID)
+  //     await _deleteCardInfoWithID(cardInfoID);
+  // }
 
-  Future<bool> deleteCardOfASense(int entryID, int senseID) async {
-    final List<int> dbCardIDs = await _getEntryQuizCardIDs(entryID);
-    for (final int id in dbCardIDs) {
-      final Card dbCard = await _getCardByID(id);
-      await _checkAndDeleteCardInfo(dbCard.frontId, senseID);
-      await _checkAndDeleteCardInfo(dbCard.backId, senseID);
-    }
-    return true;
-  }
+  // Future<bool> deleteCardOfASense(int entryID, int senseID) async {
+  //   final List<int> dbCardIDs = await _getEntryQuizCardIDs(entryID);
+  //   for (final int id in dbCardIDs) {
+  //     final Card dbCard = await _getCardByID(id);
+  //     await _checkAndDeleteCardInfo(dbCard.frontId, senseID);
+  //     await _checkAndDeleteCardInfo(dbCard.backId, senseID);
+  //   }
+  //   return true;
+  // }
 
-  Future<bool> deleteCardWithCardID(int cardID) async {
-    return await _deleteCardAndCardInfo(cardID);
-  }
-
-  Future<List<Card>> _getDueCards(int no) async {
-    return (select(cards)
-          ..where((table) => table.dueOn.isSmallerOrEqualValue(DateTime.now()))
-          ..orderBy([
-            (table) => OrderingTerm(
-                  expression: table.isImportant,
-                  mode: OrderingMode.desc,
-                ),
-            (table) => OrderingTerm(
-                  expression: table.level,
-                  mode: OrderingMode.asc,
-                ),
-          ])
-          ..limit(no))
-        .get();
-  }
+  Future<List<Card>> _getDueCards(int limit) async => (select(cards)
+        ..where((table) => table.dueOn.isSmallerOrEqualValue(DateTime.now()))
+        ..orderBy([
+          (table) => OrderingTerm(
+                expression: table.level,
+                mode: OrderingMode.asc,
+              ),
+          (table) => OrderingTerm(
+                expression: table.isImportant,
+                mode: OrderingMode.desc,
+              ),
+        ])
+        ..limit(limit))
+      .get();
 
   Future<CardInfoData> _getCardInfoFromID(int id) async {
     return (select(cardInfo)..where((table) => table.id.equals(id)))
