@@ -27,7 +27,9 @@ class SideDrawer extends StatelessWidget {
             onTap: () {
               if (page != Page.HomePage) {
                 Navigator.pushReplacementNamed(
-                    context, Page.HomePage.toString());
+                  context,
+                  Page.HomePage.toString(),
+                );
               }
             },
           ),
@@ -38,7 +40,22 @@ class SideDrawer extends StatelessWidget {
             onTap: () {
               if (page != Page.CardPage) {
                 Navigator.pushReplacementNamed(
-                    context, Page.CardPage.toString());
+                  context,
+                  Page.CardPage.toString(),
+                );
+              }
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.book),
+            title: Text('Quiz Page'),
+            selected: page == Page.QuizPage,
+            onTap: () {
+              if (page != Page.QuizPage) {
+                Navigator.pushReplacementNamed(
+                  context,
+                  Page.QuizPage.toString(),
+                );
               }
             },
           ),
