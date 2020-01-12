@@ -35,8 +35,8 @@ class _ToggleImportanceButtonState extends State<ToggleImportanceButton> {
   }
 
   void _toggleQuizCardImportance() async {
-    await cardDao.toggleCardImportance(widget.quizCard.id);
     _status = !_status;
+    await cardDao.toggleCardImportance(widget.quizCard.id, _status);
     setState(() {});
   }
 }
