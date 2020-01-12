@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vocab/core/database/card_database.dart';
 import 'package:vocab/core/ui/widgets/subtitle_text.dart';
 import 'package:vocab/core/ui/widgets/title_text.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
@@ -25,73 +26,62 @@ class FrontWidget extends StatelessWidget {
     final List<Widget> _children = [];
 
     switch (quizCard.frontType) {
-      case 1:
+      case AttributeType.Spelling:
         _children.add(TitleText(text: "Spelling"));
         _children.add(Text(quizCard.front));
         break;
-      case 2:
+      case AttributeType.Pronunciation:
         _children.add(TitleText(text: "Pronunciation"));
         _children.add(Text(quizCard.front));
         break;
-      case 4:
+      case AttributeType.Example:
         _children.add(TitleText(text: "Examples"));
         _makeOrderedList(_children, quizCard.front);
         break;
-      case 5:
+      case AttributeType.Definition:
         _children.add(TitleText(text: "Definition"));
         _children.add(Text(quizCard.front));
         break;
+      default:
     }
 
     switch (quizCard.backType) {
-      case 1:
-        _children.add(
-          _makeQuestion("Spell the word \"${quizCard.word}\"."),
-        );
+      case AttributeType.Spelling:
+        _children.add(_makeQuestion("Spell the word \"${quizCard.word}\"."));
         break;
-      case 2:
-        _children.add(
-          _makeQuestion("Pronounce the word \"${quizCard.word}\""),
-        );
+      case AttributeType.Pronunciation:
+        _children.add(_makeQuestion("Pronounce the word \"${quizCard.word}\""));
         break;
-      case 3:
-        _children.add(
-          _makeQuestion(
-            "Mention how many syllables the word \"${quizCard.word}\" has." +
-                " And mention the syllables as well",
-          ),
-        );
+      case AttributeType.Syllables:
+        _children.add(_makeQuestion(
+          "Mention how many syllables the word \"${quizCard.word}\" has." +
+              " And mention the syllables as well",
+        ));
         break;
-      case 4:
-        _children.add(
-          _makeQuestion(
-              "Give some example uses of the word \"${quizCard.word}\"."),
-        );
+      case AttributeType.Example:
+        _children.add(_makeQuestion(
+          "Give some example uses of the word \"${quizCard.word}\".",
+        ));
         break;
-      case 5:
-        _children.add(
-          _makeQuestion(
-            "Define the meaning of the word \"${quizCard.word}\" in this context.",
-          ),
-        );
+      case AttributeType.Definition:
+        _children.add(_makeQuestion(
+          "Define the meaning of the word \"${quizCard.word}\" in this context.",
+        ));
         break;
-      case 6:
-        _children.add(
-          _makeQuestion(
-              "Mention some synonyms of the word \"${quizCard.word}\""),
-        );
+      case AttributeType.Synonyms:
+        _children.add(_makeQuestion(
+          "Mention some synonyms of the word \"${quizCard.word}\"",
+        ));
         break;
-      case 7:
-        _children.add(
-          _makeQuestion(
-              "Mention some antonyms of the word \"${quizCard.word}\""),
-        );
+      case AttributeType.Antonyms:
+        _children.add(_makeQuestion(
+          "Mention some antonyms of the word \"${quizCard.word}\"",
+        ));
         break;
-      case 8:
-        _children.add(
-          _makeQuestion(
-              "Mention the part of speech the word \"${quizCard.word}\" belongs to"),
-        );
+      case AttributeType.PartOfSpeech:
+        _children.add(_makeQuestion(
+          "Mention the part of speech the word \"${quizCard.word}\" belongs to",
+        ));
         break;
     }
 

@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:vocab/core/database/card_database.dart';
 import 'package:vocab/core/ui/widgets/title_text.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 
@@ -20,39 +21,38 @@ class BackWidget extends StatelessWidget {
     final List<Widget> _children = [];
 
     switch (quizCard.backType) {
-      case 1:
+      case AttributeType.Spelling:
         _children.add(TitleText(text: "Spelling"));
         _children.add(Text(quizCard.back));
         break;
-      case 2:
+      case AttributeType.Pronunciation:
         _children.add(TitleText(text: "Pronunciation"));
         _children.add(Text(quizCard.back));
         break;
-      case 3:
+      case AttributeType.Syllables:
         _children.add(TitleText(text: "Syllables of \"${quizCard.word}\""));
         _children.add(Text(quizCard.back));
         break;
-      case 4:
+      case AttributeType.Example:
         _children.add(TitleText(text: "Examples of \"${quizCard.word}\""));
         _makeOrderedList(_children);
         break;
-      case 5:
+      case AttributeType.Definition:
         _children.add(TitleText(text: "Definition of \"${quizCard.word}\""));
         _children.add(Text(quizCard.back));
         break;
-      case 6:
+      case AttributeType.Synonyms:
         _children.add(TitleText(text: "Synonyms of \"${quizCard.word}\""));
         _makeOrderedList(_children);
         break;
-      case 7:
+      case AttributeType.Antonyms:
         _children.add(TitleText(text: "Antonyms of \"${quizCard.word}\""));
         _makeOrderedList(_children);
         break;
-      case 8:
+      case AttributeType.PartOfSpeech:
         _children
             .add(TitleText(text: "Part of Speech of \"${quizCard.word}\""));
         _children.add(Text(quizCard.back));
-        break;
     }
 
     return _children;

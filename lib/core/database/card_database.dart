@@ -131,7 +131,7 @@ enum AttributeType {
   PartOfSpeech,
 }
 
-const Map<AttributeType, int> ATTRIBUTE_TYPE_ID = {
+const Map<AttributeType, int> ATTRIBUTE_TYPE_TO_ID = const {
   AttributeType.Spelling: 1,
   AttributeType.Pronunciation: 2,
   AttributeType.Syllables: 3,
@@ -140,6 +140,17 @@ const Map<AttributeType, int> ATTRIBUTE_TYPE_ID = {
   AttributeType.Synonyms: 6,
   AttributeType.Antonyms: 7,
   AttributeType.PartOfSpeech: 8,
+};
+
+const Map<int, AttributeType> ID_TO_ATTRIBUTE_TYPE = const {
+  1: AttributeType.Spelling,
+  2: AttributeType.Pronunciation,
+  3: AttributeType.Syllables,
+  4: AttributeType.Example,
+  5: AttributeType.Definition,
+  6: AttributeType.Synonyms,
+  7: AttributeType.Antonyms,
+  8: AttributeType.PartOfSpeech,
 };
 
 @UseDao(tables: [
@@ -632,7 +643,7 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     return into(cardInfo).insert(CardInfoData(
       entryId: entryID,
       senseId: senseID,
-      attributeType: ATTRIBUTE_TYPE_ID[type],
+      attributeType: ATTRIBUTE_TYPE_TO_ID[type],
     ));
   }
 
@@ -807,13 +818,16 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
 
   Future<List<Card>> _getDueCards(int no) async {
     return (select(cards)
+          ..where((table) => table.dueOn.isSmallerOrEqualValue(DateTime.now()))
           ..orderBy([
-            (table) =>
-                OrderingTerm(expression: table.dueOn, mode: OrderingMode.desc),
-            (table) =>
-                OrderingTerm(expression: table.level, mode: OrderingMode.asc),
             (table) => OrderingTerm(
-                expression: table.isImportant, mode: OrderingMode.desc),
+                  expression: table.isImportant,
+                  mode: OrderingMode.desc,
+                ),
+            (table) => OrderingTerm(
+                  expression: table.level,
+                  mode: OrderingMode.asc,
+                ),
           ])
           ..limit(no))
         .get();
@@ -959,8 +973,7 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
 
       //? Step 3: Get the word
       final Word dbWord = await _getWordByID(
-        (await _getEntryFromID(dbFrontCardInfo.entryId)).wordId
-      );
+          (await _getEntryFromID(dbFrontCardInfo.entryId)).wordId);
 
       //? Step 4: create quiz card and add to output list
       output.add(
@@ -970,9 +983,9 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           dueDate: dbCard.dueOn,
           isImportant: dbCard.isImportant,
           level: dbCard.level,
-          frontType: dbFrontCardInfo.attributeType,
+          frontType: ID_TO_ATTRIBUTE_TYPE[dbFrontCardInfo.attributeType],
           front: front,
-          backType: dbBackCardInfo.attributeType,
+          backType: ID_TO_ATTRIBUTE_TYPE[dbBackCardInfo.attributeType],
           back: back,
         ),
       );
@@ -999,14 +1012,14 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
       output.add(
         QuizCard(
           word: word,
-          frontType: dbFrontCardInfo.attributeType,
-          backType: dbBackCardInfo.attributeType,
           level: dbCard.level,
           dueDate: dbCard.dueOn,
           id: dbCard.id,
           isImportant: dbCard.isImportant,
           front: front,
+          frontType: ID_TO_ATTRIBUTE_TYPE[dbFrontCardInfo.attributeType],
           back: back,
+          backType: ID_TO_ATTRIBUTE_TYPE[dbBackCardInfo.attributeType],
         ),
       );
     }

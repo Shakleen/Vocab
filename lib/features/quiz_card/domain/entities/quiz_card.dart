@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:vocab/core/database/card_database.dart';
 
 class QuizCard extends Equatable {
   final String front;
@@ -7,7 +8,7 @@ class QuizCard extends Equatable {
   final bool isImportant;
   final int level;
   final int id;
-  final int frontType, backType;
+  final AttributeType frontType, backType;
   final String word;
 
   QuizCard({
