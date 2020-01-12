@@ -21,23 +21,15 @@ class _QuizCardsState extends State<QuizCards> {
   void initState() {
     super.initState();
     _index = 0;
-    _controls = QuizControls(next: _nextCard, reveal: _revealAnswer);
-    _children = <Widget>[
-      Expanded(
-        flex: 1,
-        child: FrontWidget(quizCard: widget.quizCards[_index]),
-      ),
-      _controls,
-    ];
+    _buildChildren();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _children,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: _children,
     );
   }
 
@@ -62,10 +54,26 @@ class _QuizCardsState extends State<QuizCards> {
     if (_index < widget.quizCards.length) {
       setState(() {
         _index += 1;
+        _buildChildren();
       });
     } else {
       Navigator.pop(context);
     }
+  }
+
+  void _buildChildren() {
+    _controls = QuizControls(
+      next: _nextCard,
+      reveal: _revealAnswer,
+      level: widget.quizCards[_index].level,
+    );
+    _children = <Widget>[
+      Expanded(
+        flex: 1,
+        child: FrontWidget(quizCard: widget.quizCards[_index]),
+      ),
+      _controls,
+    ];
   }
 }
 
@@ -241,11 +249,13 @@ class BackWidget extends StatelessWidget {
 class QuizControls extends StatefulWidget {
   final Function next;
   final Function reveal;
+  final int level;
 
   QuizControls({
     Key key,
     @required this.next,
     @required this.reveal,
+    @required this.level,
   }) : super(key: key);
 
   @override
@@ -268,22 +278,24 @@ class _QuizControlsState extends State<QuizControls> {
     if (_revealed) {
       return ButtonBar(
         buttonMinWidth: 100,
+        buttonHeight: 65,
         alignment: MainAxisAlignment.spaceAround,
         buttonTextTheme: ButtonTextTheme.primary,
         children: <Widget>[
           RaisedButton(
-            child: Text("Again"),
+            child: Text(
+              "Again\n(1 min)",
+              textAlign: TextAlign.center,
+            ),
             color: Colors.red,
             onPressed: () {},
           ),
           RaisedButton(
-            child: Text("Good"),
+            child: Text(
+              "Good\n${_getTime()}",
+              textAlign: TextAlign.center,
+            ),
             color: Colors.green,
-            onPressed: () {},
-          ),
-          RaisedButton(
-            child: Text("Easy"),
-            color: Colors.blue,
             onPressed: () {},
           ),
         ],
@@ -300,6 +312,18 @@ class _QuizControlsState extends State<QuizControls> {
           });
         },
       );
+    }
+  }
+
+  String _getTime() {
+    if (widget.level == 0) {
+      return "10 minutes";
+    } else if (widget.level == 1) {
+      return "1 day";
+    } else if (widget.level < 15) {
+      return "${2 * widget.level - 1} day";
+    } else {
+      return "${widget.level / 15} month";
     }
   }
 }
