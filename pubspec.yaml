@@ -20,6 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  fl_chart: ^0.6.3
   intl: ^0.16.1
   path: ^1.6.4
   path_provider: ^1.5.1
