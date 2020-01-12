@@ -8,8 +8,10 @@ class QuizCard extends Equatable {
   final int level;
   final int id;
   final int frontType, backType;
+  final String word;
 
   QuizCard({
+    this.word,
     this.frontType,
     this.backType,
     this.front,
@@ -22,6 +24,7 @@ class QuizCard extends Equatable {
 
   @override
   List<Object> get props => [
+        word,
         frontType,
         backType,
         front,

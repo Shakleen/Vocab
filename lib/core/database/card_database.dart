@@ -957,9 +957,15 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           await _getCardInfoFromID(dbCard.backId);
       final String back = await _getCardSideInfo(dbBackCardInfo);
 
-      //? Step 3: create quiz card and add to output list
+      //? Step 3: Get the word
+      final Word dbWord = await _getWordByID(
+        (await _getEntryFromID(dbFrontCardInfo.entryId)).wordId
+      );
+
+      //? Step 4: create quiz card and add to output list
       output.add(
         QuizCard(
+          word: dbWord.word,
           id: dbCard.id,
           dueDate: dbCard.dueOn,
           isImportant: dbCard.isImportant,
@@ -992,6 +998,7 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
       final String back = await _getCardSideInfo(dbBackCardInfo);
       output.add(
         QuizCard(
+          word: word,
           frontType: dbFrontCardInfo.attributeType,
           backType: dbBackCardInfo.attributeType,
           level: dbCard.level,
