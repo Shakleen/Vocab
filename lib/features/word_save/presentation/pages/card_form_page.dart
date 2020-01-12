@@ -114,7 +114,7 @@ class _CardFormPageState extends State<CardFormPage> {
     if (result) {
       db.CardDatabase cardDatabase = sl();
       db.CardDao cardDao = cardDatabase.cardDao;
-      await cardDao.insertQuizCards(wordCard);
+      await cardDao.createNewQuizCards(wordCard);
       Navigator.pop(context);
     }
   }

@@ -604,82 +604,92 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
 
   CardDao(this.cardDatabase) : super(cardDatabase);
 
-  Future<int> _getWordID(String word) async {
-    return (await (select(words)..where((table) => table.word.equals(word)))
-            .getSingle())
-        .id;
-  }
+  /// Fetches an [Entry] for [word] string.
+  Future<Entry> _getEntryByWord(String word) async =>
+      (await (select(words)..where((table) => table.word.equals(word))).join([
+        leftOuterJoin(entries, entries.wordId.equalsExp(words.id))
+      ]).getSingle())
+          .readTable(entries);
 
-  Future<Entry> _getEntryByWord(String word) async {
-    int wordID = await _getWordID(word);
-    return (select(entries)..where((table) => table.wordId.equals(wordID)))
-        .getSingle();
-  }
+  /// Fetches a List of [Sense] objects for an entry with [entryID].
+  Future<List<Sense>> _getEntrySenses(int entryID) async =>
+      (select(senses)..where((table) => table.entryId.equals(entryID))).get();
 
-  Future<int> _insertCard(
+  /// Inserts a quiz card information to the database.
+  Future<int> _insertCard({
     int entryID,
     int senseID,
     AttributeType frontType,
-    AttributeType backType, {
+    AttributeType backType, 
     DateTime dueDate,
   }) async {
-    final int frontID = await _createSide(entryID, senseID, frontType);
-    final int backID = await _createSide(entryID, senseID, backType);
+    final int frontID = await _insertCardInfo(entryID, senseID, frontType);
+    final int backID = await _insertCardInfo(entryID, senseID, backType);
     final int cardID = await into(cards).insert(Card(
       frontId: frontID,
       backId: backID,
       dueOn: dueDate != null ? dueDate : DateTime.now(),
     ));
 
-    await into(entryQuizCards).insert(EntryQuizCard(
-      cardId: cardID,
-      entryId: entryID,
-    ));
+    await _linkEntryAndCard(cardID, entryID);
 
     return cardID;
   }
 
-  Future<int> _createSide(int entryID, int senseID, AttributeType type) async {
-    return into(cardInfo).insert(CardInfoData(
-      entryId: entryID,
-      senseId: senseID,
-      attributeType: ATTRIBUTE_TYPE_TO_ID[type],
-    ));
-  }
+  /// Inserts the information of a card side into the database.
+  Future<int> _insertCardInfo(
+    int entryID,
+    int senseID,
+    AttributeType type,
+  ) async =>
+      into(cardInfo).insert(
+        CardInfoData(
+          entryId: entryID,
+          senseId: senseID,
+          attributeType: ATTRIBUTE_TYPE_TO_ID[type],
+        ),
+      );
 
-  Future<bool> insertQuizCards(WordCard wordCard) async {
-    final Entry entry = await _getEntryByWord(wordCard.word);
-    final List<Sense> senseList = await (select(senses)
-          ..where((table) => table.entryId.equals(entry.id)))
-        .get();
+  /// Links the entry with [entryID] and newly inserted card with [cardID].
+  Future<void> _linkEntryAndCard(int cardID, int entryID) async =>
+      into(entryQuizCards).insert(
+        EntryQuizCard(cardId: cardID, entryId: entryID),
+      );
+
+  /// Creates new quiz cards for a word with information contained in [wordCard] parameter.
+  ///
+  /// Every word will have at most 8 types of cards.
+  Future<bool> createNewQuizCards(WordCard wordCard) async {
+    final Entry dbEntry = await _getEntryByWord(wordCard.word);
+    final List<Sense> dbSenseList = await _getEntrySenses(dbEntry.id);
 
     //? Card 1: Front = Spelling, Back = Pronunciation
     await _insertCard(
-      entry.id,
-      senseList[0].id,
-      AttributeType.Spelling,
-      AttributeType.Pronunciation,
+      entryID: dbEntry.id,
+      senseID: dbSenseList[0].id,
+      frontType: AttributeType.Spelling,
+      backType: AttributeType.Pronunciation,
     );
 
     //? Card 2: Front = Pronunciation, Back = Spelling
     await _insertCard(
-      entry.id,
-      senseList[0].id,
-      AttributeType.Pronunciation,
-      AttributeType.Spelling,
+      entryID: dbEntry.id,
+      senseID: dbSenseList[0].id,
+      frontType: AttributeType.Pronunciation,
+      backType: AttributeType.Spelling,
     );
 
     //? Card 3: Front = Spelling, Back = Syllables
     await _insertCard(
-      entry.id,
-      senseList[0].id,
-      AttributeType.Spelling,
-      AttributeType.Syllables,
+      entryID: dbEntry.id,
+      senseID: dbSenseList[0].id,
+      frontType: AttributeType.Spelling,
+      backType: AttributeType.Syllables,
     );
 
     int delay = 0;
 
-    for (final Sense sense in senseList) {
+    for (final Sense sense in dbSenseList) {
       final List<ExampleListData> dbExamples = await (select(exampleList)
             ..where((table) => table.senseId.equals(sense.id)))
           .get();
@@ -687,19 +697,19 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
       if (dbExamples.isNotEmpty) {
         //? Card 4: Front = Definition, Back = Example
         await _insertCard(
-          entry.id,
-          sense.id,
-          AttributeType.Definition,
-          AttributeType.Example,
+          entryID: dbEntry.id,
+          senseID: sense.id,
+          frontType: AttributeType.Definition,
+          backType: AttributeType.Example,
           dueDate: DateTime.now().add(Duration(days: delay)),
         );
 
         //? Card 5: Front = Example, Back = Definition
         await _insertCard(
-          entry.id,
-          sense.id,
-          AttributeType.Example,
-          AttributeType.Definition,
+          entryID: dbEntry.id,
+          senseID: sense.id,
+          frontType: AttributeType.Example,
+          backType: AttributeType.Definition,
           dueDate: DateTime.now().add(Duration(days: delay)),
         );
 
@@ -711,10 +721,10 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
         if (dbSynList.isNotEmpty) {
           //? Card 6: Front = Example, Back = Synonyms
           await _insertCard(
-            entry.id,
-            sense.id,
-            AttributeType.Example,
-            AttributeType.Synonyms,
+            entryID: dbEntry.id,
+            senseID: sense.id,
+            frontType: AttributeType.Example,
+            backType: AttributeType.Synonyms,
             dueDate: DateTime.now().add(Duration(days: delay)),
           );
         }
@@ -727,20 +737,20 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
         if (dbAntList.isNotEmpty) {
           //? Card 7: Front = Example, Back = Antonyms
           await _insertCard(
-            entry.id,
-            sense.id,
-            AttributeType.Example,
-            AttributeType.Antonyms,
+            entryID: dbEntry.id,
+            senseID: sense.id,
+            frontType: AttributeType.Example,
+            backType: AttributeType.Antonyms,
             dueDate: DateTime.now().add(Duration(days: delay)),
           );
         }
 
         //? Card 8: Front = Example, Back = Part of speech
         await _insertCard(
-          entry.id,
-          sense.id,
-          AttributeType.Example,
-          AttributeType.PartOfSpeech,
+          entryID: dbEntry.id,
+          senseID: sense.id,
+          frontType: AttributeType.Example,
+          backType: AttributeType.PartOfSpeech,
           dueDate: DateTime.now().add(Duration(days: delay)),
         );
 
