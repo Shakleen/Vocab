@@ -807,172 +807,6 @@ class $ExamplesTable extends Examples with TableInfo<$ExamplesTable, Example> {
   }
 }
 
-class PartsOfSpeechData extends DataClass
-    implements Insertable<PartsOfSpeechData> {
-  final int id;
-  final String partOfSpeech;
-  PartsOfSpeechData({this.id, @required this.partOfSpeech});
-  factory PartsOfSpeechData.fromData(
-      Map<String, dynamic> data, GeneratedDatabase db,
-      {String prefix}) {
-    final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    return PartsOfSpeechData(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      partOfSpeech: stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}part_of_speech']),
-    );
-  }
-  factory PartsOfSpeechData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return PartsOfSpeechData(
-      id: serializer.fromJson<int>(json['id']),
-      partOfSpeech: serializer.fromJson<String>(json['partOfSpeech']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson(
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'partOfSpeech': serializer.toJson<String>(partOfSpeech),
-    };
-  }
-
-  @override
-  PartsOfSpeechCompanion createCompanion(bool nullToAbsent) {
-    return PartsOfSpeechCompanion(
-      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      partOfSpeech: partOfSpeech == null && nullToAbsent
-          ? const Value.absent()
-          : Value(partOfSpeech),
-    );
-  }
-
-  PartsOfSpeechData copyWith({int id, String partOfSpeech}) =>
-      PartsOfSpeechData(
-        id: id ?? this.id,
-        partOfSpeech: partOfSpeech ?? this.partOfSpeech,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('PartsOfSpeechData(')
-          ..write('id: $id, ')
-          ..write('partOfSpeech: $partOfSpeech')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => $mrjf($mrjc(id.hashCode, partOfSpeech.hashCode));
-  @override
-  bool operator ==(dynamic other) =>
-      identical(this, other) ||
-      (other is PartsOfSpeechData &&
-          other.id == this.id &&
-          other.partOfSpeech == this.partOfSpeech);
-}
-
-class PartsOfSpeechCompanion extends UpdateCompanion<PartsOfSpeechData> {
-  final Value<int> id;
-  final Value<String> partOfSpeech;
-  const PartsOfSpeechCompanion({
-    this.id = const Value.absent(),
-    this.partOfSpeech = const Value.absent(),
-  });
-  PartsOfSpeechCompanion.insert({
-    this.id = const Value.absent(),
-    @required String partOfSpeech,
-  }) : partOfSpeech = Value(partOfSpeech);
-  PartsOfSpeechCompanion copyWith({Value<int> id, Value<String> partOfSpeech}) {
-    return PartsOfSpeechCompanion(
-      id: id ?? this.id,
-      partOfSpeech: partOfSpeech ?? this.partOfSpeech,
-    );
-  }
-}
-
-class $PartsOfSpeechTable extends PartsOfSpeech
-    with TableInfo<$PartsOfSpeechTable, PartsOfSpeechData> {
-  final GeneratedDatabase _db;
-  final String _alias;
-  $PartsOfSpeechTable(this._db, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedIntColumn _id;
-  @override
-  GeneratedIntColumn get id => _id ??= _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, true,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
-  final VerificationMeta _partOfSpeechMeta =
-      const VerificationMeta('partOfSpeech');
-  GeneratedTextColumn _partOfSpeech;
-  @override
-  GeneratedTextColumn get partOfSpeech =>
-      _partOfSpeech ??= _constructPartOfSpeech();
-  GeneratedTextColumn _constructPartOfSpeech() {
-    return GeneratedTextColumn('part_of_speech', $tableName, false,
-        minTextLength: 1, $customConstraints: 'UNIQUE');
-  }
-
-  @override
-  List<GeneratedColumn> get $columns => [id, partOfSpeech];
-  @override
-  $PartsOfSpeechTable get asDslTable => this;
-  @override
-  String get $tableName => _alias ?? 'parts_of_speech';
-  @override
-  final String actualTableName = 'parts_of_speech';
-  @override
-  VerificationContext validateIntegrity(PartsOfSpeechCompanion d,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    if (d.id.present) {
-      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
-    } else if (id.isRequired && isInserting) {
-      context.missing(_idMeta);
-    }
-    if (d.partOfSpeech.present) {
-      context.handle(
-          _partOfSpeechMeta,
-          partOfSpeech.isAcceptableValue(
-              d.partOfSpeech.value, _partOfSpeechMeta));
-    } else if (partOfSpeech.isRequired && isInserting) {
-      context.missing(_partOfSpeechMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  PartsOfSpeechData map(Map<String, dynamic> data, {String tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return PartsOfSpeechData.fromData(data, _db, prefix: effectivePrefix);
-  }
-
-  @override
-  Map<String, Variable> entityToSql(PartsOfSpeechCompanion d) {
-    final map = <String, Variable>{};
-    if (d.id.present) {
-      map['id'] = Variable<int, IntType>(d.id.value);
-    }
-    if (d.partOfSpeech.present) {
-      map['part_of_speech'] =
-          Variable<String, StringType>(d.partOfSpeech.value);
-    }
-    return map;
-  }
-
-  @override
-  $PartsOfSpeechTable createAlias(String alias) {
-    return $PartsOfSpeechTable(_db, alias);
-  }
-}
-
 class Syllable extends DataClass implements Insertable<Syllable> {
   final int id;
   final String syllable;
@@ -2398,9 +2232,6 @@ abstract class _$CardDatabase extends GeneratedDatabase {
   $WordsTable get words => _words ??= $WordsTable(this);
   $ExamplesTable _examples;
   $ExamplesTable get examples => _examples ??= $ExamplesTable(this);
-  $PartsOfSpeechTable _partsOfSpeech;
-  $PartsOfSpeechTable get partsOfSpeech =>
-      _partsOfSpeech ??= $PartsOfSpeechTable(this);
   $SyllablesTable _syllables;
   $SyllablesTable get syllables => _syllables ??= $SyllablesTable(this);
   $ThesaurusListTable _thesaurusList;
@@ -2428,7 +2259,6 @@ abstract class _$CardDatabase extends GeneratedDatabase {
         senses,
         words,
         examples,
-        partsOfSpeech,
         syllables,
         thesaurusList,
         exampleList,
@@ -2448,7 +2278,6 @@ mixin _$WordDaoMixin on DatabaseAccessor<CardDatabase> {
   $SensesTable get senses => db.senses;
   $WordsTable get words => db.words;
   $ExamplesTable get examples => db.examples;
-  $PartsOfSpeechTable get partsOfSpeech => db.partsOfSpeech;
   $SyllablesTable get syllables => db.syllables;
   $ThesaurusListTable get thesaurusList => db.thesaurusList;
   $ExampleListTable get exampleList => db.exampleList;
@@ -2459,7 +2288,6 @@ mixin _$CardDaoMixin on DatabaseAccessor<CardDatabase> {
   $SensesTable get senses => db.senses;
   $WordsTable get words => db.words;
   $ExamplesTable get examples => db.examples;
-  $PartsOfSpeechTable get partsOfSpeech => db.partsOfSpeech;
   $SyllablesTable get syllables => db.syllables;
   $ThesaurusListTable get thesaurusList => db.thesaurusList;
   $ExampleListTable get exampleList => db.exampleList;

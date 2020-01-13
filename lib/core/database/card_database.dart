@@ -42,12 +42,6 @@ class Examples extends Table {
       text().withLength(min: 1).customConstraint('UNIQUE')();
 }
 
-class PartsOfSpeech extends Table {
-  IntColumn get id => integer().nullable().autoIncrement()();
-  TextColumn get partOfSpeech =>
-      text().withLength(min: 1).customConstraint('UNIQUE')();
-}
-
 class Syllables extends Table {
   IntColumn get id => integer().nullable().autoIncrement()();
   TextColumn get syllable =>
@@ -158,7 +152,6 @@ const Map<int, AttributeType> ID_TO_ATTRIBUTE_TYPE = const {
   Senses,
   Words,
   Examples,
-  PartsOfSpeech,
   Syllables,
   ThesaurusList,
   ExampleList,
@@ -224,20 +217,6 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     }
   }
 
-  Future<int> _getExistingOrNewPartOfSpeechID(String partOfSpeech) async {
-    final PartsOfSpeechData pos = await (select(partsOfSpeech)
-          ..where((table) => table.partOfSpeech.equals(partOfSpeech)))
-        .getSingle();
-
-    if (pos != null) {
-      return pos.id;
-    } else {
-      return await into(partsOfSpeech).insert(
-        PartsOfSpeechData(partOfSpeech: partOfSpeech),
-      );
-    }
-  }
-
   Future<int> _getExistingOrNewExampleID(String inputExample) async {
     final Example searchExample = await (select(examples)
           ..where((table) => table.sentence.equals(inputExample)))
@@ -283,9 +262,8 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       //? Step 4.1: Dealing with Part of Speech String
       //? ==============================================================
       // Same as word
-      final int partOfSpeechID = await _getExistingOrNewPartOfSpeechID(
-        wordCardDetails.partOfSpeech,
-      );
+      final int partOfSpeechID =
+          PART_OF_SPEECH_TYPE_TO_ID[wordCardDetails.partOfSpeech];
 
       //? Step 4.2: Dealing with Sense data
       //? ==============================================================
@@ -379,11 +357,6 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
         .get();
   }
 
-  Future<PartsOfSpeechData> _getSensePartOfSpeech(int id) async {
-    return (select(partsOfSpeech)..where((table) => table.id.equals(id)))
-        .getSingle();
-  }
-
   Future<List<ExampleListData>> _getSenseExampleLinkList(int senseID) async {
     return (select(exampleList)
           ..where((table) => table.senseId.equals(senseID)))
@@ -444,12 +417,6 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     final List<Sense> senseList = await _getEntrySenseList(entry.id);
 
     for (final Sense sense in senseList) {
-      //? Step 3.1: Get part of speech
-      final PartsOfSpeechData partOfSpeechInst = await _getSensePartOfSpeech(
-        sense.partOfSpeech,
-      );
-
-      //? Step 3.2: Get examples
       final List<String> resultExampleList = [];
       final List<ExampleListData> dbExampleDataList =
           await _getSenseExampleLinkList(sense.id);
@@ -469,7 +436,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
         ),
         definition: sense.definition,
         exampleList: resultExampleList,
-        partOfSpeech: partOfSpeechInst.partOfSpeech,
+        partOfSpeech: ID_TO_PART_OF_SPEECH_TYPE[sense.partOfSpeech],
       ));
     }
 
@@ -594,7 +561,6 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   Senses,
   Words,
   Examples,
-  PartsOfSpeech,
   Syllables,
   ThesaurusList,
   ExampleList,
@@ -881,11 +847,6 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           .map((rows) => rows.readTable(words).word)
           .toList();
 
-  Future<String> _getSensePartOfSpeech(int id) async =>
-      (await (select(partsOfSpeech)..where((table) => table.id.equals(id)))
-              .getSingle())
-          .partOfSpeech;
-
   Future<String> _getCardSideInfo(CardInfoData dbCardInfoData) async {
     if (dbCardInfoData.attributeType <= 3) {
       final Entry dbEntry = await _getEntryFromID(dbCardInfoData.entryId);
@@ -920,7 +881,9 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           );
           return output.join(' | ');
         case AttributeType.PartOfSpeech:
-          return await _getSensePartOfSpeech(dbSense.partOfSpeech);
+          return getPartOfSpeechString(
+            ID_TO_PART_OF_SPEECH_TYPE[dbSense.partOfSpeech],
+          );
         default:
           return null;
       }
@@ -1031,7 +994,6 @@ const List<Type> _CARD_DATABASE_TABLE_LIST = [
   Senses,
   Words,
   Examples,
-  PartsOfSpeech,
   Syllables,
   ThesaurusList,
   ExampleList,
