@@ -20,13 +20,22 @@ class SenseForm extends StatelessWidget {
     'Conjunction',
     'Interjection',
   ];
-  int _partOfSpeech = 1;
+  int _partOfSpeech;
 
   SenseForm({Key key, @required this.removeField, this.initSense})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    if (_partOfSpeech == null) {
+      if (initSense != null) {
+        _partOfSpeech = PART_OF_SPEECH_TYPE_TO_ID[initSense.partOfSpeech];
+      } else {
+        _partOfSpeech = 1;
+      }
+    }
+      
+
     _children = [
       CustomTextField(
         labelText: 'Definition',
@@ -34,7 +43,7 @@ class SenseForm extends StatelessWidget {
         initValue: initSense?.definition,
       ),
       DropdownButton<int>(
-        items: List<DropdownMenuItem>.generate(
+        items: List<DropdownMenuItem<int>>.generate(
           _posNames.length,
           (int index) => DropdownMenuItem(
             child: Text(_posNames[index]),
@@ -45,6 +54,8 @@ class SenseForm extends StatelessWidget {
         icon: Icon(Icons.arrow_downward),
         iconSize: 24,
         elevation: 16,
+        value: _partOfSpeech,
+        
       ),
       CustomTextField(
         labelText: 'Examples',
