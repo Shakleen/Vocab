@@ -42,7 +42,7 @@ class GetWordCard extends UseCase<WordCard, Param> {
         synonymList: e.synonymList,
         antonymList: e.antonymList,
         exampleList: e.exampleList,
-        partOfSpeech: e.partOfSpeech,
+        partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE[e.partOfSpeech.toLowerCase()],
       );
 }
 

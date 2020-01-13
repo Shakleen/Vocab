@@ -33,6 +33,17 @@ const Map<int, PartOfSpeechType> ID_TO_PART_OF_SPEECH_TYPE = const {
   8: PartOfSpeechType.Interjection,
 };
 
+const Map<String, PartOfSpeechType> STRING_TO_PART_OF_SPEECH_TYPE = const {
+  'noun': PartOfSpeechType.Noun,
+  'pronoun': PartOfSpeechType.Pronoun,
+  'verb': PartOfSpeechType.Verb,
+  'adjective': PartOfSpeechType.Adjective,
+  'adverb': PartOfSpeechType.Adverb,
+  'preposition': PartOfSpeechType.Preposition,
+  'conjunction': PartOfSpeechType.Conjunction,
+  'interjection': PartOfSpeechType.Interjection,
+};
+
 String getPartOfSpeechString(PartOfSpeechType type) =>
     type.toString().split('.').last;
 

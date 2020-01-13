@@ -134,25 +134,25 @@ WordCard _buildWordCard() {
     detailList: [
       WordCardDetails(
         definition: "compete in a race",
-        partOfSpeech: "verb",
+        partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE["verb"],
         synonymList: ["run"],
         exampleList: ["let's race and see who gets there first"],
       ),
       WordCardDetails(
         definition:
             "the flow of air that is driven backwards by an aircraft propeller",
-        partOfSpeech: "noun",
+        partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE["noun"],
         synonymList: ["airstream", "backwash", "slipstream", "wash"],
       ),
       WordCardDetails(
         definition: "cause to move fast or to rush or race",
-        partOfSpeech: "verb",
+        partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE["verb"],
         synonymList: ["rush"],
         exampleList: ["The psychologist raced the rats through a long maze"],
       ),
       WordCardDetails(
         definition: "move hurridly",
-        partOfSpeech: "verb",
+        partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE["verb"],
         synonymList: [
           "belt along",
           "bucket along",
@@ -170,29 +170,29 @@ WordCard _buildWordCard() {
       ),
       WordCardDetails(
         definition: "a canal for a current of water",
-        partOfSpeech: "noun",
+        partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE["noun"],
         synonymList: ["raceway"],
       ),
       WordCardDetails(
         definition:
             "(biology) a taxonomic group that is a division of a species; usually arises as a consequence of geographical isolation within a species",
-        partOfSpeech: "noun",
+        partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE["noun"],
         synonymList: ["subspecies"],
       ),
       WordCardDetails(
         definition: "a contest of speed",
-        partOfSpeech: "noun",
+        partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE["noun"],
         exampleList: ["the race is to the swift"],
       ),
       WordCardDetails(
         definition: "any competition",
-        partOfSpeech: "noun",
+        partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE["noun"],
         exampleList: ["the race for the presidency"],
       ),
       WordCardDetails(
         definition:
             "people who are believed to belong to the same genetic stock",
-        partOfSpeech: "noun",
+        partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE["noun"],
         exampleList: [
           "some biologists doubt that there are important genetic differences between races of human beings"
         ],
@@ -200,7 +200,7 @@ WordCard _buildWordCard() {
       WordCardDetails(
         definition:
             "to work as fast as possible towards a goal, sometimes in competition with others",
-        partOfSpeech: "verb",
+        partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE["verb"],
       ),
     ],
     syllables: Syllable(count: 1, list: ["race"]),

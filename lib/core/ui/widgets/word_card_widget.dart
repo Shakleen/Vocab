@@ -21,7 +21,7 @@ class WordCardWidget extends StatelessWidget {
       TitleText(text: 'Definition(s)'),
       Text(wordCardDetails.definition),
       TitleText(text: 'Part of Speech'),
-      Text(wordCardDetails.partOfSpeech),
+      Text(getPartOfSpeechString(wordCardDetails.partOfSpeech)),
     ]);
 
     _checkAndCreate('Example(s)', wordCardDetails.exampleList);
