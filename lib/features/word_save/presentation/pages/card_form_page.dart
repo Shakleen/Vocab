@@ -40,17 +40,14 @@ class _CardFormPageState extends State<CardFormPage> {
     wordField = CustomTextField(
       initValue: widget.initialWordCard?.word,
       labelText: 'Word',
-      helperText: 'e.g. example',
     );
     pronunciationField = CustomTextField(
       initValue: widget.initialWordCard?.pronunciation?.all,
       labelText: 'Pronunciation',
-      helperText: 'Audio file link',
     );
     syllablesField = CustomTextField(
       initValue: widget.initialWordCard?.syllables?.list?.join(SEPERATOR),
       labelText: "Syllables",
-      helperText: "Separate each value with a comma",
     );
     senseFormList = SenseFormList(
       initSenses: widget.initialWordCard?.detailList,

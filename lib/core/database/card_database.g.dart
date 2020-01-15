@@ -410,8 +410,11 @@ class $SensesTable extends Senses with TableInfo<$SensesTable, Sense> {
   GeneratedIntColumn get partOfSpeech =>
       _partOfSpeech ??= _constructPartOfSpeech();
   GeneratedIntColumn _constructPartOfSpeech() {
-    return GeneratedIntColumn('part_of_speech', $tableName, false,
-        $customConstraints: 'REFERENCES parts_of_speech(id)');
+    return GeneratedIntColumn(
+      'part_of_speech',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _definitionMeta = const VerificationMeta('definition');

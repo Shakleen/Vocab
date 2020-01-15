@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/ui/widgets/headline_text.dart';
+import 'package:vocab/core/ui/widgets/subtitle_text.dart';
 
 import 'custom_text_field.dart';
 
@@ -34,14 +35,13 @@ class SenseForm extends StatelessWidget {
         _partOfSpeech = 1;
       }
     }
-      
 
     _children = [
       CustomTextField(
         labelText: 'Definition',
-        helperText: 'Giving an instance of',
         initValue: initSense?.definition,
       ),
+      SubtitleText(text: 'Part of speech'),
       DropdownButton<int>(
         items: List<DropdownMenuItem<int>>.generate(
           _posNames.length,
@@ -55,23 +55,21 @@ class SenseForm extends StatelessWidget {
         iconSize: 24,
         elevation: 16,
         value: _partOfSpeech,
-        
+        isExpanded: true,
+        style: TextStyle(color: Theme.of(context).primaryColor),
       ),
       CustomTextField(
         labelText: 'Examples',
-        helperText: 'Giving an instance of',
         initValue: initSense?.exampleList?.join(SEPERATOR),
         isNullable: true,
       ),
       CustomTextField(
         labelText: 'Synonyms',
-        helperText: 'Noun',
         initValue: initSense?.synonymList?.join(SEPERATOR),
         isNullable: true,
       ),
       CustomTextField(
         labelText: 'Antonyms',
-        helperText: 'Giving an instance of',
         initValue: initSense?.antonymList?.join(SEPERATOR),
         isNullable: true,
       ),
@@ -99,7 +97,10 @@ class SenseForm extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(children: _children),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: _children,
+              ),
             )
           ],
         ),
@@ -115,7 +116,7 @@ class SenseForm extends StatelessWidget {
         values.add(widget.controller.text?.split(SEPERATOR));
 
     return WordCardDetails(
-      definition: values[0],
+      definition: values[0].join(''),
       partOfSpeech: ID_TO_PART_OF_SPEECH_TYPE[_partOfSpeech],
       exampleList: values[1],
       synonymList: values[2],

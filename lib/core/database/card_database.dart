@@ -26,8 +26,7 @@ class Senses extends Table {
   IntColumn get id => integer().nullable().autoIncrement()();
   IntColumn get entryId =>
       integer().customConstraint('REFERENCES entries(id)')();
-  IntColumn get partOfSpeech =>
-      integer().customConstraint('REFERENCES parts_of_speech(id)')();
+  IntColumn get partOfSpeech => integer()();
   TextColumn get definition => text()();
 }
 
@@ -341,109 +340,86 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     return true;
   }
 
-  Future<List<SyllableListData>> _getEntrySyllableList(int entryID) async {
-    return (select(syllableList)
-          ..where((table) => table.entryId.equals(entryID)))
-        .get();
-  }
+  Future<List<Syllable>> _getEntrySyllables(int entryID) async =>
+      (await (select(syllableList)
+                ..where((table) => table.entryId.equals(entryID)))
+              .join([
+        leftOuterJoin(
+            syllables, syllables.id.equalsExp(syllableList.syllableId))
+      ]).get())
+          .map((rows) => rows.readTable(syllables))
+          .toList();
 
-  Future<Syllable> _getSyllableFromID(int syllableID) async {
-    return (select(syllables)..where((table) => table.id.equals(syllableID)))
-        .getSingle();
-  }
-
-  Future<List<Sense>> _getEntrySenseList(int entryID) async {
+  Future<List<Sense>> _getEntrySenses(int entryID) async {
     return (select(senses)..where((table) => table.entryId.equals(entryID)))
         .get();
   }
 
-  Future<List<ExampleListData>> _getSenseExampleLinkList(int senseID) async {
-    return (select(exampleList)
-          ..where((table) => table.senseId.equals(senseID)))
-        .get();
-  }
+  Future<List<Example>> _getSenseExamples(int senseID) async =>
+      (await (select(exampleList)
+                ..where((table) => table.senseId.equals(senseID)))
+              .join([
+        leftOuterJoin(examples, examples.id.equalsExp(exampleList.exampleId))
+      ]).get())
+          .map((rows) => rows.readTable(examples))
+          .toList();
 
-  Future<Example> _getExampleByID(int id) {
-    return (select(examples)..where((table) => table.id.equals(id)))
-        .getSingle();
-  }
-
-  Future<List<ThesaurusListData>> _getSenseThesaurusLinkList(
-    int senseID,
-    bool isAntonym,
-  ) async {
-    return ((select(thesaurusList)..where((table) => table.senseId.equals(senseID)))
-          ..where((table) => table.isAntonym.equals(isAntonym)))
-        .get();
-  }
-
-  Future<List<String>> _getSenseThesaurusList({
+  Future<List<String>> _getSenseThesaurus({
     int senseID,
     bool isAntonym = false,
-  }) async {
-    final List<String> result = [];
-    final List<ThesaurusListData> list =
-        await _getSenseThesaurusLinkList(senseID, isAntonym);
-    for (final ThesaurusListData data in list) {
-      final String e = (await (select(words)
-                ..where((table) => table.id.equals(data.wordId)))
-              .getSingle())
-          .word;
-      result.add(e);
-    }
-
-    return result;
-  }
+  }) async =>
+      (await (select(thesaurusList)
+                ..where((table) => table.senseId.equals(senseID))
+                ..where((table) => table.isAntonym.equals(isAntonym)))
+              .join([
+        leftOuterJoin(words, words.id.equalsExp(thesaurusList.wordId))
+      ]).get())
+          .map((rows) => rows.readTable(words))
+          .map((row) => row.word)
+          .toList();
 
   Future<WordCard> getWordCard(String word) async {
-    final List<String> resultSyllableList = [];
     final List<WordCardDetails> resultDetailsList = [];
 
     //? Step 1: Get entry level details.
-    final Entry entry = await _getEntryByWord(word);
+    final Entry dbEntry = await _getEntryByWord(word);
 
     //? Step 2: Get syllables
-    final List<SyllableListData> dbSyllableList = await _getEntrySyllableList(
-      entry.id,
-    );
-    for (final SyllableListData dbSyllable in dbSyllableList) {
-      final Syllable syllableInst = await _getSyllableFromID(
-        dbSyllable.syllableId,
-      );
-      resultSyllableList.add(syllableInst.syllable);
-    }
+    final List<String> resultSyllableList = (await _getEntrySyllables(
+      dbEntry.id,
+    ))
+        .map((row) => row.syllable)
+        .toList();
 
     //? Step 3: Get sense level details.
-    final List<Sense> senseList = await _getEntrySenseList(entry.id);
+    final List<Sense> dbSenseList = await _getEntrySenses(dbEntry.id);
 
-    for (final Sense sense in senseList) {
-      final List<String> resultExampleList = [];
-      final List<ExampleListData> dbExampleDataList =
-          await _getSenseExampleLinkList(sense.id);
+    for (final Sense dbSense in dbSenseList) {
+      final List<String> resultExampleList =
+          (await _getSenseExamples(dbSense.id)).map((row) => row.sentence).toList();
 
-      for (final ExampleListData data in dbExampleDataList) {
-        final Example dbExample = await _getExampleByID(data.exampleId);
-        resultExampleList.add(dbExample.sentence);
-      }
-
-      resultDetailsList.add(WordCardDetails(
-        synonymList: await _getSenseThesaurusList(
-          senseID: sense.id,
+      resultDetailsList.add(
+        WordCardDetails(
+          id: dbSense.id,
+          synonymList: await _getSenseThesaurus(
+            senseID: dbSense.id,
+          ),
+          antonymList: await _getSenseThesaurus(
+            senseID: dbSense.id,
+            isAntonym: true,
+          ),
+          definition: dbSense.definition,
+          exampleList: resultExampleList,
+          partOfSpeech: ID_TO_PART_OF_SPEECH_TYPE[dbSense.partOfSpeech],
         ),
-        antonymList: await _getSenseThesaurusList(
-          senseID: sense.id,
-          isAntonym: true,
-        ),
-        definition: sense.definition,
-        exampleList: resultExampleList,
-        partOfSpeech: ID_TO_PART_OF_SPEECH_TYPE[sense.partOfSpeech],
-      ));
+      );
     }
 
     return WordCard(
+      id: dbEntry.id,
       word: word,
       pronunciation: PronunciationEntity.Pronunciation(
-        all: entry.pronunciation,
+        all: dbEntry.pronunciation,
       ),
       syllables: SyllableEntity.Syllable(
         count: resultSyllableList.length,
@@ -495,7 +471,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   }
 
   Future<void> _deleteEntrySenseData(int entryID) async {
-    final List<Sense> dbSenseList = await _getEntrySenseList(entryID);
+    final List<Sense> dbSenseList = await _getEntrySenses(entryID);
 
     for (final Sense dbSense in dbSenseList) {
       //? Step 1: Handle Example links
@@ -531,26 +507,100 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     return true;
   }
 
-  Future<bool> updateWordCard(WordCard wordCard) async {
-    final Entry dbEntry = await _getEntryByWord(wordCard.word);
+  Future<void> _updateSenseDetails(
+          WordCardDetails details, int entryID) async =>
+      (update(senses)..where((table) => table.id.equals(details.id))).write(
+        Sense(
+          definition: details.definition,
+          entryId: entryID,
+          partOfSpeech: PART_OF_SPEECH_TYPE_TO_ID[details.partOfSpeech],
+        ),
+      );
 
+  Future _updateEntrySyllables(WordCard wordCard) async {
+    final List<String> dbSyllablesList =
+        (await _getEntrySyllables(wordCard.id)).map((row) => row.syllable);
+
+    for (final String syl in wordCard.syllables.list) {
+      if (dbSyllablesList.contains(syl)) continue;
+      final int sylID = await _getExistingOrNewSyllableID(syl);
+      await _linkEntryAndSyllable(sylID, wordCard.id);
+    }
+
+    for (final String dbSyl in dbSyllablesList) {
+      if (wordCard.syllables.list.contains(dbSyl)) continue;
+      final int sbSylID = await _getExistingOrNewExampleID(dbSyl);
+      await (delete(syllableList)
+            ..where((table) => table.entryId.equals(wordCard.id))
+            ..where((table) => table.syllableId.equals(sbSylID)))
+          .go();
+    }
+  }
+
+  Future _updateSenseExamples(WordCardDetails details) async {
+    final List<String> dbExampleList =
+        (await _getSenseExamples(details.id)).map((row) => row.sentence);
+
+    for (final String exampleSentence in details.exampleList) {
+      if (dbExampleList.contains(exampleSentence)) continue;
+      final int exampleID = await _getExistingOrNewExampleID(exampleSentence);
+      await _linkSenseAndExample(exampleID, details.id);
+    }
+
+    for (final String dbExampleSentence in dbExampleList) {
+      if (details.exampleList.contains(dbExampleSentence)) continue;
+      final int exampleID = await _getExistingOrNewExampleID(dbExampleSentence);
+      await (delete(exampleList)
+            ..where((table) => table.senseId.equals(details.id))
+            ..where((table) => table.exampleId.equals(exampleID)))
+          .go();
+    }
+  }
+
+  Future _updateSenseThesaurus(WordCardDetails details, bool isAntonym) async {
+    final List<String> dbThesaurusList =
+        (await _getSenseThesaurus(senseID: details.id, isAntonym: isAntonym));
+
+    final List<String> detailsthesaurusList =
+        isAntonym ? details.antonymList : details.synonymList;
+
+    for (final String thesaurus in detailsthesaurusList) {
+      if (dbThesaurusList.contains(thesaurus)) continue;
+      final int thesaurusWordID = await _getExistingOrNewWordID(thesaurus);
+      await _linkSenseAndThesaurus(details.id, thesaurusWordID);
+    }
+
+    for (final String dbthesaurus in dbThesaurusList) {
+      if (detailsthesaurusList.contains(dbthesaurus)) continue;
+      final int thesaurusWordID = await _getExistingOrNewExampleID(dbthesaurus);
+      await (delete(thesaurusList)
+            ..where((table) => table.senseId.equals(details.id))
+            ..where((table) => table.wordId.equals(thesaurusWordID)))
+          .go();
+    }
+  }
+
+  Future<bool> updateWordCard(WordCard wordCard) async {
     //? Step 1: Update entry details
-    await update(entries).replace(
-      Entry(
-        id: dbEntry.id,
-        pronunciation: wordCard.pronunciation.all,
-        wordId: dbEntry.wordId,
-        addedOn: dbEntry.addedOn,
-      ),
+    await (update(entries)..where((table) => table.id.equals(wordCard.id)))
+        .write(
+      Entry(pronunciation: wordCard.pronunciation.all),
     );
 
-    //? Step 2: Delete and reinsert updated syllables
-    await _deleteEntrySyllableLinks(dbEntry.id);
-    await _insertEntrySyllables(dbEntry.id, wordCard.syllables.list);
+    //? Step 2: update syllables
+    await _updateEntrySyllables(wordCard);
 
-    //? Step 3: Delete and reinsert senses
-    await _deleteEntrySenseData(dbEntry.id);
-    await _insertEntrySenseData(dbEntry.id, wordCard.detailList);
+    //? Step 3: delete and reinsert senses
+    for (final WordCardDetails details in wordCard.detailList) {
+      if (details.id == null) {
+        await _insertEntrySenseData(wordCard.id, wordCard.detailList);
+      } else {
+        await _updateSenseDetails(details, wordCard.id);
+        await _updateSenseExamples(details);
+        await _updateSenseThesaurus(details, false);
+        await _updateSenseThesaurus(details, true);
+      }
+    }
 
     return true;
   }
@@ -762,30 +812,6 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     await _deleteCardInfoWithID(dbCard.backId);
     return true;
   }
-
-  // Future<bool> deleteCardsOfAnEntry(int entryID) async {
-  //   final List<int> dbCardIDs = await _getEntryQuizCardIDs(entryID);
-  //   for (final int id in dbCardIDs) await _deleteCardAndCardInfo(id);
-  //   return true;
-  // }
-
-  // Future<void> _checkAndDeleteCardInfo(int cardInfoID, int senseID) async {
-  //   final CardInfoData dbCardInfoData = await (select(cardInfo)
-  //         ..where((table) => table.id.equals(cardInfoID)))
-  //       .getSingle();
-  //   if (dbCardInfoData.senseId == senseID)
-  //     await _deleteCardInfoWithID(cardInfoID);
-  // }
-
-  // Future<bool> deleteCardOfASense(int entryID, int senseID) async {
-  //   final List<int> dbCardIDs = await _getEntryQuizCardIDs(entryID);
-  //   for (final int id in dbCardIDs) {
-  //     final Card dbCard = await _getCardByID(id);
-  //     await _checkAndDeleteCardInfo(dbCard.frontId, senseID);
-  //     await _checkAndDeleteCardInfo(dbCard.backId, senseID);
-  //   }
-  //   return true;
-  // }
 
   Future<List<Card>> _getDueCards(int limit) async => (select(cards)
         ..where((table) => table.dueOn.isSmallerOrEqualValue(DateTime.now()))

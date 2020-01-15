@@ -48,6 +48,7 @@ String getPartOfSpeechString(PartOfSpeechType type) =>
     type.toString().split('.').last;
 
 class WordCardDetails extends Equatable {
+  final int id;
   final String definition;
   final PartOfSpeechType partOfSpeech;
   final List<String> synonymList;
@@ -55,6 +56,7 @@ class WordCardDetails extends Equatable {
   final List<String> antonymList;
 
   WordCardDetails({
+    this.id,
     this.definition,
     this.partOfSpeech,
     this.synonymList,
@@ -64,6 +66,7 @@ class WordCardDetails extends Equatable {
 
   @override
   List<Object> get props => [
+        id,
         definition,
         partOfSpeech,
         exampleList,

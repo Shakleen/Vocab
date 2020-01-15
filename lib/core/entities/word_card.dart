@@ -6,12 +6,14 @@ import 'syllable.dart';
 import 'word_card_details.dart';
 
 class WordCard extends Equatable {
+  final int id;
   final String word;
   final Pronunciation pronunciation;
   final Syllable syllables;
   final List<WordCardDetails> detailList;
 
   const WordCard({
+    this.id,
     @required this.word,
     @required this.pronunciation,
     @required this.syllables,
@@ -19,5 +21,11 @@ class WordCard extends Equatable {
   });
 
   @override
-  List<Object> get props => [word, pronunciation, syllables, detailList];
+  List<Object> get props => [
+        id,
+        word,
+        pronunciation,
+        syllables,
+        detailList,
+      ];
 }
