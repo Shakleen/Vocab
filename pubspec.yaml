@@ -20,6 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  audioplayers: ^0.13.7
   fl_chart: ^0.6.3
   intl: ^0.16.1
   path: ^1.6.4

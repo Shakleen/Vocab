@@ -3,16 +3,17 @@ import 'package:vocab/features/query_word/domain/entities/pronunciation.dart';
 import 'package:vocab/core/ui/widgets/title_text.dart';
 import 'package:vocab/core/ui/widgets/subtitle_text.dart';
 
+import 'audio_player_widget.dart';
+
 class PronunciationWidget extends StatelessWidget {
   final int index;
   final Pronunciation pronunciation;
 
-  const PronunciationWidget({
+  PronunciationWidget({
     Key key,
     @required this.index,
     @required this.pronunciation,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final TextStyle subtitleStyle = Theme.of(context).textTheme.subtitle;
@@ -22,16 +23,7 @@ class PronunciationWidget extends StatelessWidget {
 
     if (pronunciation.audioFileUrl != null)
       children.add(Center(
-        child: CircleAvatar(
-          child: IconButton(
-            icon: Icon(Icons.play_arrow),
-            onPressed: () {
-              // TODO: Implement pronunciation playback
-            },
-            color: Colors.white,
-          ),
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
+        child: AudioPlayerWidget(pronunciation: pronunciation),
       ));
 
     children.addAll([
