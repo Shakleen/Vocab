@@ -114,9 +114,8 @@ class UsageInfo extends Table {
   IntColumn get cardsQuizzed => integer().withDefault(Constant(0)).nullable()();
   IntColumn get wordsEdited => integer().withDefault(Constant(0)).nullable()();
   IntColumn get cardsDeleted => integer().withDefault(Constant(0)).nullable()();
-  DateTimeColumn get date => dateTime()
-      .nullable()
-      .withDefault(Constant(DateTime.now()))();
+  DateTimeColumn get date =>
+      dateTime().nullable().withDefault(Constant(DateTime.now()))();
 
   @override
   Set<Column> get primaryKey => {date};
@@ -184,8 +183,9 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       await into(usageInfo).insert(UsageInfoData(wordsSearched: 1));
     } else {
       await (update(usageInfo)
-            ..where((table) => table.id.equals(dbUsageInfoData.id)))
-          .write(UsageInfoData(wordsSearched: dbUsageInfoData.wordsSearched + 1));
+            ..where((table) => table.date.equals(dbUsageInfoData.date)))
+          .write(
+              UsageInfoData(wordsSearched: dbUsageInfoData.wordsSearched + 1));
     }
   }
 
@@ -347,7 +347,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       await into(usageInfo).insert(UsageInfoData(wordsSaved: 1));
     } else {
       await (update(usageInfo)
-            ..where((table) => table.id.equals(dbUsageInfoData.id)))
+            ..where((table) => table.date.equals(dbUsageInfoData.date)))
           .write(UsageInfoData(wordsSaved: dbUsageInfoData.wordsSaved + 1));
     }
   }
@@ -566,7 +566,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       await into(usageInfo).insert(UsageInfoData(cardsDeleted: 1));
     } else {
       await (update(usageInfo)
-            ..where((table) => table.id.equals(dbUsageInfoData.id)))
+            ..where((table) => table.date.equals(dbUsageInfoData.date)))
           .write(UsageInfoData(cardsDeleted: dbUsageInfoData.cardsDeleted + 1));
     }
   }
@@ -677,7 +677,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       await into(usageInfo).insert(UsageInfoData(wordsEdited: 1));
     } else {
       await (update(usageInfo)
-            ..where((table) => table.id.equals(dbUsageInfoData.id)))
+            ..where((table) => table.date.equals(dbUsageInfoData.date)))
           .write(UsageInfoData(wordsEdited: dbUsageInfoData.wordsEdited + 1));
     }
   }
@@ -1118,7 +1118,7 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
       await into(usageInfo).insert(UsageInfoData(cardsQuizzed: 1));
     } else {
       await (update(usageInfo)
-            ..where((table) => table.id.equals(dbUsageInfoData.id)))
+            ..where((table) => table.date.equals(dbUsageInfoData.date)))
           .write(UsageInfoData(cardsQuizzed: dbUsageInfoData.cardsQuizzed + 1));
     }
   }
@@ -1153,15 +1153,30 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
 
   Future getPartOfSpeechStatistics() async {}
 
-  Future getNoOfWordsAddedStatistics() async {}
+  Future<int> getNoOfWordsSavedStatistics(DateTime date) async =>
+      (select(usageInfo)..where((table) => table.date.equals(date)))
+          .getSingle()
+          .then((val) => val.wordsSaved);
 
-  Future getNoOfWordsSearchedStatistics() async {}
+  Future<int> getNoOfWordsSearchedStatistics(DateTime date) async =>
+      (select(usageInfo)..where((table) => table.date.equals(date)))
+          .getSingle()
+          .then((val) => val.wordsSearched);
 
-  Future getNoOfWordsEditedStatistics() async {}
+  Future<int> getNoOfWordsEditedStatistics(DateTime date) async =>
+      (select(usageInfo)..where((table) => table.date.equals(date)))
+          .getSingle()
+          .then((val) => val.wordsEdited);
 
-  Future getNoOfWordsDeletedStatistics() async {}
+  Future<int> getNoOfWordsDeletedStatistics(DateTime date) async =>
+      (select(usageInfo)..where((table) => table.date.equals(date)))
+          .getSingle()
+          .then((val) => val.cardsDeleted);
 
-  Future getNoOfCardsQuizzedStatistics() async {}
+  Future<int> getNoOfCardsQuizzedStatistics(DateTime date) async =>
+      (select(usageInfo)..where((table) => table.date.equals(date)))
+          .getSingle()
+          .then((val) => val.cardsQuizzed);
 
   Future getCardLevelStatistics() async {}
 }
