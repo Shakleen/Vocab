@@ -85,12 +85,21 @@ class _CardFormPageState extends State<CardFormPage> {
 
   void _submit() async {
     if (!_formKey.currentState.validate()) return;
+    final WordCard wordCard = _createDataFromForm();
+    final bool result = await _handleFormSubmission(wordCard);
+    if (result) {
+      await _createQuizCards(wordCard);
+      Navigator.pop(context);
+    }
+  }
+
+  WordCard _createDataFromForm() {
     final String word = wordField.controller.value.text;
     final String pronunciation = pronunciationField.controller.value.text;
     final List<String> syllables =
         syllablesField.controller.value.text?.split(SEPERATOR);
     final List<WordCardDetails> details = senseFormList.getSenseValues();
-
+    
     final WordCard wordCard = WordCard(
       id: widget.initialWordCard?.id,
       word: word,
@@ -98,9 +107,12 @@ class _CardFormPageState extends State<CardFormPage> {
       syllables: Syllable(count: syllables.length, list: syllables),
       detailList: details,
     );
+    return wordCard;
+  }
 
+  Future<bool> _handleFormSubmission(WordCard wordCard) async {
     bool result;
-
+    
     if (widget.isEditing) {
       result = await _wordDao.updateWordCard(wordCard);
       print('Update result: $result');
@@ -108,12 +120,14 @@ class _CardFormPageState extends State<CardFormPage> {
       result = await _wordDao.insertWordCard(wordCard);
       print('Insertion result: $result');
     }
+    return result;
+  }
 
-    if (result) {
+  Future _createQuizCards(WordCard wordCard) async {
+    if (widget.isEditing == false) {
       db.CardDatabase cardDatabase = sl();
       db.CardDao cardDao = cardDatabase.cardDao;
       await cardDao.createNewQuizCards(wordCard);
-      Navigator.pop(context);
     }
   }
 }
