@@ -92,6 +92,7 @@ class _CardFormPageState extends State<CardFormPage> {
     final List<WordCardDetails> details = senseFormList.getSenseValues();
 
     final WordCard wordCard = WordCard(
+      id: widget.initialWordCard?.id,
       word: word,
       pronunciation: Pronunciation(all: pronunciation),
       syllables: Syllable(count: syllables.length, list: syllables),

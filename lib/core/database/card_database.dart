@@ -396,7 +396,9 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
 
     for (final Sense dbSense in dbSenseList) {
       final List<String> resultExampleList =
-          (await _getSenseExamples(dbSense.id)).map((row) => row.sentence).toList();
+          (await _getSenseExamples(dbSense.id))
+              .map((row) => row.sentence)
+              .toList();
 
       resultDetailsList.add(
         WordCardDetails(
@@ -518,33 +520,43 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       );
 
   Future _updateEntrySyllables(WordCard wordCard) async {
-    final List<String> dbSyllablesList =
-        (await _getEntrySyllables(wordCard.id)).map((row) => row.syllable);
+    final List<String> dbSyllablesList = (await _getEntrySyllables(wordCard.id))
+        .map((row) => row.syllable)
+        .toList();
 
     for (final String syl in wordCard.syllables.list) {
-      if (dbSyllablesList.contains(syl)) continue;
-      final int sylID = await _getExistingOrNewSyllableID(syl);
-      await _linkEntryAndSyllable(sylID, wordCard.id);
+      if (syl.isNotEmpty) {
+        if (dbSyllablesList.contains(syl) == false) {
+          final int sylID = await _getExistingOrNewSyllableID(syl);
+          await _linkEntryAndSyllable(wordCard.id, sylID);
+        }
+      }
     }
 
     for (final String dbSyl in dbSyllablesList) {
-      if (wordCard.syllables.list.contains(dbSyl)) continue;
-      final int sbSylID = await _getExistingOrNewExampleID(dbSyl);
-      await (delete(syllableList)
-            ..where((table) => table.entryId.equals(wordCard.id))
-            ..where((table) => table.syllableId.equals(sbSylID)))
-          .go();
+      if (wordCard.syllables.list.contains(dbSyl) == false) {
+        final int sbSylID = await _getExistingOrNewExampleID(dbSyl);
+        await (delete(syllableList)
+              ..where((table) => table.entryId.equals(wordCard.id))
+              ..where((table) => table.syllableId.equals(sbSylID)))
+            .go();
+      }
     }
   }
 
   Future _updateSenseExamples(WordCardDetails details) async {
-    final List<String> dbExampleList =
-        (await _getSenseExamples(details.id)).map((row) => row.sentence);
+    final List<String> dbExampleList = (await _getSenseExamples(details.id))
+        .map((row) => row.sentence)
+        .toList();
 
     for (final String exampleSentence in details.exampleList) {
-      if (dbExampleList.contains(exampleSentence)) continue;
-      final int exampleID = await _getExistingOrNewExampleID(exampleSentence);
-      await _linkSenseAndExample(exampleID, details.id);
+      if (exampleSentence.isNotEmpty) {
+        if (dbExampleList.contains(exampleSentence) == false) {
+          final int exampleID =
+              await _getExistingOrNewExampleID(exampleSentence);
+          await _linkSenseAndExample(exampleID, details.id);
+        }
+      }
     }
 
     for (final String dbExampleSentence in dbExampleList) {
@@ -565,9 +577,16 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
         isAntonym ? details.antonymList : details.synonymList;
 
     for (final String thesaurus in detailsthesaurusList) {
-      if (dbThesaurusList.contains(thesaurus)) continue;
-      final int thesaurusWordID = await _getExistingOrNewWordID(thesaurus);
-      await _linkSenseAndThesaurus(details.id, thesaurusWordID);
+      if (thesaurus.isNotEmpty) {
+        if (dbThesaurusList.contains(thesaurus)) {
+          final int thesaurusWordID = await _getExistingOrNewWordID(thesaurus);
+          await _linkSenseAndThesaurus(
+            details.id,
+            thesaurusWordID,
+            isAntonym: isAntonym,
+          );
+        }
+      }
     }
 
     for (final String dbthesaurus in dbThesaurusList) {

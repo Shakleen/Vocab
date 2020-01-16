@@ -116,6 +116,7 @@ class SenseForm extends StatelessWidget {
         values.add(widget.controller.text?.split(SEPERATOR));
 
     return WordCardDetails(
+      id: initSense?.id,
       definition: values[0].join(''),
       partOfSpeech: ID_TO_PART_OF_SPEECH_TYPE[_partOfSpeech],
       exampleList: values[1],

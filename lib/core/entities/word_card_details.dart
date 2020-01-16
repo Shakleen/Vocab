@@ -12,10 +12,10 @@ enum PartOfSpeechType {
 }
 
 const Map<PartOfSpeechType, int> PART_OF_SPEECH_TYPE_TO_ID = const {
-  PartOfSpeechType.Noun: 1,
-  PartOfSpeechType.Pronoun: 2,
-  PartOfSpeechType.Verb: 3,
-  PartOfSpeechType.Adjective: 4,
+  PartOfSpeechType.Verb: 1,
+  PartOfSpeechType.Adjective: 2,
+  PartOfSpeechType.Noun: 3,
+  PartOfSpeechType.Pronoun: 4,
   PartOfSpeechType.Adverb: 5,
   PartOfSpeechType.Preposition: 6,
   PartOfSpeechType.Conjunction: 7,
@@ -23,10 +23,10 @@ const Map<PartOfSpeechType, int> PART_OF_SPEECH_TYPE_TO_ID = const {
 };
 
 const Map<int, PartOfSpeechType> ID_TO_PART_OF_SPEECH_TYPE = const {
-  1: PartOfSpeechType.Noun,
-  2: PartOfSpeechType.Pronoun,
-  3: PartOfSpeechType.Verb,
-  4: PartOfSpeechType.Adjective,
+  1: PartOfSpeechType.Verb,
+  2: PartOfSpeechType.Adjective,
+  3: PartOfSpeechType.Noun,
+  4: PartOfSpeechType.Pronoun,
   5: PartOfSpeechType.Adverb,
   6: PartOfSpeechType.Preposition,
   7: PartOfSpeechType.Conjunction,
