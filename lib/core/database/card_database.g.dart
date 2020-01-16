@@ -2238,7 +2238,7 @@ class UsageInfoData extends DataClass implements Insertable<UsageInfoData> {
       this.cardsQuizzed,
       this.wordsEdited,
       this.cardsDeleted,
-      this.date});
+      @required this.date});
   factory UsageInfoData.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -2376,8 +2376,8 @@ class UsageInfoCompanion extends UpdateCompanion<UsageInfoData> {
     this.cardsQuizzed = const Value.absent(),
     this.wordsEdited = const Value.absent(),
     this.cardsDeleted = const Value.absent(),
-    this.date = const Value.absent(),
-  });
+    @required DateTime date,
+  }) : date = Value(date);
   UsageInfoCompanion copyWith(
       {Value<int> wordsSearched,
       Value<int> wordsSaved,
@@ -2459,8 +2459,11 @@ class $UsageInfoTable extends UsageInfo
   @override
   GeneratedDateTimeColumn get date => _date ??= _constructDate();
   GeneratedDateTimeColumn _constructDate() {
-    return GeneratedDateTimeColumn('date', $tableName, true,
-        defaultValue: Constant(DateTime.now()));
+    return GeneratedDateTimeColumn(
+      'date',
+      $tableName,
+      false,
+    );
   }
 
   @override

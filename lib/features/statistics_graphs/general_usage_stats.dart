@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:vocab/core/database/card_database.dart' as db;
@@ -10,6 +12,13 @@ class GeneralUsageStats extends StatelessWidget {
     2: 'Quizzed',
     3: 'Editted',
     4: 'Deleted',
+  };
+  final Map<double, Color> stateBarColors = {
+    0: Colors.blue,
+    1: Colors.red,
+    2: Colors.yellow,
+    3: Colors.green,
+    4: Colors.purple,
   };
 
   GeneralUsageStats({Key key}) : super(key: key);
@@ -36,42 +45,59 @@ class GeneralUsageStats extends StatelessWidget {
                 snapshot.data.cardsDeleted,
               ];
 
-              return AspectRatio(
-                aspectRatio: 12 / 10,
-                child: BarChart(
-                  BarChartData(
-                    alignment: BarChartAlignment.spaceAround,
-                    maxY: 100,
-                    borderData: FlBorderData(show: false),
-                    titlesData: FlTitlesData(
-                      show: true,
-                      leftTitles: const SideTitles(showTitles: false),
-                      bottomTitles: SideTitles(
-                        textStyle: TextStyle(
-                          color: const Color(0xff7589a2),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                        showTitles: true,
-                        margin: 20,
-                        rotateAngle: 90,
-                        getTitles: (double value) => statTitles[value],
+              return Padding(
+                padding: const EdgeInsets.only(top:8.0),
+                child: AspectRatio(
+                  aspectRatio: 12 / 10,
+                  child: BarChart(
+                    BarChartData(
+                      gridData: FlGridData(
+                        show: true,
+                        drawVerticalLine: true,
+                        drawHorizontalLine: true,
+                        verticalInterval: 10,
                       ),
-                    ),
-                    barGroups: List<BarChartGroupData>.generate(
-                      values.length,
-                      (int index) {
-                        return BarChartGroupData(
-                          x: index,
-                          barRods: [
-                            BarChartRodData(
-                              y: values[index].toDouble(),
-                              color: Theme.of(context).primaryColorDark,
-                            ),
-                          ],
-                          showingTooltipIndicators: [0],
-                        );
-                      },
+                      axisTitleData: FlAxisTitleData(
+                        show: true,
+                        topTitle: AxisTitle(
+                          showTitle: true,
+                          titleText: "Usage stats",
+                          textAlign: TextAlign.center,
+                          textStyle: Theme.of(context).textTheme.headline
+                        )
+                      ),
+                      alignment: BarChartAlignment.spaceAround,
+                      maxY: _max(values) + 10,
+                      borderData: FlBorderData(show: false),
+                      titlesData: FlTitlesData(
+                        show: true,
+                        leftTitles: const SideTitles(showTitles: false),
+                        bottomTitles: SideTitles(
+                          textStyle: TextStyle(
+                            color: const Color(0xff7589a2),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                          showTitles: true,
+                          margin: 20,
+                          getTitles: (double value) => statTitles[value],
+                        ),
+                      ),
+                      barGroups: List<BarChartGroupData>.generate(
+                        values.length,
+                        (int index) {
+                          return BarChartGroupData(
+                            x: index,
+                            barRods: [
+                              BarChartRodData(
+                                y: values[index].toDouble(),
+                                color: stateBarColors[index],
+                              ),
+                            ],
+                            showingTooltipIndicators: [0],
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -83,5 +109,13 @@ class GeneralUsageStats extends StatelessWidget {
         },
       ),
     );
+  }
+
+  double _max(List list) {
+    int maxVal = -1;
+
+    list.forEach((val) => maxVal = max(maxVal, val));
+
+    return maxVal.toDouble();
   }
 }
