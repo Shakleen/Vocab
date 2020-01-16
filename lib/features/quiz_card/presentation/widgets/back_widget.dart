@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:vocab/core/database/card_database.dart';
+import 'package:vocab/core/ui/widgets/audio_player_widget.dart';
 import 'package:vocab/core/ui/widgets/title_text.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 
@@ -22,12 +22,12 @@ class BackWidget extends StatelessWidget {
 
     switch (quizCard.backType) {
       case AttributeType.Spelling:
-        _children.add(TitleText(text: "Spelling"));
         _children.add(Text(quizCard.back));
         break;
       case AttributeType.Pronunciation:
-        _children.add(TitleText(text: "Pronunciation"));
-        _children.add(Text(quizCard.back));
+        _children.add(
+          Center(child: AudioPlayerWidget(audioUrl: quizCard.back)),
+        );
         break;
       case AttributeType.Syllables:
         _children.add(TitleText(text: "Syllables of \"${quizCard.word}\""));
@@ -64,4 +64,3 @@ class BackWidget extends StatelessWidget {
       _children.add(Text("$i) ${pieces[i - 1]}"));
   }
 }
-

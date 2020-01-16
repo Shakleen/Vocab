@@ -47,7 +47,7 @@ void main() {
   });
 
   test('initial state should be [EmptyState]', () {
-    expect(bloc.initialState, equals(Empty()));
+    expect(bloc.initialState, equals(EmptyQueryWordState()));
   });
 
   test('should call InputConverter to validate and convert input string',
@@ -71,7 +71,7 @@ void main() {
     act: (QueryWordBloc bloc) async => bloc.add(
       GetWordEntryEvent(queryWord: tQueryWord),
     ),
-    expect: [Empty(), Error(message: INVALID_INPUT_ERROR_MESSAGE)],
+    expect: [EmptyQueryWordState(), ErrorQueryWordState(message: INVALID_INPUT_ERROR_MESSAGE)],
   );
 
   test('should call GetWordDefinition usecase to get word entry data',
@@ -101,9 +101,9 @@ void main() {
       GetWordEntryEvent(queryWord: tQueryWord),
     ),
     expect: [
-      Empty(),
-      Loading(),
-      Loaded(retrieveEntry: retrieveEntryModel),
+      EmptyQueryWordState(),
+      LoadingQueryWordState(),
+      LoadedQueryWordState(retrieveEntry: retrieveEntryModel),
     ],
   );
 
@@ -123,7 +123,7 @@ void main() {
       act: (QueryWordBloc bloc) async => bloc.add(
         GetWordEntryEvent(queryWord: tQueryWord),
       ),
-      expect: [Empty(), Loading(), Error(message: message)],
+      expect: [EmptyQueryWordState(), LoadingQueryWordState(), ErrorQueryWordState(message: message)],
     );
   }
 

@@ -14,13 +14,13 @@ class QueryWordBody extends StatelessWidget {
   Widget build(BuildContext context) =>
       BlocBuilder<QueryWordBloc, QueryWordState>(
         builder: (BuildContext context, QueryWordState state) {
-          if (state is Empty) {
+          if (state is EmptyQueryWordState) {
             return EmptyStateUI();
-          } else if (state is Loading) {
+          } else if (state is LoadingQueryWordState) {
             return LoadingStateUI();
-          } else if (state is Loaded) {
+          } else if (state is LoadedQueryWordState) {
             return LoadedStateUI(retrieveEntry: state.retrieveEntry);
-          } else if (state is Error) {
+          } else if (state is ErrorQueryWordState) {
             return ErrorStateUI(message: state.message);
           }
         },

@@ -18,7 +18,7 @@ class QueryWordBloc extends Bloc<QueryWordEvent, QueryWordState> {
   });
 
   @override
-  QueryWordState get initialState => Empty();
+  QueryWordState get initialState => EmptyQueryWordState();
 
   @override
   Stream<QueryWordState> mapEventToState(QueryWordEvent event) async* {
@@ -29,20 +29,20 @@ class QueryWordBloc extends Bloc<QueryWordEvent, QueryWordState> {
   }
 
   Stream<QueryWordState> _invalidInputCase(InvalidInputFailure failure) async* {
-    yield Error(message: INVALID_INPUT_ERROR_MESSAGE);
+    yield ErrorQueryWordState(message: INVALID_INPUT_ERROR_MESSAGE);
   }
 
   Stream<QueryWordState> _validInputCase(String queryWordLower) async* {
-    yield Loading();
+    yield LoadingQueryWordState();
     final fetchEither = await retriever(Param(queryWord: queryWordLower));
     yield* fetchEither.fold(_errorOccuredCase, _successfulFetchCase);
   }
 
   Stream<QueryWordState> _errorOccuredCase(Failure failure) async* {
-    yield Error(message: getErrorMessage(failure));
+    yield ErrorQueryWordState(message: getErrorMessage(failure));
   }
 
   Stream<QueryWordState> _successfulFetchCase(RetrieveEntry wordEntry) async* {
-    yield Loaded(retrieveEntry: wordEntry);
+    yield LoadedQueryWordState(retrieveEntry: wordEntry);
   }
 }

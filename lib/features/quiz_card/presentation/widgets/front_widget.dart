@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/core/database/card_database.dart';
+import 'package:vocab/core/ui/widgets/audio_player_widget.dart';
 import 'package:vocab/core/ui/widgets/title_text.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 
@@ -23,23 +24,35 @@ class FrontWidget extends StatelessWidget {
 
   List<Widget> _buildChildren() {
     final List<Widget> _children = [];
+    _questionPortion(_children);
+    _additionalInformation(_children);
+    return _children;
+  }
 
+  void _additionalInformation(List<Widget> _children) {
     switch (quizCard.frontType) {
       case AttributeType.Pronunciation:
-        _children.add(TitleText(text: "Pronunciation"));
-        _children.add(Text(quizCard.front));
+        _children.add(
+          Center(child: AudioPlayerWidget(audioUrl: quizCard.front)),
+        );
         break;
       case AttributeType.Example:
-        _children.add(TitleText(text: "Examples"));
+        _children.add(
+          TitleText(text: "Examples of the word \"${quizCard.word}\""),
+        );
         _makeOrderedList(_children, quizCard.front);
         break;
       case AttributeType.Definition:
-        _children.add(TitleText(text: "Definition"));
+        _children.add(
+          TitleText(text: "Definition of the word \"${quizCard.word}\""),
+        );
         _children.add(Text(quizCard.front));
         break;
       default:
     }
+  }
 
+  void _questionPortion(List<Widget> _children) {
     switch (quizCard.backType) {
       case AttributeType.Spelling:
         _children.add(_makeQuestion("Spell the word."));
@@ -79,8 +92,6 @@ class FrontWidget extends StatelessWidget {
         ));
         break;
     }
-
-    return _children;
   }
 
   Widget _makeQuestion(String question) => TitleText(text: question);

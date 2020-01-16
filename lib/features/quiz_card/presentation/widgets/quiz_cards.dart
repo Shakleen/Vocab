@@ -37,15 +37,9 @@ class _QuizCardsState extends State<QuizCards> {
   void _revealAnswer() {
     setState(() {
       _children = <Widget>[
-        Expanded(
-          flex: 1,
-          child: FrontWidget(quizCard: widget.quizCards[_index]),
-        ),
+        FrontWidget(quizCard: widget.quizCards[_index]),
         Divider(color: Colors.grey, height: 2, thickness: 2),
-        Expanded(
-          flex: 5,
-          child: BackWidget(quizCard: widget.quizCards[_index]),
-        ),
+        Expanded(child: BackWidget(quizCard: widget.quizCards[_index])),
         _controls,
       ];
     });
@@ -78,5 +72,3 @@ class _QuizCardsState extends State<QuizCards> {
     ];
   }
 }
-
-

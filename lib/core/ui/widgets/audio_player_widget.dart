@@ -1,13 +1,11 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:vocab/core/util/downloader.dart';
-import 'package:vocab/features/query_word/domain/entities/pronunciation.dart';
 
 class AudioPlayerWidget extends StatefulWidget {
-  final Pronunciation pronunciation;
+  final String audioUrl;
 
-  const AudioPlayerWidget({Key key, @required this.pronunciation})
-      : super(key: key);
+  const AudioPlayerWidget({Key key, @required this.audioUrl}) : super(key: key);
 
   @override
   _AudioPlayerWidgetState createState() => _AudioPlayerWidgetState();
@@ -55,10 +53,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
   void _play() async {
     if (_tempAudioFile == null)
-      _tempAudioFile = await Downloader.downloadFile(
-        'temp',
-        widget.pronunciation.audioFileUrl,
-      );
+      _tempAudioFile = await Downloader.downloadFile('temp', widget.audioUrl);
 
     _audioPlayer.play(_tempAudioFile.path, volume: 1.0, position: Duration());
   }
