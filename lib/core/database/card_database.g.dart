@@ -2225,6 +2225,346 @@ class $CardInfoTable extends CardInfo
   }
 }
 
+class UsageInfoData extends DataClass implements Insertable<UsageInfoData> {
+  final int wordsSearched;
+  final int wordsSaved;
+  final int cardsQuizzed;
+  final int wordsEdited;
+  final int cardsDeleted;
+  final DateTime date;
+  UsageInfoData(
+      {this.wordsSearched,
+      this.wordsSaved,
+      this.cardsQuizzed,
+      this.wordsEdited,
+      this.cardsDeleted,
+      this.date});
+  factory UsageInfoData.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    return UsageInfoData(
+      wordsSearched: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}words_searched']),
+      wordsSaved: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}words_saved']),
+      cardsQuizzed: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}cards_quizzed']),
+      wordsEdited: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}words_edited']),
+      cardsDeleted: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}cards_deleted']),
+      date:
+          dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
+    );
+  }
+  factory UsageInfoData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return UsageInfoData(
+      wordsSearched: serializer.fromJson<int>(json['wordsSearched']),
+      wordsSaved: serializer.fromJson<int>(json['wordsSaved']),
+      cardsQuizzed: serializer.fromJson<int>(json['cardsQuizzed']),
+      wordsEdited: serializer.fromJson<int>(json['wordsEdited']),
+      cardsDeleted: serializer.fromJson<int>(json['cardsDeleted']),
+      date: serializer.fromJson<DateTime>(json['date']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson(
+      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+    return <String, dynamic>{
+      'wordsSearched': serializer.toJson<int>(wordsSearched),
+      'wordsSaved': serializer.toJson<int>(wordsSaved),
+      'cardsQuizzed': serializer.toJson<int>(cardsQuizzed),
+      'wordsEdited': serializer.toJson<int>(wordsEdited),
+      'cardsDeleted': serializer.toJson<int>(cardsDeleted),
+      'date': serializer.toJson<DateTime>(date),
+    };
+  }
+
+  @override
+  UsageInfoCompanion createCompanion(bool nullToAbsent) {
+    return UsageInfoCompanion(
+      wordsSearched: wordsSearched == null && nullToAbsent
+          ? const Value.absent()
+          : Value(wordsSearched),
+      wordsSaved: wordsSaved == null && nullToAbsent
+          ? const Value.absent()
+          : Value(wordsSaved),
+      cardsQuizzed: cardsQuizzed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cardsQuizzed),
+      wordsEdited: wordsEdited == null && nullToAbsent
+          ? const Value.absent()
+          : Value(wordsEdited),
+      cardsDeleted: cardsDeleted == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cardsDeleted),
+      date: date == null && nullToAbsent ? const Value.absent() : Value(date),
+    );
+  }
+
+  UsageInfoData copyWith(
+          {int wordsSearched,
+          int wordsSaved,
+          int cardsQuizzed,
+          int wordsEdited,
+          int cardsDeleted,
+          DateTime date}) =>
+      UsageInfoData(
+        wordsSearched: wordsSearched ?? this.wordsSearched,
+        wordsSaved: wordsSaved ?? this.wordsSaved,
+        cardsQuizzed: cardsQuizzed ?? this.cardsQuizzed,
+        wordsEdited: wordsEdited ?? this.wordsEdited,
+        cardsDeleted: cardsDeleted ?? this.cardsDeleted,
+        date: date ?? this.date,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('UsageInfoData(')
+          ..write('wordsSearched: $wordsSearched, ')
+          ..write('wordsSaved: $wordsSaved, ')
+          ..write('cardsQuizzed: $cardsQuizzed, ')
+          ..write('wordsEdited: $wordsEdited, ')
+          ..write('cardsDeleted: $cardsDeleted, ')
+          ..write('date: $date')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      wordsSearched.hashCode,
+      $mrjc(
+          wordsSaved.hashCode,
+          $mrjc(
+              cardsQuizzed.hashCode,
+              $mrjc(wordsEdited.hashCode,
+                  $mrjc(cardsDeleted.hashCode, date.hashCode))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is UsageInfoData &&
+          other.wordsSearched == this.wordsSearched &&
+          other.wordsSaved == this.wordsSaved &&
+          other.cardsQuizzed == this.cardsQuizzed &&
+          other.wordsEdited == this.wordsEdited &&
+          other.cardsDeleted == this.cardsDeleted &&
+          other.date == this.date);
+}
+
+class UsageInfoCompanion extends UpdateCompanion<UsageInfoData> {
+  final Value<int> wordsSearched;
+  final Value<int> wordsSaved;
+  final Value<int> cardsQuizzed;
+  final Value<int> wordsEdited;
+  final Value<int> cardsDeleted;
+  final Value<DateTime> date;
+  const UsageInfoCompanion({
+    this.wordsSearched = const Value.absent(),
+    this.wordsSaved = const Value.absent(),
+    this.cardsQuizzed = const Value.absent(),
+    this.wordsEdited = const Value.absent(),
+    this.cardsDeleted = const Value.absent(),
+    this.date = const Value.absent(),
+  });
+  UsageInfoCompanion.insert({
+    this.wordsSearched = const Value.absent(),
+    this.wordsSaved = const Value.absent(),
+    this.cardsQuizzed = const Value.absent(),
+    this.wordsEdited = const Value.absent(),
+    this.cardsDeleted = const Value.absent(),
+    this.date = const Value.absent(),
+  });
+  UsageInfoCompanion copyWith(
+      {Value<int> wordsSearched,
+      Value<int> wordsSaved,
+      Value<int> cardsQuizzed,
+      Value<int> wordsEdited,
+      Value<int> cardsDeleted,
+      Value<DateTime> date}) {
+    return UsageInfoCompanion(
+      wordsSearched: wordsSearched ?? this.wordsSearched,
+      wordsSaved: wordsSaved ?? this.wordsSaved,
+      cardsQuizzed: cardsQuizzed ?? this.cardsQuizzed,
+      wordsEdited: wordsEdited ?? this.wordsEdited,
+      cardsDeleted: cardsDeleted ?? this.cardsDeleted,
+      date: date ?? this.date,
+    );
+  }
+}
+
+class $UsageInfoTable extends UsageInfo
+    with TableInfo<$UsageInfoTable, UsageInfoData> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $UsageInfoTable(this._db, [this._alias]);
+  final VerificationMeta _wordsSearchedMeta =
+      const VerificationMeta('wordsSearched');
+  GeneratedIntColumn _wordsSearched;
+  @override
+  GeneratedIntColumn get wordsSearched =>
+      _wordsSearched ??= _constructWordsSearched();
+  GeneratedIntColumn _constructWordsSearched() {
+    return GeneratedIntColumn('words_searched', $tableName, true,
+        defaultValue: Constant(0));
+  }
+
+  final VerificationMeta _wordsSavedMeta = const VerificationMeta('wordsSaved');
+  GeneratedIntColumn _wordsSaved;
+  @override
+  GeneratedIntColumn get wordsSaved => _wordsSaved ??= _constructWordsSaved();
+  GeneratedIntColumn _constructWordsSaved() {
+    return GeneratedIntColumn('words_saved', $tableName, true,
+        defaultValue: Constant(0));
+  }
+
+  final VerificationMeta _cardsQuizzedMeta =
+      const VerificationMeta('cardsQuizzed');
+  GeneratedIntColumn _cardsQuizzed;
+  @override
+  GeneratedIntColumn get cardsQuizzed =>
+      _cardsQuizzed ??= _constructCardsQuizzed();
+  GeneratedIntColumn _constructCardsQuizzed() {
+    return GeneratedIntColumn('cards_quizzed', $tableName, true,
+        defaultValue: Constant(0));
+  }
+
+  final VerificationMeta _wordsEditedMeta =
+      const VerificationMeta('wordsEdited');
+  GeneratedIntColumn _wordsEdited;
+  @override
+  GeneratedIntColumn get wordsEdited =>
+      _wordsEdited ??= _constructWordsEdited();
+  GeneratedIntColumn _constructWordsEdited() {
+    return GeneratedIntColumn('words_edited', $tableName, true,
+        defaultValue: Constant(0));
+  }
+
+  final VerificationMeta _cardsDeletedMeta =
+      const VerificationMeta('cardsDeleted');
+  GeneratedIntColumn _cardsDeleted;
+  @override
+  GeneratedIntColumn get cardsDeleted =>
+      _cardsDeleted ??= _constructCardsDeleted();
+  GeneratedIntColumn _constructCardsDeleted() {
+    return GeneratedIntColumn('cards_deleted', $tableName, true,
+        defaultValue: Constant(0));
+  }
+
+  final VerificationMeta _dateMeta = const VerificationMeta('date');
+  GeneratedDateTimeColumn _date;
+  @override
+  GeneratedDateTimeColumn get date => _date ??= _constructDate();
+  GeneratedDateTimeColumn _constructDate() {
+    return GeneratedDateTimeColumn('date', $tableName, true,
+        defaultValue: Constant(DateTime.now()));
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [
+        wordsSearched,
+        wordsSaved,
+        cardsQuizzed,
+        wordsEdited,
+        cardsDeleted,
+        date
+      ];
+  @override
+  $UsageInfoTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'usage_info';
+  @override
+  final String actualTableName = 'usage_info';
+  @override
+  VerificationContext validateIntegrity(UsageInfoCompanion d,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    if (d.wordsSearched.present) {
+      context.handle(
+          _wordsSearchedMeta,
+          wordsSearched.isAcceptableValue(
+              d.wordsSearched.value, _wordsSearchedMeta));
+    } else if (wordsSearched.isRequired && isInserting) {
+      context.missing(_wordsSearchedMeta);
+    }
+    if (d.wordsSaved.present) {
+      context.handle(_wordsSavedMeta,
+          wordsSaved.isAcceptableValue(d.wordsSaved.value, _wordsSavedMeta));
+    } else if (wordsSaved.isRequired && isInserting) {
+      context.missing(_wordsSavedMeta);
+    }
+    if (d.cardsQuizzed.present) {
+      context.handle(
+          _cardsQuizzedMeta,
+          cardsQuizzed.isAcceptableValue(
+              d.cardsQuizzed.value, _cardsQuizzedMeta));
+    } else if (cardsQuizzed.isRequired && isInserting) {
+      context.missing(_cardsQuizzedMeta);
+    }
+    if (d.wordsEdited.present) {
+      context.handle(_wordsEditedMeta,
+          wordsEdited.isAcceptableValue(d.wordsEdited.value, _wordsEditedMeta));
+    } else if (wordsEdited.isRequired && isInserting) {
+      context.missing(_wordsEditedMeta);
+    }
+    if (d.cardsDeleted.present) {
+      context.handle(
+          _cardsDeletedMeta,
+          cardsDeleted.isAcceptableValue(
+              d.cardsDeleted.value, _cardsDeletedMeta));
+    } else if (cardsDeleted.isRequired && isInserting) {
+      context.missing(_cardsDeletedMeta);
+    }
+    if (d.date.present) {
+      context.handle(
+          _dateMeta, date.isAcceptableValue(d.date.value, _dateMeta));
+    } else if (date.isRequired && isInserting) {
+      context.missing(_dateMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {date};
+  @override
+  UsageInfoData map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return UsageInfoData.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Map<String, Variable> entityToSql(UsageInfoCompanion d) {
+    final map = <String, Variable>{};
+    if (d.wordsSearched.present) {
+      map['words_searched'] = Variable<int, IntType>(d.wordsSearched.value);
+    }
+    if (d.wordsSaved.present) {
+      map['words_saved'] = Variable<int, IntType>(d.wordsSaved.value);
+    }
+    if (d.cardsQuizzed.present) {
+      map['cards_quizzed'] = Variable<int, IntType>(d.cardsQuizzed.value);
+    }
+    if (d.wordsEdited.present) {
+      map['words_edited'] = Variable<int, IntType>(d.wordsEdited.value);
+    }
+    if (d.cardsDeleted.present) {
+      map['cards_deleted'] = Variable<int, IntType>(d.cardsDeleted.value);
+    }
+    if (d.date.present) {
+      map['date'] = Variable<DateTime, DateTimeType>(d.date.value);
+    }
+    return map;
+  }
+
+  @override
+  $UsageInfoTable createAlias(String alias) {
+    return $UsageInfoTable(_db, alias);
+  }
+}
+
 abstract class _$CardDatabase extends GeneratedDatabase {
   _$CardDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $EntriesTable _entries;
@@ -2252,10 +2592,15 @@ abstract class _$CardDatabase extends GeneratedDatabase {
   $CardsTable get cards => _cards ??= $CardsTable(this);
   $CardInfoTable _cardInfo;
   $CardInfoTable get cardInfo => _cardInfo ??= $CardInfoTable(this);
+  $UsageInfoTable _usageInfo;
+  $UsageInfoTable get usageInfo => _usageInfo ??= $UsageInfoTable(this);
   WordDao _wordDao;
   WordDao get wordDao => _wordDao ??= WordDao(this as CardDatabase);
   CardDao _cardDao;
   CardDao get cardDao => _cardDao ??= CardDao(this as CardDatabase);
+  StatisticsDao _statisticsDao;
+  StatisticsDao get statisticsDao =>
+      _statisticsDao ??= StatisticsDao(this as CardDatabase);
   @override
   List<TableInfo> get allTables => [
         entries,
@@ -2268,7 +2613,8 @@ abstract class _$CardDatabase extends GeneratedDatabase {
         syllableList,
         entryQuizCards,
         cards,
-        cardInfo
+        cardInfo,
+        usageInfo
       ];
 }
 
@@ -2285,6 +2631,7 @@ mixin _$WordDaoMixin on DatabaseAccessor<CardDatabase> {
   $ThesaurusListTable get thesaurusList => db.thesaurusList;
   $ExampleListTable get exampleList => db.exampleList;
   $SyllableListTable get syllableList => db.syllableList;
+  $UsageInfoTable get usageInfo => db.usageInfo;
 }
 mixin _$CardDaoMixin on DatabaseAccessor<CardDatabase> {
   $EntriesTable get entries => db.entries;
@@ -2298,4 +2645,19 @@ mixin _$CardDaoMixin on DatabaseAccessor<CardDatabase> {
   $CardsTable get cards => db.cards;
   $CardInfoTable get cardInfo => db.cardInfo;
   $EntryQuizCardsTable get entryQuizCards => db.entryQuizCards;
+  $UsageInfoTable get usageInfo => db.usageInfo;
+}
+mixin _$StatisticsDaoMixin on DatabaseAccessor<CardDatabase> {
+  $EntriesTable get entries => db.entries;
+  $SensesTable get senses => db.senses;
+  $WordsTable get words => db.words;
+  $ExamplesTable get examples => db.examples;
+  $SyllablesTable get syllables => db.syllables;
+  $ThesaurusListTable get thesaurusList => db.thesaurusList;
+  $ExampleListTable get exampleList => db.exampleList;
+  $SyllableListTable get syllableList => db.syllableList;
+  $CardsTable get cards => db.cards;
+  $CardInfoTable get cardInfo => db.cardInfo;
+  $EntryQuizCardsTable get entryQuizCards => db.entryQuizCards;
+  $UsageInfoTable get usageInfo => db.usageInfo;
 }

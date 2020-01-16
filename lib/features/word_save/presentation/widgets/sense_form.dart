@@ -12,10 +12,10 @@ class SenseForm extends StatelessWidget {
   final Function(SenseForm) removeField;
   List<Widget> _children;
   final List<String> _posNames = const [
-    'Noun',
-    'Pronoun',
     'Verb',
     'Adjective',
+    'Noun',
+    'Pronoun',
     'Adverb',
     'Preposition',
     'Conjunction',

@@ -107,6 +107,21 @@ class CardInfo extends Table {
   IntColumn get attributeType => integer()();
 }
 
+class UsageInfo extends Table {
+  IntColumn get wordsSearched =>
+      integer().withDefault(Constant(0)).nullable()();
+  IntColumn get wordsSaved => integer().withDefault(Constant(0)).nullable()();
+  IntColumn get cardsQuizzed => integer().withDefault(Constant(0)).nullable()();
+  IntColumn get wordsEdited => integer().withDefault(Constant(0)).nullable()();
+  IntColumn get cardsDeleted => integer().withDefault(Constant(0)).nullable()();
+  DateTimeColumn get date => dateTime()
+      .nullable()
+      .withDefault(Constant(DateTime.now()))();
+
+  @override
+  Set<Column> get primaryKey => {date};
+}
+
 //! ============================================================================================================================================ !//
 //! ============================================================================================================================================ !//
 //!                                                                 DAO classes                                                                  !//
@@ -155,11 +170,24 @@ const Map<int, AttributeType> ID_TO_ATTRIBUTE_TYPE = const {
   ThesaurusList,
   ExampleList,
   SyllableList,
+  UsageInfo,
 ])
 class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   final CardDatabase cardDatabase;
 
   WordDao(this.cardDatabase) : super(cardDatabase);
+
+  Future handleWordsSearchUsageInfo() async {
+    final UsageInfoData dbUsageInfoData = await _getUsageInformation();
+
+    if (dbUsageInfoData == null) {
+      await into(usageInfo).insert(UsageInfoData(wordsSearched: 1));
+    } else {
+      await (update(usageInfo)
+            ..where((table) => table.id.equals(dbUsageInfoData.id)))
+          .write(UsageInfoData(wordsSearched: dbUsageInfoData.wordsSearched + 1));
+    }
+  }
 
   Future<Word> _getWordFromString(String inputWord) async {
     return (select(words)..where((table) => table.word.equals(inputWord)))
@@ -312,6 +340,22 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     }
   }
 
+  Future _handleSavedUsageInfo() async {
+    final UsageInfoData dbUsageInfoData = await _getUsageInformation();
+
+    if (dbUsageInfoData == null) {
+      await into(usageInfo).insert(UsageInfoData(wordsSaved: 1));
+    } else {
+      await (update(usageInfo)
+            ..where((table) => table.id.equals(dbUsageInfoData.id)))
+          .write(UsageInfoData(wordsSaved: dbUsageInfoData.wordsSaved + 1));
+    }
+  }
+
+  Future<UsageInfoData> _getUsageInformation() =>
+      (select(usageInfo)..where((table) => table.date.equals(DateTime.now())))
+          .getSingle();
+
   Future<bool> insertWordCard(WordCard wordCard) async {
     //? Step 1: Dealing with Word String
     //? ==============================================================
@@ -336,6 +380,9 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
 
     //? Step 4: Dealing with senses list data
     await _insertEntrySenseData(entryID, wordCard.detailList);
+
+    //? Step 5: Increment insert count
+    await _handleSavedUsageInfo();
 
     return true;
   }
@@ -512,11 +559,24 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
         .go();
   }
 
+  Future _handleDeleteUsageInfo() async {
+    final UsageInfoData dbUsageInfoData = await _getUsageInformation();
+
+    if (dbUsageInfoData == null) {
+      await into(usageInfo).insert(UsageInfoData(cardsDeleted: 1));
+    } else {
+      await (update(usageInfo)
+            ..where((table) => table.id.equals(dbUsageInfoData.id)))
+          .write(UsageInfoData(cardsDeleted: dbUsageInfoData.cardsDeleted + 1));
+    }
+  }
+
   Future<bool> deleteWordCard(String word) async {
     final Entry dbEntry = await _getEntryByWord(word);
     await _deleteEntrySenseData(dbEntry.id);
     await _deleteEntrySyllableLinks(dbEntry.id);
     await _deleteEntryByID(dbEntry.id);
+    await _handleDeleteUsageInfo();
     return true;
   }
 
@@ -610,6 +670,18 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     }
   }
 
+  Future _handleUpdateUsageInfo() async {
+    final UsageInfoData dbUsageInfoData = await _getUsageInformation();
+
+    if (dbUsageInfoData == null) {
+      await into(usageInfo).insert(UsageInfoData(wordsEdited: 1));
+    } else {
+      await (update(usageInfo)
+            ..where((table) => table.id.equals(dbUsageInfoData.id)))
+          .write(UsageInfoData(wordsEdited: dbUsageInfoData.wordsEdited + 1));
+    }
+  }
+
   Future<bool> updateWordCard(WordCard wordCard) async {
     //? Step 1: Update entry details
     await (update(entries)..where((table) => table.id.equals(wordCard.id)))
@@ -632,6 +704,8 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       }
     }
 
+    await _handleUpdateUsageInfo();
+
     return true;
   }
 }
@@ -648,6 +722,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   Cards,
   CardInfo,
   EntryQuizCards,
+  UsageInfo,
 ])
 class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
   final CardDatabase cardDatabase;
@@ -1032,11 +1107,63 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     );
   }
 
+  Future<UsageInfoData> _getUsageInformation() =>
+      (select(usageInfo)..where((table) => table.date.equals(DateTime.now())))
+          .getSingle();
+
+  Future _handleQuizUsageInfo() async {
+    final UsageInfoData dbUsageInfoData = await _getUsageInformation();
+
+    if (dbUsageInfoData == null) {
+      await into(usageInfo).insert(UsageInfoData(cardsQuizzed: 1));
+    } else {
+      await (update(usageInfo)
+            ..where((table) => table.id.equals(dbUsageInfoData.id)))
+          .write(UsageInfoData(cardsQuizzed: dbUsageInfoData.cardsQuizzed + 1));
+    }
+  }
+
   Future<int> updateCardLevel(int cardID, int level, DateTime nextDue) async {
+    _handleQuizUsageInfo();
     return (update(cards)..where((table) => table.id.equals(cardID))).write(
       Card(dueOn: nextDue, level: level),
     );
   }
+}
+
+@UseDao(tables: [
+  Entries,
+  Senses,
+  Words,
+  Examples,
+  Syllables,
+  ThesaurusList,
+  ExampleList,
+  SyllableList,
+  Cards,
+  CardInfo,
+  EntryQuizCards,
+  UsageInfo,
+])
+class StatisticsDao extends DatabaseAccessor<CardDatabase>
+    with _$StatisticsDaoMixin {
+  final CardDatabase cardDatabase;
+
+  StatisticsDao(this.cardDatabase) : super(cardDatabase);
+
+  Future getPartOfSpeechStatistics() async {}
+
+  Future getNoOfWordsAddedStatistics() async {}
+
+  Future getNoOfWordsSearchedStatistics() async {}
+
+  Future getNoOfWordsEditedStatistics() async {}
+
+  Future getNoOfWordsDeletedStatistics() async {}
+
+  Future getNoOfCardsQuizzedStatistics() async {}
+
+  Future getCardLevelStatistics() async {}
 }
 
 //! ============================================================================================================================================ !//
@@ -1057,11 +1184,18 @@ const List<Type> _CARD_DATABASE_TABLE_LIST = [
   EntryQuizCards,
   Cards,
   CardInfo,
+  UsageInfo,
+];
+
+const List<Type> _DAO_LIST = const [
+  WordDao,
+  CardDao,
+  StatisticsDao,
 ];
 
 //? flutter packages pub run build_runner watch --delete-conflicting-outputs
 
-@UseMoor(tables: _CARD_DATABASE_TABLE_LIST, daos: [WordDao, CardDao])
+@UseMoor(tables: _CARD_DATABASE_TABLE_LIST, daos: _DAO_LIST)
 class CardDatabase extends _$CardDatabase {
   CardDatabase()
       : super(
@@ -1069,12 +1203,21 @@ class CardDatabase extends _$CardDatabase {
         );
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         beforeOpen: (OpeningDetails openingDetails) async {
           await this.customStatement('PRAGMA foreign_keys = ON');
+        },
+        onCreate: (Migrator m) {
+          return m.createAllTables();
+        },
+        onUpgrade: (Migrator m, int from, int to) async {
+          if (from < 3) {
+            await m.deleteTable('part_of_speech');
+            await m.createTable(usageInfo);
+          }
         },
       );
 }

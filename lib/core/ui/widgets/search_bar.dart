@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vocab/core/database/card_database.dart' as db;
 import 'package:vocab/features/query_word/presentation/bloc/bloc.dart';
 import 'package:vocab/features/word_card/presentation/bloc/bloc.dart';
+import 'package:provider/provider.dart';
 
 class SearchBar extends StatelessWidget {
   SearchBar({Key key}) : super(key: key);
@@ -30,6 +32,9 @@ class SearchBar extends StatelessWidget {
           BlocProvider.of<QueryWordBloc>(context).add(
             GetWordEntryEvent(queryWord: value),
           );
+          Provider.of<db.CardDatabase>(context)
+              .wordDao
+              .handleWordsSearchUsageInfo();
         },
       ),
     );
