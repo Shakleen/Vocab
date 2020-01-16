@@ -14,28 +14,18 @@ class AudioPlayerWidget extends StatefulWidget {
 }
 
 class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
-  AudioPlayer _audioPlayer;
-  AudioPlayerState _state;
+  final AudioPlayer _audioPlayer;
+  Uri _tempAudioFile;
+
+  _AudioPlayerWidgetState() : _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
-    _audioPlayer = AudioPlayer(
-      mode: PlayerMode.MEDIA_PLAYER,
-      playerId: widget.pronunciation.audioFileUrl,
-    );
-    _state = AudioPlayerState.STOPPED;
     _audioPlayer.onPlayerStateChanged.listen((AudioPlayerState state) {
-      print('Audio player state: $state');
-      if (state == AudioPlayerState.COMPLETED) {
-        setState(() {
-          _state = state;
-          _stop();
-        });
-      }
-    });
-    _audioPlayer.onAudioPositionChanged.listen((d) {
-      print(d);
+      setState(() {
+        print('Audio player state: $state');
+      });
     });
   }
 
@@ -54,55 +44,44 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
         onPressed: _handleControl,
         color: Colors.white,
       ),
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: _getColor(),
     );
   }
 
-  void _handleControl() {
-    switch (_state) {
-      case AudioPlayerState.STOPPED:
-        _play();
-        break;
-      default:
-        _stop();
-        break;
-    }
-  }
+  void _handleControl() => _shouldPlay() ? _play() : _stop();
+
+  bool _shouldPlay() =>
+      _audioPlayer.state == null || _audioPlayer != AudioPlayerState.PLAYING;
 
   void _play() async {
-    setState(() {
-      _state = AudioPlayerState.PLAYING;
-    });
-    print(widget.pronunciation.audioFileUrl);
+    if (_tempAudioFile == null)
+      _tempAudioFile = await Downloader.downloadFile(
+        'temp',
+        widget.pronunciation.audioFileUrl,
+      );
 
-    final Uri tempAudioFile = await Downloader.downloadFile(
-      'temp',
-      widget.pronunciation.audioFileUrl,
-    );
-
-    final int result = await _audioPlayer.play(
-      tempAudioFile.path,
-      volume: 1.0,
-      position: Duration(),
-    );
-    print('Result of playing audio: $result');
+    _audioPlayer.play(_tempAudioFile.path, volume: 1.0, position: Duration());
   }
 
   void _stop() async {
-    setState(() {
-      _state = AudioPlayerState.STOPPED;
-    });
-
-    final int result = await _audioPlayer.stop();
-    print('Result of stopping audio: $result');
+    _audioPlayer.stop();
   }
 
   IconData _getIcon() {
-    switch (_state) {
+    switch (_audioPlayer.state) {
       case AudioPlayerState.PLAYING:
         return Icons.stop;
       default:
         return Icons.play_arrow;
+    }
+  }
+
+  Color _getColor() {
+    switch (_audioPlayer.state) {
+      case AudioPlayerState.PLAYING:
+        return Theme.of(context).errorColor;
+      default:
+        return Theme.of(context).primaryColor;
     }
   }
 }

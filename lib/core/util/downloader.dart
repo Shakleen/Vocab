@@ -12,7 +12,6 @@ class Downloader {
     final File tempFile = File('$tempPath/$fileName');
 
     final http.Response response = await http.get(url);
-    // todo - check status
     await tempFile.writeAsBytes(response.bodyBytes, flush: true);
 
     return tempFile.uri;
