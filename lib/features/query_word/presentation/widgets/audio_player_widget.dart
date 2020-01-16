@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:vocab/core/util/downloader.dart';
 import 'package:vocab/features/query_word/domain/entities/pronunciation.dart';
 
 class AudioPlayerWidget extends StatefulWidget {
@@ -72,10 +73,15 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     setState(() {
       _state = AudioPlayerState.PLAYING;
     });
-
     print(widget.pronunciation.audioFileUrl);
-    final int result = await _audioPlayer.play(
+
+    final Uri tempAudioFile = await Downloader.downloadFile(
+      'temp',
       widget.pronunciation.audioFileUrl,
+    );
+
+    final int result = await _audioPlayer.play(
+      tempAudioFile.path,
       volume: 1.0,
       position: Duration(),
     );
