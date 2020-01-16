@@ -115,7 +115,11 @@ class UsageInfo extends Table {
   IntColumn get wordsEdited => integer().withDefault(Constant(0)).nullable()();
   IntColumn get cardsDeleted => integer().withDefault(Constant(0)).nullable()();
   DateTimeColumn get date =>
-      dateTime().nullable().withDefault(Constant(DateTime.now()))();
+      dateTime().nullable().withDefault(Constant(DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().day,
+          )))();
 
   @override
   Set<Column> get primaryKey => {date};
@@ -176,6 +180,10 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
 
   WordDao(this.cardDatabase) : super(cardDatabase);
 
+  Future<UsageInfoData> _getUsageInformation() =>
+      (select(usageInfo)..where((table) => table.date.equals(DateTime.now())))
+          .getSingle();
+
   Future handleWordsSearchUsageInfo() async {
     final UsageInfoData dbUsageInfoData = await _getUsageInformation();
 
@@ -185,7 +193,8 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       await (update(usageInfo)
             ..where((table) => table.date.equals(dbUsageInfoData.date)))
           .write(
-              UsageInfoData(wordsSearched: dbUsageInfoData.wordsSearched + 1));
+        UsageInfoData(wordsSearched: dbUsageInfoData.wordsSearched + 1),
+      );
     }
   }
 
@@ -351,10 +360,6 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
           .write(UsageInfoData(wordsSaved: dbUsageInfoData.wordsSaved + 1));
     }
   }
-
-  Future<UsageInfoData> _getUsageInformation() =>
-      (select(usageInfo)..where((table) => table.date.equals(DateTime.now())))
-          .getSingle();
 
   Future<bool> insertWordCard(WordCard wordCard) async {
     //? Step 1: Dealing with Word String
@@ -1151,32 +1156,35 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
 
   StatisticsDao(this.cardDatabase) : super(cardDatabase);
 
-  Future getPartOfSpeechStatistics() async {}
+  Future<Map<PartOfSpeechType, int>> getPartOfSpeechStatistics() async {
+    // final Map<PartOfSpeechType, int> output = {};
 
-  Future<int> getNoOfWordsSavedStatistics(DateTime date) async =>
-      (select(usageInfo)..where((table) => table.date.equals(date)))
-          .getSingle()
-          .then((val) => val.wordsSaved);
+    // for (final PartOfSpeechType type in PART_OF_SPEECH_TYPE_TO_ID.keys) {
 
-  Future<int> getNoOfWordsSearchedStatistics(DateTime date) async =>
-      (select(usageInfo)..where((table) => table.date.equals(date)))
-          .getSingle()
-          .then((val) => val.wordsSearched);
+    // }
 
-  Future<int> getNoOfWordsEditedStatistics(DateTime date) async =>
-      (select(usageInfo)..where((table) => table.date.equals(date)))
-          .getSingle()
-          .then((val) => val.wordsEdited);
+    // return output;
+  }
 
-  Future<int> getNoOfWordsDeletedStatistics(DateTime date) async =>
-      (select(usageInfo)..where((table) => table.date.equals(date)))
-          .getSingle()
-          .then((val) => val.cardsDeleted);
+  Future<UsageInfoData> getGeneralUsageStats(DateTime date) async {
+    final UsageInfoData dbUsageInfoData = await (select(usageInfo)
+          ..where((table) => table.date.equals(DateTime(date.year, date.month, date.day))))
+        .getSingle();
 
-  Future<int> getNoOfCardsQuizzedStatistics(DateTime date) async =>
-      (select(usageInfo)..where((table) => table.date.equals(date)))
-          .getSingle()
-          .then((val) => val.cardsQuizzed);
+    if (dbUsageInfoData == null) {
+      await into(usageInfo).insert(UsageInfoData());
+      return UsageInfoData(
+        date: date,
+        cardsDeleted: 0,
+        cardsQuizzed: 0,
+        wordsEdited: 0,
+        wordsSaved: 0,
+        wordsSearched: 0,
+      );
+    }
+
+    return dbUsageInfoData;
+  }
 
   Future getCardLevelStatistics() async {}
 }

@@ -25,14 +25,14 @@ class SearchBar extends StatelessWidget {
           ),
         ),
         keyboardType: TextInputType.text,
-        onSubmitted: (String value) {
+        onSubmitted: (String value) async {
           BlocProvider.of<WordCardBloc>(context).add(
             GetWordCardEvent(queryWord: value),
           );
           BlocProvider.of<QueryWordBloc>(context).add(
             GetWordEntryEvent(queryWord: value),
           );
-          Provider.of<db.CardDatabase>(context)
+          await Provider.of<db.CardDatabase>(context, listen: false)
               .wordDao
               .handleWordsSearchUsageInfo();
         },
