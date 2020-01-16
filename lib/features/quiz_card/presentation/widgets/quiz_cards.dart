@@ -46,9 +46,9 @@ class _QuizCardsState extends State<QuizCards> {
   }
 
   void _nextCard() {
+    _index += 1;
     if (_index < widget.quizCards.length) {
       setState(() {
-        _index += 1;
         _buildChildren();
       });
     } else {

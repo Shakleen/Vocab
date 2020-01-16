@@ -59,7 +59,11 @@ class _QuizControlsState extends State<QuizControls> {
       );
     } else {
       return RaisedButton(
-        child: Text("Reveal"),
+        child: Container(
+          width: double.infinity,
+          alignment: Alignment.center,
+          child: Text("Reveal"),
+        ),
         textTheme: ButtonTextTheme.primary,
         color: Theme.of(context).primaryColor,
         onPressed: () {

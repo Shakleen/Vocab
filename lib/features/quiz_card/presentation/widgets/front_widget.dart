@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/core/database/card_database.dart';
 import 'package:vocab/core/ui/widgets/audio_player_widget.dart';
+import 'package:vocab/core/ui/widgets/subtitle_text.dart';
 import 'package:vocab/core/ui/widgets/title_text.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 
@@ -38,13 +39,13 @@ class FrontWidget extends StatelessWidget {
         break;
       case AttributeType.Example:
         _children.add(
-          TitleText(text: "Examples of the word \"${quizCard.word}\""),
+          SubtitleText(text: "Examples of the word \"${quizCard.word}\""),
         );
         _makeOrderedList(_children, quizCard.front);
         break;
       case AttributeType.Definition:
         _children.add(
-          TitleText(text: "Definition of the word \"${quizCard.word}\""),
+          SubtitleText(text: "Definition of the word \"${quizCard.word}\""),
         );
         _children.add(Text(quizCard.front));
         break;

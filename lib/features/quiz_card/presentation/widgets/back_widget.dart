@@ -31,7 +31,7 @@ class BackWidget extends StatelessWidget {
         break;
       case AttributeType.Syllables:
         _children.add(TitleText(text: "Syllables of \"${quizCard.word}\""));
-        _children.add(Text(quizCard.back));
+        _makeOrderedList(_children);
         break;
       case AttributeType.Example:
         _children.add(TitleText(text: "Examples of \"${quizCard.word}\""));
