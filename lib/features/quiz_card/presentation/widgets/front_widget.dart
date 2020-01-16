@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/core/database/card_database.dart';
-import 'package:vocab/core/ui/widgets/subtitle_text.dart';
 import 'package:vocab/core/ui/widgets/title_text.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 
@@ -26,10 +25,6 @@ class FrontWidget extends StatelessWidget {
     final List<Widget> _children = [];
 
     switch (quizCard.frontType) {
-      case AttributeType.Spelling:
-        _children.add(TitleText(text: "Spelling"));
-        _children.add(Text(quizCard.front));
-        break;
       case AttributeType.Pronunciation:
         _children.add(TitleText(text: "Pronunciation"));
         _children.add(Text(quizCard.front));
@@ -47,7 +42,7 @@ class FrontWidget extends StatelessWidget {
 
     switch (quizCard.backType) {
       case AttributeType.Spelling:
-        _children.add(_makeQuestion("Spell the word \"${quizCard.word}\"."));
+        _children.add(_makeQuestion("Spell the word."));
         break;
       case AttributeType.Pronunciation:
         _children.add(_makeQuestion("Pronounce the word \"${quizCard.word}\""));
@@ -88,10 +83,7 @@ class FrontWidget extends StatelessWidget {
     return _children;
   }
 
-  Widget _makeQuestion(String question) => Padding(
-        padding: const EdgeInsets.only(top: 16.0),
-        child: SubtitleText(text: question),
-      );
+  Widget _makeQuestion(String question) => TitleText(text: question);
 
   void _makeOrderedList(List<Widget> _children, String data) {
     final List<String> pieces = data.split(' | ');
