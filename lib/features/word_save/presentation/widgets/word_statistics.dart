@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vocab/features/statistics_graphs/general_usage_stats.dart';
-import 'package:vocab/features/statistics_graphs/part_of_speech_stats.dart';
+import 'package:vocab/features/statistics_graphs/general_usage_graph.dart';
 
 class WordStatistics extends StatelessWidget {
   const WordStatistics({Key key}) : super(key: key);
@@ -13,7 +12,7 @@ class WordStatistics extends StatelessWidget {
         // Type of words
         // PartOfSpeechStats(),
         // General statistics
-        GeneralUsageStats(),
+        GeneralUsageGraph(),
       ],
     );
   }

@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:vocab/core/database/card_database.dart' as db;
 import 'package:provider/provider.dart';
+import 'package:vocab/core/util/formatter.dart';
 
 class GeneralUsageStats extends StatelessWidget {
   final Map<double, String> statTitles = {
@@ -20,8 +21,9 @@ class GeneralUsageStats extends StatelessWidget {
     3: Colors.green,
     4: Colors.purple,
   };
+  final DateTime graphTime;
 
-  GeneralUsageStats({Key key}) : super(key: key);
+  GeneralUsageStats({Key key, @required this.graphTime}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class GeneralUsageStats extends StatelessWidget {
       child: FutureBuilder(
         future: Provider.of<db.CardDatabase>(context)
             .statisticsDao
-            .getGeneralUsageStats(DateTime.now()),
+            .getGeneralUsageStats(graphTime),
         builder:
             (BuildContext context, AsyncSnapshot<db.UsageInfoData> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -61,9 +63,9 @@ class GeneralUsageStats extends StatelessWidget {
                         show: true,
                         topTitle: AxisTitle(
                           showTitle: true,
-                          titleText: "Usage stats",
+                          titleText: "Usage on ${getFormattedDateTime(graphTime)}",
                           textAlign: TextAlign.center,
-                          textStyle: Theme.of(context).textTheme.headline
+                          textStyle: Theme.of(context).textTheme.title
                         )
                       ),
                       alignment: BarChartAlignment.spaceAround,
