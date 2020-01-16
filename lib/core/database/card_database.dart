@@ -578,7 +578,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
 
     for (final String thesaurus in detailsthesaurusList) {
       if (thesaurus.isNotEmpty) {
-        if (dbThesaurusList.contains(thesaurus)) {
+        if (dbThesaurusList.contains(thesaurus) == false) {
           final int thesaurusWordID = await _getExistingOrNewWordID(thesaurus);
           await _linkSenseAndThesaurus(
             details.id,
@@ -1058,7 +1058,7 @@ class CardDatabase extends _$CardDatabase {
         );
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
