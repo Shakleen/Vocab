@@ -432,7 +432,18 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   }
 
   Future<List<WordDetailsSummary>> getSavedWords() async {
-    final List<Entry> dbEntryList = await select(entries).get();
+    final List<Entry> dbEntryList = (await (select(words)
+              ..orderBy([
+                (table) => OrderingTerm(
+                      expression: table.word,
+                      mode: OrderingMode.asc,
+                    )
+              ]))
+            .join(
+                [innerJoin(entries, entries.wordId.equalsExp(words.id))]).get())
+        .map((table) => table.readTable(entries))
+        .toList();
+
     final List<WordDetailsSummary> detailSummaryList = [];
 
     for (final Entry dbEntry in dbEntryList) {
