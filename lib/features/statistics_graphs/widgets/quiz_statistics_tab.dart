@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/features/statistics_graphs/widgets/mastery_level_stat.dart';
+import 'package:vocab/features/statistics_graphs/widgets/performance_graph.dart';
 import 'package:vocab/features/statistics_graphs/widgets/quiz_heatmap.dart';
 
 class QuizStatisticsTab extends StatelessWidget {
@@ -13,6 +14,7 @@ class QuizStatisticsTab extends StatelessWidget {
       children: <Widget>[
         MasteryLevelStats(),
         QuizHeatmap(),
+        PerformanceGraph(),
       ],
     );
   }

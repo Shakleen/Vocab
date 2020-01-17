@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:vocab/core/entities/performance_result.dart';
 import 'package:vocab/core/entities/word_card.dart';
@@ -1132,8 +1134,8 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     final int wrongNo = 1 - correctNo;
 
     if (dbUsageInfoData == null) {
-            await into(usageInfo).insert(UsageInfoData(
-              cardsCorrect: correctNo,
+      await into(usageInfo).insert(UsageInfoData(
+        cardsCorrect: correctNo,
         cardsWrong: wrongNo,
         cardsQuizzed: 1,
         date: _getOnlyTimeToday(),
@@ -1241,20 +1243,30 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
     return output;
   }
 
-  Future<Map<DateTime, PerformaceResult>> getPerformanceResults(
+  Future<Performance> getPerformanceResults(
     DateTime startDay,
     DateTime endDay,
   ) async {
     final Map<DateTime, PerformaceResult> output = {};
+    int maxVal = 0, minVal = 9999999;
     (await (select(usageInfo)
               ..where((table) => table.date.isBetweenValues(startDay, endDay)))
             .get())
-        .map((row) => output[row.date] = PerformaceResult(
-              totalCorrect: row.cardsCorrect,
-              totalWrong: row.cardsWrong,
-            ));
+        .map((row) {
+      maxVal = max(maxVal, max(row.cardsCorrect, row.cardsWrong));
+      minVal = min(minVal, min(row.cardsCorrect, row.cardsWrong));
 
-    return output;
+      output[row.date] = PerformaceResult(
+        totalCorrect: row.cardsCorrect,
+        totalWrong: row.cardsWrong,
+      );
+    });
+
+    return Performance(
+      performanceMap: output,
+      maxValue: maxVal,
+      minValue: minVal,
+    );
   }
 }
 

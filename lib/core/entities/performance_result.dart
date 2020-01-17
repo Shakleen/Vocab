@@ -9,3 +9,13 @@ class PerformaceResult extends Equatable {
   @override
   List<Object> get props => [totalCorrect, totalWrong];
 }
+
+class Performance extends Equatable {
+  final Map<DateTime, PerformaceResult> performanceMap;
+  final int maxValue, minValue;
+
+  Performance({this.performanceMap, this.maxValue, this.minValue});
+
+  @override
+  List<Object> get props => [performanceMap, maxValue, minValue];
+}

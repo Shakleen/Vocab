@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:vocab/core/database/card_database.dart' as db;
@@ -24,7 +22,7 @@ class PerformanceStats extends StatelessWidget {
               DateTime.now(),
             ),
         builder: (BuildContext context,
-            AsyncSnapshot<Map<DateTime, PerformaceResult>> snapshot) {
+            AsyncSnapshot<Performance> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.connectionState == ConnectionState.done) {
@@ -36,16 +34,17 @@ class PerformanceStats extends StatelessWidget {
                   child: BarChart(
                     BarChartData(
                       axisTitleData: FlAxisTitleData(
-                          show: true,
-                          topTitle: AxisTitle(
-                            showTitle: true,
-                            titleText: "Performance graph for last $range days",
-                            textAlign: TextAlign.center,
-                            textStyle: Theme.of(context).textTheme.title,
-                            margin: 16,
-                          )),
+                        show: true,
+                        topTitle: AxisTitle(
+                          showTitle: true,
+                          titleText: "Performance graph for last $range days",
+                          textAlign: TextAlign.center,
+                          textStyle: Theme.of(context).textTheme.title,
+                          margin: 16,
+                        ),
+                      ),
                       alignment: BarChartAlignment.spaceAround,
-                      maxY: 200.0,
+                      maxY: snapshot.data.maxValue.toDouble(),
                       borderData: FlBorderData(show: false),
                       titlesData: FlTitlesData(
                         show: true,
@@ -58,7 +57,10 @@ class PerformanceStats extends StatelessWidget {
                           ),
                           showTitles: true,
                           margin: 20,
-                          getTitles: (double value) => value.toString(),
+                          rotateAngle: 90,
+                          getTitles: (double value) =>
+                              getShortFormattedDateTIme(
+                                  _getPastDate(value.toInt())),
                         ),
                       ),
                       barGroups: List<BarChartGroupData>.generate(
@@ -66,9 +68,9 @@ class PerformanceStats extends StatelessWidget {
                         (int index) {
                           final DateTime indexDay = _getPastDate(index);
                           final PerformaceResult result =
-                              snapshot.data[indexDay] == null
+                              snapshot.data.performanceMap[indexDay] == null
                                   ? PerformaceResult()
-                                  : snapshot.data[indexDay];
+                                  : snapshot.data.performanceMap[indexDay];
 
                           return BarChartGroupData(
                             x: index,
@@ -76,17 +78,16 @@ class PerformanceStats extends StatelessWidget {
                               BarChartRodData(
                                 y: result.totalCorrect.toDouble(),
                                 color: Colors.green,
-                                width: 8,
+                                width: _getWidth(),
                                 isRound: false,
                               ),
                               BarChartRodData(
                                 y: result.totalWrong.toDouble(),
-                                color: Colors.green,
-                                width: 8,
+                                color: Colors.red,
+                                width: _getWidth(),
                                 isRound: false,
                               ),
                             ],
-                            showingTooltipIndicators: [0],
                           );
                         },
                       ),
@@ -103,16 +104,12 @@ class PerformanceStats extends StatelessWidget {
     );
   }
 
+  double _getWidth() {
+    if (range == 3) return 32.0;
+    else if (range == 7) return 8.0;
+    else if (range == 14) return 4.0;
+  }
+
   DateTime _getPastDate(int index) =>
       DateTime.now().subtract(Duration(days: index));
-
-  double _max(List<int> list) {
-    int maxVal = -1;
-
-    list.forEach((int val) {
-      maxVal = max(maxVal, val == null ? 0 : val);
-    });
-
-    return maxVal.toDouble();
-  }
 }
