@@ -17,31 +17,39 @@ The following information is fetched from remote dictionaries:
     * Synonyms
     * Antonyms
 
-<img src="./app_demo/search_word_1.jpg" alt="drawing" width="180"/>
-<img src="./app_demo/search_word_2.jpg" alt="drawing" width="180"/>
-<img src="./app_demo/search_word_3.jpg" alt="drawing" width="180"/>
-<img src="./app_demo/search_word_4.jpg" alt="drawing" width="180"/>
-<img src="./app_demo/search_word_5.jpg" alt="drawing" width="180"/>
+<p float="left"> 
+    <img src="./app_demo/search_word_1.jpg" alt="drawing" width="150"/>
+    <img src="./app_demo/search_word_2.jpg" alt="drawing" width="150"/>
+    <img src="./app_demo/search_word_3.jpg" alt="drawing" width="150"/>
+    <img src="./app_demo/search_word_4.jpg" alt="drawing" width="150"/>
+    <img src="./app_demo/search_word_5.jpg" alt="drawing" width="150"/>
+</P>
 
 ## Feature 2: Saving word definitions
 Word information is saved to local SQLite database.
 
-<img src="./app_demo/save_word_1.jpg" alt="drawing" width="180"/>
-<img src="./app_demo/save_word_2.jpg" alt="drawing" width="180"/>
-<img src="./app_demo/save_word_3.jpg" alt="drawing" width="180"/>
+<p float="left"> 
+    <img src="./app_demo/save_word_1.jpg" alt="drawing" width="150"/>
+    <img src="./app_demo/save_word_2.jpg" alt="drawing" width="150"/>
+    <img src="./app_demo/save_word_3.jpg" alt="drawing" width="150"/>
+</P>
 
 
 ## Feature 3: Generating quiz cards and taking quizzes
 Card information is generated automatically and saved to SQLite database.
 
-<img src="./app_demo/quiz_word_1.jpg" alt="drawing" width="180"/>
-<img src="./app_demo/quiz_word_2.jpg" alt="drawing" width="180"/>
-<img src="./app_demo/quiz_word_3.jpg" alt="drawing" width="180"/>
+<p float="left"> 
+    <img src="./app_demo/quiz_word_1.jpg" alt="drawing" width="150"/>
+    <img src="./app_demo/quiz_word_2.jpg" alt="drawing" width="150"/>
+    <img src="./app_demo/quiz_word_3.jpg" alt="drawing" width="150"/>
+</P>
 
 ## Feature 4: Usage and quiz statistics graphs
 
-<img src="./app_demo/word_stats_1.jpg" alt="drawing" width="180"/>
-<img src="./app_demo/word_stats_2.jpg" alt="drawing" width="180"/>
+<p float="left"> 
+    <img src="./app_demo/word_stats_1.jpg" alt="drawing" width="150"/>
+    <img src="./app_demo/word_stats_2.jpg" alt="drawing" width="150"/>
+</P>
 
 # Project Infomation
 
