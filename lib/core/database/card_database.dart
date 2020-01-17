@@ -1222,6 +1222,13 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
       MasteryLevels.Mastered: masteredCount,
     };
   }
+
+  Future<Map<DateTime, int>> getActivity() async {
+    final List<UsageInfoData> list = await select(usageInfo).get();
+    final Map<DateTime, int> output = {};
+    list.forEach((value) => output[value.date] = value.cardsQuizzed);
+    return output;
+  }
 }
 
 //! ============================================================================================================================================ !//

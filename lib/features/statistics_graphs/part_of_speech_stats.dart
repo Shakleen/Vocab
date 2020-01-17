@@ -20,14 +20,14 @@ class PartOfSpeechStatsState extends State {
           (i) => getPartOfSpeechString(ID_TO_PART_OF_SPEECH_TYPE[i+1]),
         ),
         _posColors = [
-          Color(0xff01114b),
-          Color(0xff011f6f),
-          Color(0xff03394c),
-          Color(0xff005b46),
-          Color(0xff017f8b),
-          Color(0xff6497b1),
-          Color(0xffb3cde0),
-          Color(0xffb3cfef),
+          Color(0xffe74c3c),
+          Color(0xffe67e22),
+          Color(0xfff1c40f),
+          Color(0xff2ecc71),
+          Color(0xff1abc9c),
+          Color(0xff3498db),
+          Color(0xff9b59b6),
+          Color(0xff34495e),
         ];
 
   @override

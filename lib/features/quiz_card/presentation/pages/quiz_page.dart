@@ -3,6 +3,7 @@ import 'package:vocab/core/navigation/routes.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/side_drawer.dart';
 import 'package:vocab/features/statistics_graphs/mastery_level_stat.dart';
+import 'package:vocab/features/statistics_graphs/quiz_heatmap.dart';
 
 class QuizPage extends StatelessWidget {
   const QuizPage({Key key}) : super(key: key);
@@ -31,6 +32,7 @@ class QuizPage extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           MasteryLevelStats(),
+          QuizHeatmap(),
         ],
       ),
     );

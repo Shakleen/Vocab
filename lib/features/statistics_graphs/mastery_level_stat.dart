@@ -43,7 +43,7 @@ class MasteryLevelStatsState extends State {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     Text(
-                      "Part of speech stat",
+                      "Mastery level stats",
                       style: Theme.of(context).textTheme.title,
                     ),
                     Row(
