@@ -1,4 +1,5 @@
 import 'package:moor_flutter/moor_flutter.dart';
+import 'package:vocab/core/entities/performance_result.dart';
 import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
@@ -1227,6 +1228,23 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
     final List<UsageInfoData> list = await select(usageInfo).get();
     final Map<DateTime, int> output = {};
     list.forEach((value) => output[value.date] = value.cardsQuizzed);
+    return output;
+  }
+
+  Future<Map<DateTime, PerformaceResult>> getPerformanceResults(
+    DateTime startDay,
+    DateTime endDay,
+  ) async {
+    final Map<DateTime, PerformaceResult> output = {};
+    (await (select(usageInfo)
+          ..where((table) => table.date.isBetweenValues(startDay, endDay)))
+        .get()).map(
+          (row) => output[row.date] = PerformaceResult(
+            totalCorrect: row.cardsCorrect,
+            totalWrong: row.cardsWrong,
+          )
+        );
+
     return output;
   }
 }
