@@ -2747,4 +2747,77 @@ mixin _$StatisticsDaoMixin on DatabaseAccessor<CardDatabase> {
   $CardInfoTable get cardInfo => db.cardInfo;
   $EntryQuizCardsTable get entryQuizCards => db.entryQuizCards;
   $UsageInfoTable get usageInfo => db.usageInfo;
+  GetPartOfSpeechStatsResult _rowToGetPartOfSpeechStatsResult(QueryRow row) {
+    return GetPartOfSpeechStatsResult(
+      partOfSpeech: row.readInt('part_of_speech'),
+      count: row.readInt('COUNT(*)'),
+    );
+  }
+
+  Selectable<GetPartOfSpeechStatsResult> _getPartOfSpeechStatsQuery() {
+    return customSelectQuery(
+        'SELECT part_of_speech, COUNT(*) FROM senses GROUP BY part_of_speech',
+        variables: [],
+        readsFrom: {senses}).map(_rowToGetPartOfSpeechStatsResult);
+  }
+
+  Future<List<GetPartOfSpeechStatsResult>> _getPartOfSpeechStats() {
+    return _getPartOfSpeechStatsQuery().get();
+  }
+
+  Stream<List<GetPartOfSpeechStatsResult>> _watchGetPartOfSpeechStats() {
+    return _getPartOfSpeechStatsQuery().watch();
+  }
+
+  Selectable<int> _getUntouchedCardCountQuery() {
+    return customSelectQuery('SELECT COUNT(*) FROM cards WHERE level <= 0',
+        variables: [],
+        readsFrom: {cards}).map((QueryRow row) => row.readInt('COUNT(*)'));
+  }
+
+  Future<List<int>> _getUntouchedCardCount() {
+    return _getUntouchedCardCountQuery().get();
+  }
+
+  Stream<List<int>> _watchGetUntouchedCardCount() {
+    return _getUntouchedCardCountQuery().watch();
+  }
+
+  Selectable<int> _getLearningCardCountQuery() {
+    return customSelectQuery(
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 1 AND 20',
+        variables: [],
+        readsFrom: {cards}).map((QueryRow row) => row.readInt('COUNT(*)'));
+  }
+
+  Future<List<int>> _getLearningCardCount() {
+    return _getLearningCardCountQuery().get();
+  }
+
+  Stream<List<int>> _watchGetLearningCardCount() {
+    return _getLearningCardCountQuery().watch();
+  }
+
+  Selectable<int> _getMasteredCardCountQuery() {
+    return customSelectQuery('SELECT COUNT(*) FROM cards WHERE level > 20',
+        variables: [],
+        readsFrom: {cards}).map((QueryRow row) => row.readInt('COUNT(*)'));
+  }
+
+  Future<List<int>> _getMasteredCardCount() {
+    return _getMasteredCardCountQuery().get();
+  }
+
+  Stream<List<int>> _watchGetMasteredCardCount() {
+    return _getMasteredCardCountQuery().watch();
+  }
+}
+
+class GetPartOfSpeechStatsResult {
+  final int partOfSpeech;
+  final int count;
+  GetPartOfSpeechStatsResult({
+    this.partOfSpeech,
+    this.count,
+  });
 }

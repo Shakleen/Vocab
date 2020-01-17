@@ -1121,20 +1121,30 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
   }
 }
 
-@UseDao(tables: [
-  Entries,
-  Senses,
-  Words,
-  Examples,
-  Syllables,
-  ThesaurusList,
-  ExampleList,
-  SyllableList,
-  Cards,
-  CardInfo,
-  EntryQuizCards,
-  UsageInfo,
-])
+@UseDao(
+  tables: [
+    Entries,
+    Senses,
+    Words,
+    Examples,
+    Syllables,
+    ThesaurusList,
+    ExampleList,
+    SyllableList,
+    Cards,
+    CardInfo,
+    EntryQuizCards,
+    UsageInfo,
+  ],
+  queries: {
+    '_getPartOfSpeechStats':
+        'SELECT part_of_speech, COUNT(*) FROM senses GROUP BY part_of_speech',
+    '_getUntouchedCardCount': 'SELECT COUNT(*) FROM cards WHERE level <= 0',
+    '_getLearningCardCount':
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 1 AND 20',
+    '_getMasteredCardCount': 'SELECT COUNT(*) FROM cards WHERE level > 20',
+  },
+)
 class StatisticsDao extends DatabaseAccessor<CardDatabase>
     with _$StatisticsDaoMixin {
   final CardDatabase cardDatabase;
@@ -1142,13 +1152,12 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
   StatisticsDao(this.cardDatabase) : super(cardDatabase);
 
   Future<Map<PartOfSpeechType, int>> getPartOfSpeechStatistics() async {
-    // final Map<PartOfSpeechType, int> output = {};
-
-    // for (final PartOfSpeechType type in PART_OF_SPEECH_TYPE_TO_ID.keys) {
-
-    // }
-
-    // return output;
+    final List<GetPartOfSpeechStatsResult> data = await _getPartOfSpeechStats();
+    final Map<PartOfSpeechType, int> output = {};
+    data.forEach((d) {
+      output[ID_TO_PART_OF_SPEECH_TYPE[d.partOfSpeech]] = d.count;
+    });
+    return output;
   }
 
   Future<UsageInfoData> getGeneralUsageStats(DateTime date) async {
@@ -1174,7 +1183,15 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
   }
 
   Future<Map<MasteryLevels, int>> getCardLevelStatistics() async {
-      
+    final int untouchedCount = (await _getUntouchedCardCount())[0];
+    final int learningCount = (await _getLearningCardCount())[0];
+    final int masteredCount = (await _getMasteredCardCount())[0];
+
+    return {
+      MasteryLevels.Untouched: untouchedCount,
+      MasteryLevels.Learning: learningCount,
+      MasteryLevels.Mastered: masteredCount,
+    };
   }
 }
 
