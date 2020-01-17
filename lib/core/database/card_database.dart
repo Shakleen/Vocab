@@ -5,6 +5,7 @@ import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
 import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
 import 'package:vocab/core/entities/word_details_summary.dart';
 import 'package:vocab/core/enums/attributes.dart';
+import 'package:vocab/core/enums/mastery_levels.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 import 'package:vocab/core/enums/part_of_speech.dart';
 
@@ -1172,8 +1173,8 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
     return dbUsageInfoData;
   }
 
-  Future getCardLevelStatistics() async {
-
+  Future<Map<MasteryLevels, int>> getCardLevelStatistics() async {
+      
   }
 }
 
