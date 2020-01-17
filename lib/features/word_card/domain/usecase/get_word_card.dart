@@ -10,6 +10,7 @@ import 'package:meta/meta.dart';
 import 'package:vocab/features/word_card/domain/entities/word_details.dart';
 import 'package:vocab/features/word_card/domain/entities/word_search_result.dart';
 import 'package:vocab/features/word_card/domain/repository/word_card_repository.dart';
+import 'package:vocab/core/enums/part_of_speech.dart';
 
 class GetWordCard extends UseCase<WordCard, Param> {
   final WordCardRepository repository;

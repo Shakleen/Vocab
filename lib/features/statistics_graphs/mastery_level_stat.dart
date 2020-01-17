@@ -1,36 +1,27 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:vocab/core/enums/part_of_speech.dart';
 import 'package:provider/provider.dart';
+import 'package:vocab/core/enums/mastery_levels.dart';
 import '../../core/database/card_database.dart' as db;
 import 'indicator.dart';
 
-class PartOfSpeechStats extends StatefulWidget {
+class MasteryLevelStats extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => PartOfSpeechStatsState();
+  State<StatefulWidget> createState() => MasteryLevelStatsState();
 }
 
-class PartOfSpeechStatsState extends State {
-  final List<String> _posNames = [];
-  final List<Color> _posColors = [];
+class MasteryLevelStatsState extends State {
+  final List<String> _masteryName = [];
+  final List<Color> _masteryColor = [];
 
   @override
   void initState() {
     super.initState();
-    for (int i = 1; i <= 8; ++i) {
-      _posNames.add(getPartOfSpeechString(ID_TO_PART_OF_SPEECH_TYPE[i]));
+    for (int i = 0; i < 3; ++i) {
+      _masteryName.add(getMasteryLevelString(ID_TO_MASTERY_LEVEL[i]));
     }
 
-    _posColors.addAll([
-      Colors.blue,
-      Colors.green,
-      Colors.red,
-      Colors.purple,
-      Colors.yellow,
-      Colors.pink,
-      Colors.lime,
-      Colors.black,
-    ]);
+    _masteryColor.addAll([Colors.grey, Colors.yellow, Colors.green]);
   }
 
   @override
@@ -38,7 +29,7 @@ class PartOfSpeechStatsState extends State {
     return FutureBuilder(
       future: Provider.of<db.CardDatabase>(context)
           .statisticsDao
-          .getPartOfSpeechStatistics(),
+          .getCardLevelStatistics(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -76,7 +67,7 @@ class PartOfSpeechStatsState extends State {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: List<Widget>.generate(
-                            8,
+                            3,
                             _generateIndicator,
                           ),
                         ),
@@ -95,12 +86,12 @@ class PartOfSpeechStatsState extends State {
     );
   }
 
-  List<PieChartSectionData> _showingSections(Map<PartOfSpeechType, int> data) =>
-      List<PieChartSectionData>.generate(8, (int index) {
-        int val = data[ID_TO_PART_OF_SPEECH_TYPE[index + 1]];
+  List<PieChartSectionData> _showingSections(Map<MasteryLevels, int> data) =>
+      List<PieChartSectionData>.generate(3, (int index) {
+        int val = data[ID_TO_MASTERY_LEVEL[index]];
         if (val == null) val = 0;
         return PieChartSectionData(
-          color: _posColors[index],
+          color: _masteryColor[index],
           value: val.toDouble(),
           title: val.toString(),
           radius: 50,
@@ -115,8 +106,8 @@ class PartOfSpeechStatsState extends State {
   Widget _generateIndicator(int index) => Padding(
         padding: const EdgeInsets.only(bottom: 4.0, left: 4.0),
         child: Indicator(
-          color: _posColors[index],
-          text: _posNames[index],
+          color: _masteryColor[index],
+          text: _masteryName[index],
           isSquare: true,
         ),
       );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vocab/core/database/card_database.dart';
+import 'package:vocab/core/enums/attributes.dart';
 import 'package:vocab/core/ui/widgets/audio_player_widget.dart';
 import 'package:vocab/core/ui/widgets/title_text.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';

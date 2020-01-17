@@ -44,7 +44,7 @@ class GeneralUsageStats extends StatelessWidget {
                 snapshot.data.wordsSaved,
                 snapshot.data.cardsQuizzed,
                 snapshot.data.wordsEdited,
-                snapshot.data.cardsDeleted,
+                snapshot.data.wordsDeleted,
               ];
 
               return Padding(
