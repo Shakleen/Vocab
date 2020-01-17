@@ -2226,26 +2226,32 @@ class $CardInfoTable extends CardInfo
 }
 
 class UsageInfoData extends DataClass implements Insertable<UsageInfoData> {
+  final DateTime date;
   final int wordsSearched;
   final int wordsSaved;
   final int cardsQuizzed;
   final int wordsEdited;
-  final int cardsDeleted;
-  final DateTime date;
+  final int wordsDeleted;
+  final int cardsCorrect;
+  final int cardsWrong;
   UsageInfoData(
-      {this.wordsSearched,
+      {@required this.date,
+      this.wordsSearched,
       this.wordsSaved,
       this.cardsQuizzed,
       this.wordsEdited,
-      this.cardsDeleted,
-      @required this.date});
+      this.wordsDeleted,
+      this.cardsCorrect,
+      this.cardsWrong});
   factory UsageInfoData.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    final intType = db.typeSystem.forDartType<int>();
     return UsageInfoData(
+      date:
+          dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
       wordsSearched: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}words_searched']),
       wordsSaved: intType
@@ -2254,39 +2260,46 @@ class UsageInfoData extends DataClass implements Insertable<UsageInfoData> {
           .mapFromDatabaseResponse(data['${effectivePrefix}cards_quizzed']),
       wordsEdited: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}words_edited']),
-      cardsDeleted: intType
-          .mapFromDatabaseResponse(data['${effectivePrefix}cards_deleted']),
-      date:
-          dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
+      wordsDeleted: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}words_deleted']),
+      cardsCorrect: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}cards_correct']),
+      cardsWrong: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}cards_wrong']),
     );
   }
   factory UsageInfoData.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return UsageInfoData(
+      date: serializer.fromJson<DateTime>(json['date']),
       wordsSearched: serializer.fromJson<int>(json['wordsSearched']),
       wordsSaved: serializer.fromJson<int>(json['wordsSaved']),
       cardsQuizzed: serializer.fromJson<int>(json['cardsQuizzed']),
       wordsEdited: serializer.fromJson<int>(json['wordsEdited']),
-      cardsDeleted: serializer.fromJson<int>(json['cardsDeleted']),
-      date: serializer.fromJson<DateTime>(json['date']),
+      wordsDeleted: serializer.fromJson<int>(json['wordsDeleted']),
+      cardsCorrect: serializer.fromJson<int>(json['cardsCorrect']),
+      cardsWrong: serializer.fromJson<int>(json['cardsWrong']),
     );
   }
   @override
   Map<String, dynamic> toJson(
       {ValueSerializer serializer = const ValueSerializer.defaults()}) {
     return <String, dynamic>{
+      'date': serializer.toJson<DateTime>(date),
       'wordsSearched': serializer.toJson<int>(wordsSearched),
       'wordsSaved': serializer.toJson<int>(wordsSaved),
       'cardsQuizzed': serializer.toJson<int>(cardsQuizzed),
       'wordsEdited': serializer.toJson<int>(wordsEdited),
-      'cardsDeleted': serializer.toJson<int>(cardsDeleted),
-      'date': serializer.toJson<DateTime>(date),
+      'wordsDeleted': serializer.toJson<int>(wordsDeleted),
+      'cardsCorrect': serializer.toJson<int>(cardsCorrect),
+      'cardsWrong': serializer.toJson<int>(cardsWrong),
     };
   }
 
   @override
   UsageInfoCompanion createCompanion(bool nullToAbsent) {
     return UsageInfoCompanion(
+      date: date == null && nullToAbsent ? const Value.absent() : Value(date),
       wordsSearched: wordsSearched == null && nullToAbsent
           ? const Value.absent()
           : Value(wordsSearched),
@@ -2299,99 +2312,128 @@ class UsageInfoData extends DataClass implements Insertable<UsageInfoData> {
       wordsEdited: wordsEdited == null && nullToAbsent
           ? const Value.absent()
           : Value(wordsEdited),
-      cardsDeleted: cardsDeleted == null && nullToAbsent
+      wordsDeleted: wordsDeleted == null && nullToAbsent
           ? const Value.absent()
-          : Value(cardsDeleted),
-      date: date == null && nullToAbsent ? const Value.absent() : Value(date),
+          : Value(wordsDeleted),
+      cardsCorrect: cardsCorrect == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cardsCorrect),
+      cardsWrong: cardsWrong == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cardsWrong),
     );
   }
 
   UsageInfoData copyWith(
-          {int wordsSearched,
+          {DateTime date,
+          int wordsSearched,
           int wordsSaved,
           int cardsQuizzed,
           int wordsEdited,
-          int cardsDeleted,
-          DateTime date}) =>
+          int wordsDeleted,
+          int cardsCorrect,
+          int cardsWrong}) =>
       UsageInfoData(
+        date: date ?? this.date,
         wordsSearched: wordsSearched ?? this.wordsSearched,
         wordsSaved: wordsSaved ?? this.wordsSaved,
         cardsQuizzed: cardsQuizzed ?? this.cardsQuizzed,
         wordsEdited: wordsEdited ?? this.wordsEdited,
-        cardsDeleted: cardsDeleted ?? this.cardsDeleted,
-        date: date ?? this.date,
+        wordsDeleted: wordsDeleted ?? this.wordsDeleted,
+        cardsCorrect: cardsCorrect ?? this.cardsCorrect,
+        cardsWrong: cardsWrong ?? this.cardsWrong,
       );
   @override
   String toString() {
     return (StringBuffer('UsageInfoData(')
+          ..write('date: $date, ')
           ..write('wordsSearched: $wordsSearched, ')
           ..write('wordsSaved: $wordsSaved, ')
           ..write('cardsQuizzed: $cardsQuizzed, ')
           ..write('wordsEdited: $wordsEdited, ')
-          ..write('cardsDeleted: $cardsDeleted, ')
-          ..write('date: $date')
+          ..write('wordsDeleted: $wordsDeleted, ')
+          ..write('cardsCorrect: $cardsCorrect, ')
+          ..write('cardsWrong: $cardsWrong')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => $mrjf($mrjc(
-      wordsSearched.hashCode,
+      date.hashCode,
       $mrjc(
-          wordsSaved.hashCode,
+          wordsSearched.hashCode,
           $mrjc(
-              cardsQuizzed.hashCode,
-              $mrjc(wordsEdited.hashCode,
-                  $mrjc(cardsDeleted.hashCode, date.hashCode))))));
+              wordsSaved.hashCode,
+              $mrjc(
+                  cardsQuizzed.hashCode,
+                  $mrjc(
+                      wordsEdited.hashCode,
+                      $mrjc(
+                          wordsDeleted.hashCode,
+                          $mrjc(cardsCorrect.hashCode,
+                              cardsWrong.hashCode))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is UsageInfoData &&
+          other.date == this.date &&
           other.wordsSearched == this.wordsSearched &&
           other.wordsSaved == this.wordsSaved &&
           other.cardsQuizzed == this.cardsQuizzed &&
           other.wordsEdited == this.wordsEdited &&
-          other.cardsDeleted == this.cardsDeleted &&
-          other.date == this.date);
+          other.wordsDeleted == this.wordsDeleted &&
+          other.cardsCorrect == this.cardsCorrect &&
+          other.cardsWrong == this.cardsWrong);
 }
 
 class UsageInfoCompanion extends UpdateCompanion<UsageInfoData> {
+  final Value<DateTime> date;
   final Value<int> wordsSearched;
   final Value<int> wordsSaved;
   final Value<int> cardsQuizzed;
   final Value<int> wordsEdited;
-  final Value<int> cardsDeleted;
-  final Value<DateTime> date;
+  final Value<int> wordsDeleted;
+  final Value<int> cardsCorrect;
+  final Value<int> cardsWrong;
   const UsageInfoCompanion({
+    this.date = const Value.absent(),
     this.wordsSearched = const Value.absent(),
     this.wordsSaved = const Value.absent(),
     this.cardsQuizzed = const Value.absent(),
     this.wordsEdited = const Value.absent(),
-    this.cardsDeleted = const Value.absent(),
-    this.date = const Value.absent(),
+    this.wordsDeleted = const Value.absent(),
+    this.cardsCorrect = const Value.absent(),
+    this.cardsWrong = const Value.absent(),
   });
   UsageInfoCompanion.insert({
+    @required DateTime date,
     this.wordsSearched = const Value.absent(),
     this.wordsSaved = const Value.absent(),
     this.cardsQuizzed = const Value.absent(),
     this.wordsEdited = const Value.absent(),
-    this.cardsDeleted = const Value.absent(),
-    @required DateTime date,
+    this.wordsDeleted = const Value.absent(),
+    this.cardsCorrect = const Value.absent(),
+    this.cardsWrong = const Value.absent(),
   }) : date = Value(date);
   UsageInfoCompanion copyWith(
-      {Value<int> wordsSearched,
+      {Value<DateTime> date,
+      Value<int> wordsSearched,
       Value<int> wordsSaved,
       Value<int> cardsQuizzed,
       Value<int> wordsEdited,
-      Value<int> cardsDeleted,
-      Value<DateTime> date}) {
+      Value<int> wordsDeleted,
+      Value<int> cardsCorrect,
+      Value<int> cardsWrong}) {
     return UsageInfoCompanion(
+      date: date ?? this.date,
       wordsSearched: wordsSearched ?? this.wordsSearched,
       wordsSaved: wordsSaved ?? this.wordsSaved,
       cardsQuizzed: cardsQuizzed ?? this.cardsQuizzed,
       wordsEdited: wordsEdited ?? this.wordsEdited,
-      cardsDeleted: cardsDeleted ?? this.cardsDeleted,
-      date: date ?? this.date,
+      wordsDeleted: wordsDeleted ?? this.wordsDeleted,
+      cardsCorrect: cardsCorrect ?? this.cardsCorrect,
+      cardsWrong: cardsWrong ?? this.cardsWrong,
     );
   }
 }
@@ -2401,6 +2443,18 @@ class $UsageInfoTable extends UsageInfo
   final GeneratedDatabase _db;
   final String _alias;
   $UsageInfoTable(this._db, [this._alias]);
+  final VerificationMeta _dateMeta = const VerificationMeta('date');
+  GeneratedDateTimeColumn _date;
+  @override
+  GeneratedDateTimeColumn get date => _date ??= _constructDate();
+  GeneratedDateTimeColumn _constructDate() {
+    return GeneratedDateTimeColumn(
+      'date',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _wordsSearchedMeta =
       const VerificationMeta('wordsSearched');
   GeneratedIntColumn _wordsSearched;
@@ -2443,37 +2497,47 @@ class $UsageInfoTable extends UsageInfo
         defaultValue: Constant(0));
   }
 
-  final VerificationMeta _cardsDeletedMeta =
-      const VerificationMeta('cardsDeleted');
-  GeneratedIntColumn _cardsDeleted;
+  final VerificationMeta _wordsDeletedMeta =
+      const VerificationMeta('wordsDeleted');
+  GeneratedIntColumn _wordsDeleted;
   @override
-  GeneratedIntColumn get cardsDeleted =>
-      _cardsDeleted ??= _constructCardsDeleted();
-  GeneratedIntColumn _constructCardsDeleted() {
-    return GeneratedIntColumn('cards_deleted', $tableName, true,
+  GeneratedIntColumn get wordsDeleted =>
+      _wordsDeleted ??= _constructWordsDeleted();
+  GeneratedIntColumn _constructWordsDeleted() {
+    return GeneratedIntColumn('words_deleted', $tableName, true,
         defaultValue: Constant(0));
   }
 
-  final VerificationMeta _dateMeta = const VerificationMeta('date');
-  GeneratedDateTimeColumn _date;
+  final VerificationMeta _cardsCorrectMeta =
+      const VerificationMeta('cardsCorrect');
+  GeneratedIntColumn _cardsCorrect;
   @override
-  GeneratedDateTimeColumn get date => _date ??= _constructDate();
-  GeneratedDateTimeColumn _constructDate() {
-    return GeneratedDateTimeColumn(
-      'date',
-      $tableName,
-      false,
-    );
+  GeneratedIntColumn get cardsCorrect =>
+      _cardsCorrect ??= _constructCardsCorrect();
+  GeneratedIntColumn _constructCardsCorrect() {
+    return GeneratedIntColumn('cards_correct', $tableName, true,
+        defaultValue: Constant(0));
+  }
+
+  final VerificationMeta _cardsWrongMeta = const VerificationMeta('cardsWrong');
+  GeneratedIntColumn _cardsWrong;
+  @override
+  GeneratedIntColumn get cardsWrong => _cardsWrong ??= _constructCardsWrong();
+  GeneratedIntColumn _constructCardsWrong() {
+    return GeneratedIntColumn('cards_wrong', $tableName, true,
+        defaultValue: Constant(0));
   }
 
   @override
   List<GeneratedColumn> get $columns => [
+        date,
         wordsSearched,
         wordsSaved,
         cardsQuizzed,
         wordsEdited,
-        cardsDeleted,
-        date
+        wordsDeleted,
+        cardsCorrect,
+        cardsWrong
       ];
   @override
   $UsageInfoTable get asDslTable => this;
@@ -2485,6 +2549,12 @@ class $UsageInfoTable extends UsageInfo
   VerificationContext validateIntegrity(UsageInfoCompanion d,
       {bool isInserting = false}) {
     final context = VerificationContext();
+    if (d.date.present) {
+      context.handle(
+          _dateMeta, date.isAcceptableValue(d.date.value, _dateMeta));
+    } else if (date.isRequired && isInserting) {
+      context.missing(_dateMeta);
+    }
     if (d.wordsSearched.present) {
       context.handle(
           _wordsSearchedMeta,
@@ -2513,19 +2583,27 @@ class $UsageInfoTable extends UsageInfo
     } else if (wordsEdited.isRequired && isInserting) {
       context.missing(_wordsEditedMeta);
     }
-    if (d.cardsDeleted.present) {
+    if (d.wordsDeleted.present) {
       context.handle(
-          _cardsDeletedMeta,
-          cardsDeleted.isAcceptableValue(
-              d.cardsDeleted.value, _cardsDeletedMeta));
-    } else if (cardsDeleted.isRequired && isInserting) {
-      context.missing(_cardsDeletedMeta);
+          _wordsDeletedMeta,
+          wordsDeleted.isAcceptableValue(
+              d.wordsDeleted.value, _wordsDeletedMeta));
+    } else if (wordsDeleted.isRequired && isInserting) {
+      context.missing(_wordsDeletedMeta);
     }
-    if (d.date.present) {
+    if (d.cardsCorrect.present) {
       context.handle(
-          _dateMeta, date.isAcceptableValue(d.date.value, _dateMeta));
-    } else if (date.isRequired && isInserting) {
-      context.missing(_dateMeta);
+          _cardsCorrectMeta,
+          cardsCorrect.isAcceptableValue(
+              d.cardsCorrect.value, _cardsCorrectMeta));
+    } else if (cardsCorrect.isRequired && isInserting) {
+      context.missing(_cardsCorrectMeta);
+    }
+    if (d.cardsWrong.present) {
+      context.handle(_cardsWrongMeta,
+          cardsWrong.isAcceptableValue(d.cardsWrong.value, _cardsWrongMeta));
+    } else if (cardsWrong.isRequired && isInserting) {
+      context.missing(_cardsWrongMeta);
     }
     return context;
   }
@@ -2541,6 +2619,9 @@ class $UsageInfoTable extends UsageInfo
   @override
   Map<String, Variable> entityToSql(UsageInfoCompanion d) {
     final map = <String, Variable>{};
+    if (d.date.present) {
+      map['date'] = Variable<DateTime, DateTimeType>(d.date.value);
+    }
     if (d.wordsSearched.present) {
       map['words_searched'] = Variable<int, IntType>(d.wordsSearched.value);
     }
@@ -2553,11 +2634,14 @@ class $UsageInfoTable extends UsageInfo
     if (d.wordsEdited.present) {
       map['words_edited'] = Variable<int, IntType>(d.wordsEdited.value);
     }
-    if (d.cardsDeleted.present) {
-      map['cards_deleted'] = Variable<int, IntType>(d.cardsDeleted.value);
+    if (d.wordsDeleted.present) {
+      map['words_deleted'] = Variable<int, IntType>(d.wordsDeleted.value);
     }
-    if (d.date.present) {
-      map['date'] = Variable<DateTime, DateTimeType>(d.date.value);
+    if (d.cardsCorrect.present) {
+      map['cards_correct'] = Variable<int, IntType>(d.cardsCorrect.value);
+    }
+    if (d.cardsWrong.present) {
+      map['cards_wrong'] = Variable<int, IntType>(d.cardsWrong.value);
     }
     return map;
   }

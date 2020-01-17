@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:vocab/core/database/card_database.dart';
+import 'package:vocab/core/enums/attributes.dart';
 
 class QuizCard extends Equatable {
   final String front;

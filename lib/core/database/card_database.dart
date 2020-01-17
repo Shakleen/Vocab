@@ -4,9 +4,24 @@ import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
 import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
 import 'package:vocab/core/entities/word_details_summary.dart';
+import 'package:vocab/core/enums/attributes.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
+import 'package:vocab/core/enums/part_of_speech.dart';
 
 part 'card_database.g.dart';
+
+DateTime _getOnlyTimeToday() {
+  return DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+    0,
+    0,
+    0,
+    0,
+    0,
+  );
+}
 
 //! ============================================================================================================================================ !//
 //! ============================================================================================================================================ !//
@@ -108,55 +123,25 @@ class CardInfo extends Table {
 }
 
 class UsageInfo extends Table {
+  DateTimeColumn get date => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {date};
+
   IntColumn get wordsSearched =>
       integer().withDefault(Constant(0)).nullable()();
   IntColumn get wordsSaved => integer().withDefault(Constant(0)).nullable()();
   IntColumn get cardsQuizzed => integer().withDefault(Constant(0)).nullable()();
   IntColumn get wordsEdited => integer().withDefault(Constant(0)).nullable()();
-  IntColumn get cardsDeleted => integer().withDefault(Constant(0)).nullable()();
-  DateTimeColumn get date => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {date};
+  IntColumn get wordsDeleted => integer().withDefault(Constant(0)).nullable()();
+  IntColumn get cardsCorrect => integer().withDefault(Constant(0)).nullable()();
+  IntColumn get cardsWrong => integer().withDefault(Constant(0)).nullable()();
 }
 //! ============================================================================================================================================ !//
 //! ============================================================================================================================================ !//
 //!                                                                 DAO classes                                                                  !//
 //! ============================================================================================================================================ !//
 //! ============================================================================================================================================ !//
-
-enum AttributeType {
-  Spelling,
-  Pronunciation,
-  Syllables,
-  Example,
-  Definition,
-  Synonyms,
-  Antonyms,
-  PartOfSpeech,
-}
-
-const Map<AttributeType, int> ATTRIBUTE_TYPE_TO_ID = const {
-  AttributeType.Spelling: 1,
-  AttributeType.Pronunciation: 2,
-  AttributeType.Syllables: 3,
-  AttributeType.Example: 4,
-  AttributeType.Definition: 5,
-  AttributeType.Synonyms: 6,
-  AttributeType.Antonyms: 7,
-  AttributeType.PartOfSpeech: 8,
-};
-
-const Map<int, AttributeType> ID_TO_ATTRIBUTE_TYPE = const {
-  1: AttributeType.Spelling,
-  2: AttributeType.Pronunciation,
-  3: AttributeType.Syllables,
-  4: AttributeType.Example,
-  5: AttributeType.Definition,
-  6: AttributeType.Synonyms,
-  7: AttributeType.Antonyms,
-  8: AttributeType.PartOfSpeech,
-};
 
 @UseDao(tables: [
   Entries,
@@ -174,35 +159,16 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
 
   WordDao(this.cardDatabase) : super(cardDatabase);
 
-  Future<UsageInfoData> _getUsageInformation() =>
-      (select(usageInfo)..where((table) => table.date.equals(DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().day,
-            0,
-            0,
-            0,
-            0,
-            0,
-          ))))
-          .getSingle();
+  Future<UsageInfoData> _getUsageInformation() => (select(usageInfo)
+        ..where((table) => table.date.equals(_getOnlyTimeToday())))
+      .getSingle();
 
   Future handleWordsSearchUsageInfo() async {
     final UsageInfoData dbUsageInfoData = await _getUsageInformation();
 
     if (dbUsageInfoData == null) {
-      await into(usageInfo).insert(UsageInfoData(
-          wordsSearched: 1,
-          date: DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().day,
-            0,
-            0,
-            0,
-            0,
-            0,
-          )));
+      await into(usageInfo)
+          .insert(UsageInfoData(wordsSearched: 1, date: _getOnlyTimeToday()));
     } else {
       await (update(usageInfo)
             ..where((table) => table.date.equals(dbUsageInfoData.date)))
@@ -367,18 +333,8 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     final UsageInfoData dbUsageInfoData = await _getUsageInformation();
 
     if (dbUsageInfoData == null) {
-      await into(usageInfo).insert(UsageInfoData(
-          wordsSaved: 1,
-          date: DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().day,
-            0,
-            0,
-            0,
-            0,
-            0,
-          )));
+      await into(usageInfo)
+          .insert(UsageInfoData(wordsSaved: 1, date: _getOnlyTimeToday()));
     } else {
       await (update(usageInfo)
             ..where((table) => table.date.equals(dbUsageInfoData.date)))
@@ -593,22 +549,12 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     final UsageInfoData dbUsageInfoData = await _getUsageInformation();
 
     if (dbUsageInfoData == null) {
-      await into(usageInfo).insert(UsageInfoData(
-          cardsDeleted: 1,
-          date: DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().day,
-            0,
-            0,
-            0,
-            0,
-            0,
-          )));
+      await into(usageInfo)
+          .insert(UsageInfoData(wordsDeleted: 1, date: _getOnlyTimeToday()));
     } else {
       await (update(usageInfo)
             ..where((table) => table.date.equals(dbUsageInfoData.date)))
-          .write(UsageInfoData(cardsDeleted: dbUsageInfoData.cardsDeleted + 1));
+          .write(UsageInfoData(wordsDeleted: dbUsageInfoData.wordsDeleted + 1));
     }
   }
 
@@ -715,18 +661,8 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     final UsageInfoData dbUsageInfoData = await _getUsageInformation();
 
     if (dbUsageInfoData == null) {
-      await into(usageInfo).insert(UsageInfoData(
-          wordsEdited: 1,
-          date: DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().day,
-            0,
-            0,
-            0,
-            0,
-            0,
-          )));
+      await into(usageInfo)
+          .insert(UsageInfoData(wordsEdited: 1, date: _getOnlyTimeToday()));
     } else {
       await (update(usageInfo)
             ..where((table) => table.date.equals(dbUsageInfoData.date)))
@@ -1159,26 +1095,16 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     );
   }
 
-  Future<UsageInfoData> _getUsageInformation() =>
-      (select(usageInfo)..where((table) => table.date.equals(DateTime.now())))
-          .getSingle();
+  Future<UsageInfoData> _getUsageInformation() => (select(usageInfo)
+        ..where((table) => table.date.equals(_getOnlyTimeToday())))
+      .getSingle();
 
   Future _handleQuizUsageInfo() async {
     final UsageInfoData dbUsageInfoData = await _getUsageInformation();
 
     if (dbUsageInfoData == null) {
-      await into(usageInfo).insert(UsageInfoData(
-          cardsQuizzed: 1,
-          date: DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().day,
-            0,
-            0,
-            0,
-            0,
-            0,
-          )));
+      await into(usageInfo)
+          .insert(UsageInfoData(cardsQuizzed: 1, date: _getOnlyTimeToday()));
     } else {
       await (update(usageInfo)
             ..where((table) => table.date.equals(dbUsageInfoData.date)))
@@ -1187,7 +1113,7 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
   }
 
   Future<int> updateCardLevel(int cardID, int level, DateTime nextDue) async {
-    _handleQuizUsageInfo();
+    await _handleQuizUsageInfo();
     return (update(cards)..where((table) => table.id.equals(cardID))).write(
       Card(dueOn: nextDue, level: level),
     );
@@ -1235,7 +1161,7 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
       await into(usageInfo).insert(UsageInfoData(date: onlyDay));
       return UsageInfoData(
         date: onlyDay,
-        cardsDeleted: 0,
+        wordsDeleted: 0,
         cardsQuizzed: 0,
         wordsEdited: 0,
         wordsSaved: 0,
@@ -1246,7 +1172,9 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
     return dbUsageInfoData;
   }
 
-  Future getCardLevelStatistics() async {}
+  Future getCardLevelStatistics() async {
+
+  }
 }
 
 //! ============================================================================================================================================ !//
@@ -1286,7 +1214,7 @@ class CardDatabase extends _$CardDatabase {
         );
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -1300,6 +1228,10 @@ class CardDatabase extends _$CardDatabase {
           if (from < 3) {
             await m.deleteTable('part_of_speech');
             await m.createTable(usageInfo);
+          } else if (from == 4) {
+            await m.addColumn(usageInfo, usageInfo.cardsCorrect);
+            await m.addColumn(usageInfo, usageInfo.cardsWrong);
+            await m.addColumn(usageInfo, usageInfo.wordsDeleted);
           }
         },
       );

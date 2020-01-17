@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vocab/core/ui/widgets/title_text.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
+import 'package:vocab/core/enums/part_of_speech.dart';
 
 import 'title_and_word_list.dart';
 

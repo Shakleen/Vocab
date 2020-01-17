@@ -12,6 +12,7 @@ import 'package:vocab/core/entities/pronunciation.dart';
 import 'package:vocab/features/word_card/domain/usecase/get_word_card.dart';
 import 'package:vocab/features/word_card/presentation/bloc/bloc.dart';
 import 'package:vocab/features/word_card/presentation/bloc/word_card_bloc.dart';
+import 'package:vocab/core/enums/part_of_speech.dart';
 
 class MockInputConverter extends Mock implements InputConverter {}
 
