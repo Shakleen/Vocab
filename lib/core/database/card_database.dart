@@ -1126,21 +1126,31 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
         ..where((table) => table.date.equals(_getOnlyTimeToday())))
       .getSingle();
 
-  Future _handleQuizUsageInfo() async {
+  Future _handleQuizUsageInfo(bool isWrong) async {
     final UsageInfoData dbUsageInfoData = await _getUsageInformation();
+    final int correctNo = isWrong == false ? 1 : 0;
+    final int wrongNo = 1 - correctNo;
 
     if (dbUsageInfoData == null) {
-      await into(usageInfo)
-          .insert(UsageInfoData(cardsQuizzed: 1, date: _getOnlyTimeToday()));
+            await into(usageInfo).insert(UsageInfoData(
+              cardsCorrect: correctNo,
+        cardsWrong: wrongNo,
+        cardsQuizzed: 1,
+        date: _getOnlyTimeToday(),
+      ));
     } else {
       await (update(usageInfo)
             ..where((table) => table.date.equals(dbUsageInfoData.date)))
-          .write(UsageInfoData(cardsQuizzed: dbUsageInfoData.cardsQuizzed + 1));
+          .write(UsageInfoData(
+        cardsQuizzed: dbUsageInfoData.cardsQuizzed + 1,
+        cardsCorrect: dbUsageInfoData.cardsCorrect + correctNo,
+        cardsWrong: dbUsageInfoData.cardsWrong + wrongNo,
+      ));
     }
   }
 
   Future<int> updateCardLevel(int cardID, int level, DateTime nextDue) async {
-    await _handleQuizUsageInfo();
+    await _handleQuizUsageInfo(level == 0);
     return (update(cards)..where((table) => table.id.equals(cardID))).write(
       Card(dueOn: nextDue, level: level),
     );
@@ -1237,13 +1247,12 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
   ) async {
     final Map<DateTime, PerformaceResult> output = {};
     (await (select(usageInfo)
-          ..where((table) => table.date.isBetweenValues(startDay, endDay)))
-        .get()).map(
-          (row) => output[row.date] = PerformaceResult(
-            totalCorrect: row.cardsCorrect,
-            totalWrong: row.cardsWrong,
-          )
-        );
+              ..where((table) => table.date.isBetweenValues(startDay, endDay)))
+            .get())
+        .map((row) => output[row.date] = PerformaceResult(
+              totalCorrect: row.cardsCorrect,
+              totalWrong: row.cardsWrong,
+            ));
 
     return output;
   }

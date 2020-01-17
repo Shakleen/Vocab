@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 
 import 'general_usage_stats.dart';
+import 'performance_stats.dart';
 
-class GeneralUsageGraph extends StatefulWidget {
-  GeneralUsageGraph({Key key}) : super(key: key);
+class PerformanceGraph extends StatefulWidget {
+  PerformanceGraph({Key key}) : super(key: key);
 
   @override
-  _GeneralUsageGraphState createState() => _GeneralUsageGraphState();
+  _PerformanceGraphState createState() => _PerformanceGraphState();
 }
 
-class _GeneralUsageGraphState extends State<GeneralUsageGraph> {
-  DateTime _viewTime;
+class _PerformanceGraphState extends State<PerformanceGraph> {
+  int _range;
 
   @override
   void initState() {
     super.initState();
-    _viewTime = DateTime.now();
+    _range = 7;
   }
 
   @override
@@ -28,34 +29,46 @@ class _GeneralUsageGraphState extends State<GeneralUsageGraph> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          GeneralUsageStats(graphTime: _viewTime),
+          PerformanceStats(range: _range),
           ButtonBar(
             buttonTextTheme: ButtonTextTheme.primary,
             alignment: MainAxisAlignment.spaceAround,
             buttonHeight: 50,
-            buttonMinWidth: 150,
+            buttonMinWidth: 100,
             children: <Widget>[
               RaisedButton(
                 child: Text(
-                  "Previous day\n<<",
+                  "Last 3 days",
                   textAlign: TextAlign.center,
                 ),
                 color: Colors.red,
                 onPressed: () {
                   setState(() {
-                    _viewTime = _viewTime.subtract(Duration(days: 1));
+                    _range = 3;
                   });
                 },
               ),
               RaisedButton(
                 child: Text(
-                  "Next day\n>>",
+                  "Last 7 days",
                   textAlign: TextAlign.center,
                 ),
                 color: Colors.green,
                 onPressed: () {
                   setState(() {
-                    _viewTime = _viewTime.add(Duration(days: 1));
+                    _range = 7;
+                  });
+                },
+              ),
+              RaisedButton(
+                child: Text(
+                  "Last 30",
+                  textAlign: TextAlign.center,
+                ),
+                color: Colors.green,
+                onPressed: () {
+                  setState(() {
+                    _range = 30;
                   });
                 },
               ),
