@@ -32,9 +32,17 @@ class QuizHeatmap extends StatelessWidget {
                   HeatMapCalendar(
                     input: snapshot.data,
                     colorThresholds: {
-                      1: Colors.green[100],
-                      10: Colors.green[300],
-                      30: Colors.green[500]
+                      50: Colors.green[50],
+                      75: Colors.green[100],
+                      100: Colors.green[200],
+                      125: Colors.green[300],
+                      150: Colors.green[300],
+                      175: Colors.green[400],
+                      200: Colors.green[500],
+                      225: Colors.green[600],
+                      250: Colors.green[700],
+                      275: Colors.green[800],
+                      300: Colors.green[900],
                     },
                     weekDaysLabels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
                     monthsLabels: [
