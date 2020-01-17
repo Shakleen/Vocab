@@ -2,15 +2,16 @@ import 'dart:math';
 
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:vocab/core/entities/performance_result.dart';
+import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
+import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
 import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
-import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
-import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
 import 'package:vocab/core/entities/word_details_summary.dart';
 import 'package:vocab/core/enums/attributes.dart';
 import 'package:vocab/core/enums/mastery_levels.dart';
-import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 import 'package:vocab/core/enums/part_of_speech.dart';
+import 'package:vocab/core/util/formatter.dart';
+import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 
 part 'card_database.g.dart';
 
@@ -1240,27 +1241,34 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
     final List<UsageInfoData> list = await select(usageInfo).get();
     final Map<DateTime, int> output = {};
     list.forEach((value) => output[value.date] = value.cardsQuizzed);
+    print('Size of values: ${output.keys.length}');
     return output;
   }
 
-  Future<Performance> getPerformanceResults(
-    DateTime startDay,
-    DateTime endDay,
-  ) async {
+  Future<Performance> getPerformanceResults(int range) async {
+    final DateTime endDate = _getOnlyTimeToday().add(Duration(days: 1));
+    final DateTime startDate = _getOnlyDay(
+        endDate.subtract(Duration(days: range)));
     final Map<DateTime, PerformaceResult> output = {};
     int maxVal = 0, minVal = 9999999;
-    (await (select(usageInfo)
-              ..where((table) => table.date.isBetweenValues(startDay, endDay)))
-            .get())
-        .map((row) {
+    final List<UsageInfoData> list = await (select(usageInfo)
+      ..where(
+              (table) => table.date.isBetweenValues(startDate, endDate)
+      )).get();
+
+    list.forEach((row) {
       maxVal = max(maxVal, max(row.cardsCorrect, row.cardsWrong));
       minVal = min(minVal, min(row.cardsCorrect, row.cardsWrong));
-
+      print('Date is ${getFormattedDateTime(row.date)}');
+      print('Correct is ${row.cardsCorrect}');
+      print('Wrong is ${row.cardsWrong}');
       output[row.date] = PerformaceResult(
         totalCorrect: row.cardsCorrect,
         totalWrong: row.cardsWrong,
       );
     });
+
+    print('Size of values: ${output.keys.length}');
 
     return Performance(
       performanceMap: output,
@@ -1269,7 +1277,9 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
     );
   }
 }
-
+// ACTUAL: 1579197600
+// LOW:    1578938400
+// HIGH:   1579197600
 //! ============================================================================================================================================ !//
 //! ============================================================================================================================================ !//
 //!                                                                 Database class                                                               !//
