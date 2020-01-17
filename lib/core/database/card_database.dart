@@ -485,15 +485,21 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
             ..where((table) => table.id.equals(dbEntry.wordId)))
           .getSingle();
 
-      final List<Sense> dbSenseList = await (select(senses)
-            ..where((table) => table.entryId.equals(dbEntry.id)))
-          .get();
+      // final List<Sense> dbSenseList = await (select(senses)
+      //       ..where((table) => table.entryId.equals(dbEntry.id)))
+      //     .get();
+      final int senseCount = (await customSelectQuery(
+        'SELECT COUNT(*) FROM ${senses.actualTableName} ' +
+        'WHERE ${senses.entryId.$name} = ${dbEntry.id};',
+        readsFrom: {senses},
+      ).getSingle())
+          .readInt('COUNT(*)');
 
       detailSummaryList.add(
         WordDetailsSummary(
           word: word.word,
           addedOn: dbEntry.addedOn,
-          senses: dbSenseList.length,
+          senses: senseCount,
         ),
       );
     }
@@ -804,11 +810,18 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     int delay = 0;
 
     for (final Sense sense in dbSenseList) {
-      final List<ExampleListData> dbExamples = await (select(exampleList)
-            ..where((table) => table.senseId.equals(sense.id)))
-          .get();
+      // final List<ExampleListData> dbExamples = await (select(exampleList)
+      //       ..where((table) => table.senseId.equals(sense.id)))
+      //     .get();
 
-      if (dbExamples.isNotEmpty) {
+      final int exampleCount = (await customSelectQuery(
+        'SELECT COUNT(*) FROM ${exampleList.actualTableName} ' + 
+        'WHERE ${exampleList.senseId.$name} = ${sense.id};',
+        readsFrom: {exampleList},
+      ).getSingle())
+          .readInt('COUNT(*)');
+
+      if (exampleCount > 0) {
         //? Card 4: Front = Definition, Back = Example
         await _insertCard(
           entryID: dbEntry.id,
@@ -827,12 +840,18 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           dueDate: DateTime.now().add(Duration(days: delay)),
         );
 
-        final List<ThesaurusListData> dbSynList = await (select(thesaurusList)
-              ..where((table) => table.senseId.equals(sense.id))
-              ..where((table) => table.isAntonym.equals(false)))
-            .get();
+        // final List<ThesaurusListData> dbSynList = await (select(thesaurusList)
+        //       ..where((table) => table.senseId.equals(sense.id))
+        //       ..where((table) => table.isAntonym.equals(false)))
+        //     .get();
+        final int synonymCount = (await customSelectQuery(
+          'SELECT COUNT(*) FROM ${thesaurusList.actualTableName} ' + 
+          'WHERE ${thesaurusList.senseId.$name} = ${sense.id} AND is_antonym = 0;',
+          readsFrom: {thesaurusList},
+        ).getSingle())
+            .readInt('COUNT(*)');
 
-        if (dbSynList.isNotEmpty) {
+        if (synonymCount > 0) {
           //? Card 6: Front = Example, Back = Synonyms
           await _insertCard(
             entryID: dbEntry.id,
@@ -843,12 +862,18 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           );
         }
 
-        final List<ThesaurusListData> dbAntList = await (select(thesaurusList)
-              ..where((table) => table.senseId.equals(sense.id))
-              ..where((table) => table.isAntonym.equals(true)))
-            .get();
+        // final List<ThesaurusListData> dbAntList = await (select(thesaurusList)
+        //       ..where((table) => table.senseId.equals(sense.id))
+        //       ..where((table) => table.isAntonym.equals(true)))
+        //     .get();
+        final int antonymCount = (await customSelectQuery(
+          'SELECT COUNT(*) FROM ${thesaurusList.actualTableName} ' + 
+          'WHERE ${thesaurusList.senseId.$name} = ${sense.id} AND is_antonym = 1;',
+          readsFrom: {thesaurusList},
+        ).getSingle())
+            .readInt('COUNT(*)');
 
-        if (dbAntList.isNotEmpty) {
+        if (antonymCount > 0) {
           //? Card 7: Front = Example, Back = Antonyms
           await _insertCard(
             entryID: dbEntry.id,
