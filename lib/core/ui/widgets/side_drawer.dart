@@ -59,6 +59,19 @@ class SideDrawer extends StatelessWidget {
               }
             },
           ),
+          ListTile(
+            leading: Icon(Icons.pie_chart),
+            title: Text('Statistics Page'),
+            selected: page == Page.StatisticsPage,
+            onTap: () {
+              if (page != Page.StatisticsPage) {
+                Navigator.pushReplacementNamed(
+                  context,
+                  Page.StatisticsPage.toString(),
+                );
+              }
+            },
+          ),
         ],
       ),
     );

@@ -1,35 +1,41 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:vocab/core/enums/part_of_speech.dart';
 import 'package:provider/provider.dart';
-import 'package:vocab/core/enums/mastery_levels.dart';
-import '../../core/database/card_database.dart' as db;
+import '../../../core/database/card_database.dart' as db;
 import 'indicator.dart';
 
-class MasteryLevelStats extends StatefulWidget {
+class PartOfSpeechStats extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => MasteryLevelStatsState();
+  State<StatefulWidget> createState() => PartOfSpeechStatsState();
 }
 
-class MasteryLevelStatsState extends State {
-  final List<String> _masteryName = [];
-  final List<Color> _masteryColor = [];
+class PartOfSpeechStatsState extends State {
+  final List<String> _posNames;
+  final List<Color> _posColors;
 
-  @override
-  void initState() {
-    super.initState();
-    for (int i = 0; i < 3; ++i) {
-      _masteryName.add(getMasteryLevelString(ID_TO_MASTERY_LEVEL[i]));
-    }
-
-    _masteryColor.addAll([Colors.grey, Colors.yellow, Colors.green]);
-  }
+  PartOfSpeechStatsState()
+      : _posNames = List.generate(
+          8,
+          (i) => getPartOfSpeechString(ID_TO_PART_OF_SPEECH_TYPE[i+1]),
+        ),
+        _posColors = [
+          Color(0xffe74c3c),
+          Color(0xffe67e22),
+          Color(0xfff1c40f),
+          Color(0xff2ecc71),
+          Color(0xff1abc9c),
+          Color(0xff3498db),
+          Color(0xff9b59b6),
+          Color(0xff34495e),
+        ];
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: Provider.of<db.CardDatabase>(context)
           .statisticsDao
-          .getCardLevelStatistics(),
+          .getPartOfSpeechStatistics(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -43,7 +49,7 @@ class MasteryLevelStatsState extends State {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     Text(
-                      "Mastery level stats",
+                      "Part of speech stat",
                       style: Theme.of(context).textTheme.title,
                     ),
                     Row(
@@ -67,7 +73,7 @@ class MasteryLevelStatsState extends State {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: List<Widget>.generate(
-                            3,
+                            8,
                             _generateIndicator,
                           ),
                         ),
@@ -86,12 +92,12 @@ class MasteryLevelStatsState extends State {
     );
   }
 
-  List<PieChartSectionData> _showingSections(Map<MasteryLevels, int> data) =>
-      List<PieChartSectionData>.generate(3, (int index) {
-        int val = data[ID_TO_MASTERY_LEVEL[index]];
+  List<PieChartSectionData> _showingSections(Map<PartOfSpeechType, int> data) =>
+      List<PieChartSectionData>.generate(8, (int index) {
+        int val = data[ID_TO_PART_OF_SPEECH_TYPE[index + 1]];
         if (val == null) val = 0;
         return PieChartSectionData(
-          color: _masteryColor[index],
+          color: _posColors[index],
           value: val.toDouble(),
           title: val.toString(),
           radius: 50,
@@ -106,8 +112,8 @@ class MasteryLevelStatsState extends State {
   Widget _generateIndicator(int index) => Padding(
         padding: const EdgeInsets.only(bottom: 4.0, left: 4.0),
         child: Indicator(
-          color: _masteryColor[index],
-          text: _masteryName[index],
+          color: _posColors[index],
+          text: _posNames[index],
           isSquare: true,
         ),
       );

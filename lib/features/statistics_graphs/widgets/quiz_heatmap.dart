@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:heatmap_calendar/heatmap_calendar.dart';
 import 'package:provider/provider.dart';
-import '../../core/database/card_database.dart' as db;
+import '../../../core/database/card_database.dart' as db;
 
 class QuizHeatmap extends StatelessWidget {
   const QuizHeatmap({Key key}) : super(key: key);
