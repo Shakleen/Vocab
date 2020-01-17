@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
+import 'package:vocab/core/enums/part_of_speech.dart';
 import 'package:vocab/core/error/error_messages.dart';
 import 'package:vocab/core/error/failures.dart';
 import 'package:vocab/core/util/input_converter.dart';

@@ -56,8 +56,7 @@ class GeneralUsageStats extends StatelessWidget {
                       gridData: FlGridData(
                         show: true,
                         drawVerticalLine: true,
-                        drawHorizontalLine: true,
-                        verticalInterval: 10,
+                        verticalInterval: 25,
                       ),
                       axisTitleData: FlAxisTitleData(
                         show: true,
@@ -88,11 +87,12 @@ class GeneralUsageStats extends StatelessWidget {
                       barGroups: List<BarChartGroupData>.generate(
                         values.length,
                         (int index) {
+                          int val = values[index] == null ? 0 : values[index];
                           return BarChartGroupData(
                             x: index,
                             barRods: [
                               BarChartRodData(
-                                y: values[index].toDouble(),
+                                y: val.toDouble(),
                                 color: stateBarColors[index],
                               ),
                             ],
@@ -113,10 +113,12 @@ class GeneralUsageStats extends StatelessWidget {
     );
   }
 
-  double _max(List list) {
+  double _max(List<int> list) {
     int maxVal = -1;
 
-    list.forEach((val) => maxVal = max(maxVal, val));
+    list.forEach((int val) {
+      maxVal = max(maxVal, val == null ? 0 : val);
+    });
 
     return maxVal.toDouble();
   }

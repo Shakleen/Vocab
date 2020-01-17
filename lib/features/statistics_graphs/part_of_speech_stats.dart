@@ -11,27 +11,24 @@ class PartOfSpeechStats extends StatefulWidget {
 }
 
 class PartOfSpeechStatsState extends State {
-  final List<String> _posNames = [];
-  final List<Color> _posColors = [];
+  final List<String> _posNames;
+  final List<Color> _posColors;
 
-  @override
-  void initState() {
-    super.initState();
-    for (int i = 1; i <= 8; ++i) {
-      _posNames.add(getPartOfSpeechString(ID_TO_PART_OF_SPEECH_TYPE[i]));
-    }
-
-    _posColors.addAll([
-      Colors.blue,
-      Colors.green,
-      Colors.red,
-      Colors.purple,
-      Colors.yellow,
-      Colors.pink,
-      Colors.lime,
-      Colors.black,
-    ]);
-  }
+  PartOfSpeechStatsState()
+      : _posNames = List.generate(
+          8,
+          (i) => getPartOfSpeechString(ID_TO_PART_OF_SPEECH_TYPE[i+1]),
+        ),
+        _posColors = [
+          Color(0xff01114b),
+          Color(0xff011f6f),
+          Color(0xff03394c),
+          Color(0xff005b46),
+          Color(0xff017f8b),
+          Color(0xff6497b1),
+          Color(0xffb3cde0),
+          Color(0xffb3cfef),
+        ];
 
   @override
   Widget build(BuildContext context) {
