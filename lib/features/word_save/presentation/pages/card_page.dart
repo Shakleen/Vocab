@@ -12,27 +12,30 @@ class CardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: AppTitle(),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            tooltip: 'Add new word entry',
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                '${Page.CardFormPage}',
-                arguments: {
-                  'isEditing': false,
-                },
-              );
-            },
-          ),
-        ],
+    return BlocProvider<WordListBloc>(
+      create: (BuildContext context) => sl(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: AppTitle(),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.add),
+              tooltip: 'Add new word entry',
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  '${Page.CardFormPage}',
+                  arguments: {
+                    'isEditing': false,
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+        drawer: SideDrawer(page: Page.CardPage),
+        body: ViewSavedWords(),
       ),
-      drawer: SideDrawer(page: Page.CardPage),
-      body: BlocProvider<WordListBloc>(create: sl(), child: ViewSavedWords()),
     );
   }
 }

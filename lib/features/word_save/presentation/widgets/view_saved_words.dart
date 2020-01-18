@@ -23,6 +23,7 @@ class _ViewSavedWordsState extends State<ViewSavedWords> {
       BlocBuilder<WordListBloc, WordListBlocState>(
         builder: (BuildContext context, WordListBlocState state) {
           if (state is InitialWordListBlocState) {
+            Provider.of<WordListBloc>(context).add(GetWordListEvent(limit: 10));
             return EmptyStateUI();
           } else if (state is LoadingWordListBlocState) {
             return LoadingStateUI();

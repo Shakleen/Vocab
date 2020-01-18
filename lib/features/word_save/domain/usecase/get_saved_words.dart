@@ -24,12 +24,12 @@ class GetSavedWords extends UseCase<List<WordDetailsSummary>, Param> {
     return fetchEntry.fold(_handleEntryFetchFailure, _handleEntryFetchSuccess);
   }
 
-  _handleEntryFetchFailure(Failure l) {
+  FutureOr<Either<Failure, List<WordDetailsSummary>>> _handleEntryFetchFailure(Failure l) async {
     endReached = l is EmptyListFailure;
     return Left(l);
   }
 
-  _handleEntryFetchSuccess(List<Entry> r) async {
+  FutureOr<Either<Failure, List<WordDetailsSummary>>> _handleEntryFetchSuccess(List<Entry> r) async {
     final List<WordDetailsSummary> resultList = [];
 
     for (final Entry dbEntry in r) {
@@ -43,6 +43,8 @@ class GetSavedWords extends UseCase<List<WordDetailsSummary>, Param> {
         ),
       );
     }
+
+    return Right(resultList);
   }
 
   Future<Object> _getEntryWord(Entry dbEntry) async {
