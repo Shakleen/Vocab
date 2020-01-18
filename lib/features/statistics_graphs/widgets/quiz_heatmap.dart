@@ -29,6 +29,7 @@ class QuizHeatmap extends StatelessWidget {
                       style: Theme.of(context).textTheme.title,
                     ),
                   ),
+                  _HeatmapLevelIndicator(),
                   HeatMapCalendar(
                     input: snapshot.data,
                     colorThresholds: {
@@ -73,6 +74,53 @@ class QuizHeatmap extends StatelessWidget {
 
           return Center(child: Text("Error occurred!"));
         },
+      ),
+    );
+  }
+}
+
+class _HeatmapLevelIndicator extends StatelessWidget {
+  const _HeatmapLevelIndicator({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('100', style: Theme.of(context).textTheme.subtitle),
+          ),
+          Expanded(
+            child: Container(
+              height: 25,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    Colors.green[50],
+                    Colors.green[100],
+                    Colors.green[200],
+                    Colors.green[300],
+                    Colors.green[300],
+                    Colors.green[400],
+                    Colors.green[500],
+                    Colors.green[600],
+                    Colors.green[700],
+                    Colors.green[800],
+                    Colors.green[900],
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('300+', style: Theme.of(context).textTheme.subtitle),
+          ),
+        ],
       ),
     );
   }
