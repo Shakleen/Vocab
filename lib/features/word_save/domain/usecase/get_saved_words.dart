@@ -11,17 +11,23 @@ import 'package:vocab/features/word_save/domain/repository/saved_words_repositor
 
 class GetSavedWords extends UseCase<List<WordDetailsSummary>, Param> {
   final SavedWordsRepository repository;
+  bool endReached = false;
 
   GetSavedWords({@required this.repository});
 
   @override
   Future<Either<Failure, List<WordDetailsSummary>>> call(Param params) async {
-    final fetchEntry =
-        await repository.getWordEntries(params.limit, params.offset);
+    final fetchEntry = await repository.getWordEntries(
+      params.limit,
+      params.offset,
+    );
     return fetchEntry.fold(_handleEntryFetchFailure, _handleEntryFetchSuccess);
   }
 
-  _handleEntryFetchFailure(Failure l) => Left(l);
+  _handleEntryFetchFailure(Failure l) {
+    endReached = l is EmptyListFailure;
+    return Left(l);
+  }
 
   _handleEntryFetchSuccess(List<Entry> r) async {
     final List<WordDetailsSummary> resultList = [];
