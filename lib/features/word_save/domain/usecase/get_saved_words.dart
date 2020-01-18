@@ -41,7 +41,7 @@ class GetSavedWords extends UseCase<List<WordDetailsSummary>, Param> {
 
   Future<Object> _getEntryWord(Entry dbEntry) async {
     final fetchWord = await repository.getEntryWord(dbEntry.wordId);
-    final word = fetchWord.fold((Failure l) => l, (int r) => r);
+    final word = fetchWord.fold((Failure l) => l, (String r) => r);
     return word;
   }
 

@@ -25,3 +25,7 @@ class DeviceOfflineFailure extends Failure {}
 class InvalidInputFailure extends Failure {}
 
 class UnauthorizedFailure extends Failure {}
+
+class DatabaseFailure extends Failure {}
+
+class EmptyListFailure extends Failure {}

@@ -6,7 +6,6 @@ import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
 import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
 import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
-import 'package:vocab/core/entities/word_details_summary.dart';
 import 'package:vocab/core/enums/attributes.dart';
 import 'package:vocab/core/enums/mastery_levels.dart';
 import 'package:vocab/core/enums/part_of_speech.dart';
@@ -469,47 +468,71 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     );
   }
 
-  Future<List<WordDetailsSummary>> getSavedWords() async {
-    final List<Entry> dbEntryList = (await (select(words)
-              ..orderBy([
-                (table) => OrderingTerm(
-                      expression: table.word,
-                      mode: OrderingMode.asc,
-                    )
-              ]))
-            .join(
-                [innerJoin(entries, entries.wordId.equalsExp(words.id))]).get())
-        .map((table) => table.readTable(entries))
-        .toList();
+  Future<List<Entry>> getWordEntries(int limit, int offset) async =>
+      (await (select(words)
+                ..orderBy([
+                  (table) => OrderingTerm(
+                        expression: table.word,
+                        mode: OrderingMode.asc,
+                      )
+                ]))
+              .join([
+        innerJoin(entries, entries.wordId.equalsExp(words.id))
+      ]).get())
+          .map((table) => table.readTable(entries))
+          .toList();
 
-    final List<WordDetailsSummary> detailSummaryList = [];
+  Future<Word> getEntryWordByID(int wordID) async =>
+      (select(words)..where((table) => table.id.equals(wordID))).getSingle();
 
-    for (final Entry dbEntry in dbEntryList) {
-      final Word word = await (select(words)
-            ..where((table) => table.id.equals(dbEntry.wordId)))
-          .getSingle();
-
-      // final List<Sense> dbSenseList = await (select(senses)
-      //       ..where((table) => table.entryId.equals(dbEntry.id)))
-      //     .get();
-      final int senseCount = (await customSelectQuery(
+  Future<int> getEntrySenseCount(int entryID) async => (await customSelectQuery(
         'SELECT COUNT(*) FROM ${senses.actualTableName} ' +
-            'WHERE ${senses.entryId.$name} = ${dbEntry.id};',
+            'WHERE ${senses.entryId.$name} = $entryID;',
         readsFrom: {senses},
       ).getSingle())
           .readInt('COUNT(*)');
 
-      detailSummaryList.add(
-        WordDetailsSummary(
-          word: word.word,
-          addedOn: dbEntry.addedOn,
-          senses: senseCount,
-        ),
-      );
-    }
+  // Future<List<WordDetailsSummary>> getSavedWords() async {
+  //   final List<Entry> dbEntryList = (await (select(words)
+  //             ..orderBy([
+  //               (table) => OrderingTerm(
+  //                     expression: table.word,
+  //                     mode: OrderingMode.asc,
+  //                   )
+  //             ]))
+  //           .join(
+  //               [innerJoin(entries, entries.wordId.equalsExp(words.id))]).get())
+  //       .map((table) => table.readTable(entries))
+  //       .toList();
 
-    return detailSummaryList;
-  }
+  //   final List<WordDetailsSummary> detailSummaryList = [];
+
+  //   for (final Entry dbEntry in dbEntryList) {
+  //     final Word word = await (select(words)
+  //           ..where((table) => table.id.equals(dbEntry.wordId)))
+  //         .getSingle();
+
+  //     // final List<Sense> dbSenseList = await (select(senses)
+  //     //       ..where((table) => table.entryId.equals(dbEntry.id)))
+  //     //     .get();
+  //     final int senseCount = (await customSelectQuery(
+  //       'SELECT COUNT(*) FROM ${senses.actualTableName} ' +
+  //           'WHERE ${senses.entryId.$name} = ${dbEntry.id};',
+  //       readsFrom: {senses},
+  //     ).getSingle())
+  //         .readInt('COUNT(*)');
+
+  //     detailSummaryList.add(
+  //       WordDetailsSummary(
+  //         word: word.word,
+  //         addedOn: dbEntry.addedOn,
+  //         senses: senseCount,
+  //       ),
+  //     );
+  //   }
+
+  //   return detailSummaryList;
+  // }
 
   Future<int> _deleteSenseExampleLinks(int senseID) async {
     return await (delete(exampleList)
@@ -814,10 +837,6 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     int delay = 0;
 
     for (final Sense sense in dbSenseList) {
-      // final List<ExampleListData> dbExamples = await (select(exampleList)
-      //       ..where((table) => table.senseId.equals(sense.id)))
-      //     .get();
-
       final int exampleCount = (await customSelectQuery(
         'SELECT COUNT(*) FROM ${exampleList.actualTableName} ' +
             'WHERE ${exampleList.senseId.$name} = ${sense.id};',
@@ -844,10 +863,6 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           dueDate: DateTime.now().add(Duration(days: delay)),
         );
 
-        // final List<ThesaurusListData> dbSynList = await (select(thesaurusList)
-        //       ..where((table) => table.senseId.equals(sense.id))
-        //       ..where((table) => table.isAntonym.equals(false)))
-        //     .get();
         final int synonymCount = (await customSelectQuery(
           'SELECT COUNT(*) FROM ${thesaurusList.actualTableName} ' +
               'WHERE ${thesaurusList.senseId.$name} = ${sense.id} AND is_antonym = 0;',
@@ -866,10 +881,6 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           );
         }
 
-        // final List<ThesaurusListData> dbAntList = await (select(thesaurusList)
-        //       ..where((table) => table.senseId.equals(sense.id))
-        //       ..where((table) => table.isAntonym.equals(true)))
-        //     .get();
         final int antonymCount = (await customSelectQuery(
           'SELECT COUNT(*) FROM ${thesaurusList.actualTableName} ' +
               'WHERE ${thesaurusList.senseId.$name} = ${sense.id} AND is_antonym = 1;',
@@ -1247,14 +1258,13 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
 
   Future<Performance> getPerformanceResults(int range) async {
     final DateTime endDate = _getOnlyTimeToday().add(Duration(days: 1));
-    final DateTime startDate = _getOnlyDay(
-        endDate.subtract(Duration(days: range)));
+    final DateTime startDate =
+        _getOnlyDay(endDate.subtract(Duration(days: range)));
     final Map<DateTime, PerformaceResult> output = {};
     int maxVal = 0, minVal = 9999999;
     final List<UsageInfoData> list = await (select(usageInfo)
-      ..where(
-              (table) => table.date.isBetweenValues(startDate, endDate)
-      )).get();
+          ..where((table) => table.date.isBetweenValues(startDate, endDate)))
+        .get();
 
     list.forEach((row) {
       maxVal = max(maxVal, max(row.cardsCorrect, row.cardsWrong));
