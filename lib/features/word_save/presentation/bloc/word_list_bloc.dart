@@ -9,6 +9,7 @@ import './bloc.dart';
 class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {
   final GetSavedWords usecase;
   final List<WordDetailsSummary> _wordList = [];
+  int _offset = 0;
 
   WordListBloc(this.usecase);
 
@@ -23,7 +24,7 @@ class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {
       yield LoadingWordListBlocState();
 
       final result = await usecase(
-        Param(limit: event.limit, offset: event.offset),
+        Param(limit: event.limit, offset: _offset),
       );
 
       yield* result.fold(_handleFailure, _handleSuccess);
@@ -35,7 +36,10 @@ class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {
   }
 
   Stream<WordListBlocState> _handleSuccess(List<WordDetailsSummary> r) async* {
-    if (usecase.endReached == false) _wordList.addAll(r);
+    if (usecase.endReached == false) {
+      _wordList.addAll(r);
+      _offset += r.length;
+    }
     yield LoadedWordListBlocState(_wordList);
   }
 }

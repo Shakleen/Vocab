@@ -5,10 +5,10 @@ abstract class WordListBlocEvent extends Equatable {
 }
 
 class GetWordListEvent extends WordListBlocEvent {
-  final int offset, limit;
+  final int limit;
 
-  GetWordListEvent({this.limit = 25, this.offset = 25});
+  GetWordListEvent({this.limit = 25});
   
   @override
-  List<Object> get props => [offset, limit];
+  List<Object> get props => [limit];
 }
