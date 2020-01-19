@@ -4,14 +4,14 @@ import 'package:vocab/core/error/failures.dart';
 import 'package:vocab/features/word_save/domain/repository/saved_words_repository.dart';
 
 class SavedWordRepositoryImpl extends SavedWordsRepository {
-  final CardDatabase cardDatabase;
+  final FetchWordDao fetchWordDao;
 
-  SavedWordRepositoryImpl(this.cardDatabase);
+  SavedWordRepositoryImpl(CardDatabase cardDatabase) : fetchWordDao = cardDatabase.fetchWordDao;
 
   @override
   Future<Either<Failure, int>> getEntrySenseCount(int entryID) async {
     try {
-      return Right(await cardDatabase.wordDao.getEntrySenseCount(entryID));
+      return Right(await fetchWordDao.getEntrySenseCount(entryID));
     } on Exception {
       return Left(DatabaseFailure());
     }
@@ -20,7 +20,7 @@ class SavedWordRepositoryImpl extends SavedWordsRepository {
   @override
   Future<Either<Failure, String>> getEntryWord(int wordID) async {
     try {
-      final Word dbWord = await cardDatabase.wordDao.getEntryWordByID(wordID);
+      final Word dbWord = await fetchWordDao.getEntryWordByID(wordID);
       return Right(dbWord.word);
     } on Exception {
       return Left(DatabaseFailure());
@@ -34,7 +34,7 @@ class SavedWordRepositoryImpl extends SavedWordsRepository {
   ) async {
     try {
       final List<Entry> result =
-          await cardDatabase.wordDao.getWordEntries(limit, offset);
+          await fetchWordDao.getWordEntries(limit, offset);
 
       return Right(result);
     } on Exception {

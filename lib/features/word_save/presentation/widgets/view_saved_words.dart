@@ -36,19 +36,19 @@ class _ViewSavedWordsState extends State<ViewSavedWords> {
   Widget build(BuildContext context) {
     return BlocBuilder<WordListBloc, WordListBlocState>(
       builder: (BuildContext context, WordListBlocState state) {
+        int length = 0;
+
         if (state is InitialWordListBlocState) {
-          _bloc.add(GetWordListEvent(limit: 10));
+          _bloc.add(GetWordListEvent(limit: 25));
           return EmptyStateUI(text: "Loading saved words!");
         } else if (state is ErrorWordListBlocState) {
           return ErrorStateUI(message: state.errorMessage);
+        } else if (state is LoadingWordListBlocState) {
+          length = _wordList.length + 1;
         } else if (state is LoadedWordListBlocState) {
-          print("Words fetched = ${state.wordList.length}");
-          if (_bloc.endReached == false) {
-            _wordList.addAll(state.wordList);
-          }
-          if (_wordList.isEmpty) {
-            return EmptyStateUI(text: "No saved words!");
-          }
+          if (_bloc.endReached == false) _wordList.addAll(state.wordList);
+          if (_wordList.isEmpty) return EmptyStateUI(text: "No saved words!");
+          length = _wordList.length;
         }
 
         return NotificationListener<ScrollNotification>(
@@ -56,9 +56,15 @@ class _ViewSavedWordsState extends State<ViewSavedWords> {
           child: ListView.builder(
             padding: const EdgeInsets.all(4.0),
             controller: _controller,
-            itemCount: _wordList.length,
+            itemCount: length,
             itemBuilder: (BuildContext context, int index) {
-              return WordTile(wordSummary: _wordList[index]);
+              if (index < _wordList.length)
+                return WordTile(wordSummary: _wordList[index]);
+              else
+                return ListTile(
+                  title: Text("Loading more words!"),
+                  trailing: CircularProgressIndicator(),
+                );
             },
           ),
         );
@@ -70,7 +76,7 @@ class _ViewSavedWordsState extends State<ViewSavedWords> {
     if (notification is ScrollEndNotification &&
         _controller.position.extentAfter == 0 &&
         _bloc.endReached == false) {
-      _bloc.add(GetWordListEvent(limit: 10));
+      _bloc.add(GetWordListEvent(limit: 25));
     }
 
     return false;
