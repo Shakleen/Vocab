@@ -14,7 +14,7 @@ class WordCardBody extends StatelessWidget {
       BlocBuilder<WordCardBloc, WordCardState>(
         builder: (BuildContext context, WordCardState state) {
           if (state is EmptyWordCardState) {
-            return EmptyStateUI();
+            return EmptyStateUI(text: "Start by searching for a word!");
           } else if (state is LoadingWordCardState) {
             return LoadingStateUI();
           } else if (state is LoadedWordCardState) {

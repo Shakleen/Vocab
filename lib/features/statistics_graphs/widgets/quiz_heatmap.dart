@@ -29,12 +29,21 @@ class QuizHeatmap extends StatelessWidget {
                       style: Theme.of(context).textTheme.title,
                     ),
                   ),
+                  _HeatmapLevelIndicator(),
                   HeatMapCalendar(
                     input: snapshot.data,
                     colorThresholds: {
-                      1: Colors.green[100],
-                      10: Colors.green[300],
-                      30: Colors.green[500]
+                      50: Colors.green[50],
+                      75: Colors.green[100],
+                      100: Colors.green[200],
+                      125: Colors.green[300],
+                      150: Colors.green[300],
+                      175: Colors.green[400],
+                      200: Colors.green[500],
+                      225: Colors.green[600],
+                      250: Colors.green[700],
+                      275: Colors.green[800],
+                      300: Colors.green[900],
                     },
                     weekDaysLabels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
                     monthsLabels: [
@@ -65,6 +74,53 @@ class QuizHeatmap extends StatelessWidget {
 
           return Center(child: Text("Error occurred!"));
         },
+      ),
+    );
+  }
+}
+
+class _HeatmapLevelIndicator extends StatelessWidget {
+  const _HeatmapLevelIndicator({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('100', style: Theme.of(context).textTheme.subtitle),
+          ),
+          Expanded(
+            child: Container(
+              height: 25,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    Colors.green[50],
+                    Colors.green[100],
+                    Colors.green[200],
+                    Colors.green[300],
+                    Colors.green[300],
+                    Colors.green[400],
+                    Colors.green[500],
+                    Colors.green[600],
+                    Colors.green[700],
+                    Colors.green[800],
+                    Colors.green[900],
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('300+', style: Theme.of(context).textTheme.subtitle),
+          ),
+        ],
       ),
     );
   }

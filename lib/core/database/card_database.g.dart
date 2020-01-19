@@ -2688,6 +2688,9 @@ abstract class _$CardDatabase extends GeneratedDatabase {
   StatisticsDao _statisticsDao;
   StatisticsDao get statisticsDao =>
       _statisticsDao ??= StatisticsDao(this as CardDatabase);
+  FetchWordDao _fetchWordDao;
+  FetchWordDao get fetchWordDao =>
+      _fetchWordDao ??= FetchWordDao(this as CardDatabase);
   @override
   List<TableInfo> get allTables => [
         entries,
@@ -2820,4 +2823,10 @@ class GetPartOfSpeechStatsResult {
     this.partOfSpeech,
     this.count,
   });
+}
+
+mixin _$FetchWordDaoMixin on DatabaseAccessor<CardDatabase> {
+  $EntriesTable get entries => db.entries;
+  $SensesTable get senses => db.senses;
+  $WordsTable get words => db.words;
 }

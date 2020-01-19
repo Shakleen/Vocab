@@ -1,14 +1,19 @@
+import 'dart:math';
+
 import 'package:moor_flutter/moor_flutter.dart';
+import 'package:vocab/core/entities/performance_result.dart';
+import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
+import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
 import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
-import 'package:vocab/core/entities/syllable.dart' as SyllableEntity;
-import 'package:vocab/core/entities/pronunciation.dart' as PronunciationEntity;
-import 'package:vocab/core/entities/word_details_summary.dart';
 import 'package:vocab/core/enums/attributes.dart';
 import 'package:vocab/core/enums/mastery_levels.dart';
-import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 import 'package:vocab/core/enums/part_of_speech.dart';
+import 'package:vocab/core/util/formatter.dart';
+import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
+import 'tables.dart';
 
+part 'package:vocab/features/word_save/data/data_source/fetch_word_dao.dart';
 part 'card_database.g.dart';
 
 DateTime _getOnlyTimeToday() {
@@ -24,120 +29,6 @@ DateTime _getOnlyTimeToday() {
   );
 }
 
-//! ============================================================================================================================================ !//
-//! ============================================================================================================================================ !//
-//!                                                                 Tables classes                                                               !//
-//! ============================================================================================================================================ !//
-//! ============================================================================================================================================ !//
-
-@DataClassName('Entry')
-class Entries extends Table {
-  IntColumn get id => integer().nullable().autoIncrement()();
-  DateTimeColumn get addedOn => dateTime()();
-  TextColumn get pronunciation => text()();
-  IntColumn get wordId => integer().customConstraint('REFERENCES words(id)')();
-}
-
-class Senses extends Table {
-  IntColumn get id => integer().nullable().autoIncrement()();
-  IntColumn get entryId =>
-      integer().customConstraint('REFERENCES entries(id)')();
-  IntColumn get partOfSpeech => integer()();
-  TextColumn get definition => text()();
-}
-
-class Words extends Table {
-  IntColumn get id => integer().nullable().autoIncrement()();
-  TextColumn get word => text().withLength(min: 1).customConstraint('UNIQUE')();
-}
-
-class Examples extends Table {
-  IntColumn get id => integer().nullable().autoIncrement()();
-  TextColumn get sentence =>
-      text().withLength(min: 1).customConstraint('UNIQUE')();
-}
-
-class Syllables extends Table {
-  IntColumn get id => integer().nullable().autoIncrement()();
-  TextColumn get syllable =>
-      text().withLength(min: 1).customConstraint('UNIQUE')();
-}
-
-class ThesaurusList extends Table {
-  IntColumn get senseId =>
-      integer().customConstraint('REFERENCES senses(id)')();
-  IntColumn get wordId => integer().customConstraint('REFERENCES words(id)')();
-  BoolColumn get isAntonym => boolean().withDefault(Constant(false))();
-
-  @override
-  Set<Column> get primaryKey => {senseId, wordId, isAntonym};
-}
-
-class ExampleList extends Table {
-  IntColumn get senseId =>
-      integer().customConstraint('REFERENCES senses(id)')();
-  IntColumn get exampleId =>
-      integer().customConstraint('REFERENCES examples(id)')();
-
-  @override
-  Set<Column> get primaryKey => {senseId, exampleId};
-}
-
-class SyllableList extends Table {
-  IntColumn get entryId =>
-      integer().customConstraint('REFERENCES entries(id)')();
-  IntColumn get syllableId =>
-      integer().customConstraint('REFERENCES syllables(id)')();
-
-  @override
-  Set<Column> get primaryKey => {entryId, syllableId};
-}
-
-class EntryQuizCards extends Table {
-  IntColumn get cardId => integer().customConstraint('REFERENCES cards(id)')();
-  IntColumn get entryId =>
-      integer().customConstraint('REFERENCES entries(id)')();
-
-  @override
-  Set<Column> get primaryKey => {cardId, entryId};
-}
-
-class Cards extends Table {
-  IntColumn get id => integer().nullable().autoIncrement()();
-  IntColumn get frontId =>
-      integer().customConstraint('REFERENCES card_info(id)')();
-  IntColumn get backId =>
-      integer().customConstraint('REFERENCES card_info(id)')();
-  IntColumn get level => integer().nullable().withDefault(Constant(0))();
-  BoolColumn get isImportant =>
-      boolean().nullable().withDefault(Constant(false))();
-  DateTimeColumn get dueOn => dateTime()();
-}
-
-class CardInfo extends Table {
-  IntColumn get id => integer().nullable().autoIncrement()();
-  IntColumn get entryId =>
-      integer().customConstraint('REFERENCES entries(id)')();
-  IntColumn get senseId =>
-      integer().customConstraint('REFERENCES senses(id)')();
-  IntColumn get attributeType => integer()();
-}
-
-class UsageInfo extends Table {
-  DateTimeColumn get date => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {date};
-
-  IntColumn get wordsSearched =>
-      integer().withDefault(Constant(0)).nullable()();
-  IntColumn get wordsSaved => integer().withDefault(Constant(0)).nullable()();
-  IntColumn get cardsQuizzed => integer().withDefault(Constant(0)).nullable()();
-  IntColumn get wordsEdited => integer().withDefault(Constant(0)).nullable()();
-  IntColumn get wordsDeleted => integer().withDefault(Constant(0)).nullable()();
-  IntColumn get cardsCorrect => integer().withDefault(Constant(0)).nullable()();
-  IntColumn get cardsWrong => integer().withDefault(Constant(0)).nullable()();
-}
 //! ============================================================================================================================================ !//
 //! ============================================================================================================================================ !//
 //!                                                                 DAO classes                                                                  !//
@@ -465,48 +356,6 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     );
   }
 
-  Future<List<WordDetailsSummary>> getSavedWords() async {
-    final List<Entry> dbEntryList = (await (select(words)
-              ..orderBy([
-                (table) => OrderingTerm(
-                      expression: table.word,
-                      mode: OrderingMode.asc,
-                    )
-              ]))
-            .join(
-                [innerJoin(entries, entries.wordId.equalsExp(words.id))]).get())
-        .map((table) => table.readTable(entries))
-        .toList();
-
-    final List<WordDetailsSummary> detailSummaryList = [];
-
-    for (final Entry dbEntry in dbEntryList) {
-      final Word word = await (select(words)
-            ..where((table) => table.id.equals(dbEntry.wordId)))
-          .getSingle();
-
-      // final List<Sense> dbSenseList = await (select(senses)
-      //       ..where((table) => table.entryId.equals(dbEntry.id)))
-      //     .get();
-      final int senseCount = (await customSelectQuery(
-        'SELECT COUNT(*) FROM ${senses.actualTableName} ' +
-            'WHERE ${senses.entryId.$name} = ${dbEntry.id};',
-        readsFrom: {senses},
-      ).getSingle())
-          .readInt('COUNT(*)');
-
-      detailSummaryList.add(
-        WordDetailsSummary(
-          word: word.word,
-          addedOn: dbEntry.addedOn,
-          senses: senseCount,
-        ),
-      );
-    }
-
-    return detailSummaryList;
-  }
-
   Future<int> _deleteSenseExampleLinks(int senseID) async {
     return await (delete(exampleList)
           ..where((table) => table.senseId.equals(senseID)))
@@ -810,10 +659,6 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
     int delay = 0;
 
     for (final Sense sense in dbSenseList) {
-      // final List<ExampleListData> dbExamples = await (select(exampleList)
-      //       ..where((table) => table.senseId.equals(sense.id)))
-      //     .get();
-
       final int exampleCount = (await customSelectQuery(
         'SELECT COUNT(*) FROM ${exampleList.actualTableName} ' +
             'WHERE ${exampleList.senseId.$name} = ${sense.id};',
@@ -840,10 +685,6 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           dueDate: DateTime.now().add(Duration(days: delay)),
         );
 
-        // final List<ThesaurusListData> dbSynList = await (select(thesaurusList)
-        //       ..where((table) => table.senseId.equals(sense.id))
-        //       ..where((table) => table.isAntonym.equals(false)))
-        //     .get();
         final int synonymCount = (await customSelectQuery(
           'SELECT COUNT(*) FROM ${thesaurusList.actualTableName} ' +
               'WHERE ${thesaurusList.senseId.$name} = ${sense.id} AND is_antonym = 0;',
@@ -862,10 +703,6 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
           );
         }
 
-        // final List<ThesaurusListData> dbAntList = await (select(thesaurusList)
-        //       ..where((table) => table.senseId.equals(sense.id))
-        //       ..where((table) => table.isAntonym.equals(true)))
-        //     .get();
         final int antonymCount = (await customSelectQuery(
           'SELECT COUNT(*) FROM ${thesaurusList.actualTableName} ' +
               'WHERE ${thesaurusList.senseId.$name} = ${sense.id} AND is_antonym = 1;',
@@ -933,17 +770,8 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
   }
 
   Future<List<Card>> _getDueCards(int limit) async => (select(cards)
-        ..where((table) => table.dueOn.isSmallerOrEqualValue(DateTime.now()))
-        ..orderBy([
-          (table) => OrderingTerm(
-                expression: table.level,
-                mode: OrderingMode.asc,
-              ),
-          (table) => OrderingTerm(
-                expression: table.isImportant,
-                mode: OrderingMode.desc,
-              ),
-        ])
+        ..where(
+            (table) => table.dueOn.isSmallerOrEqualValue(_getOnlyTimeToday()))
         ..limit(limit))
       .get();
 
@@ -1125,21 +953,31 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
         ..where((table) => table.date.equals(_getOnlyTimeToday())))
       .getSingle();
 
-  Future _handleQuizUsageInfo() async {
+  Future _handleQuizUsageInfo(bool isWrong) async {
     final UsageInfoData dbUsageInfoData = await _getUsageInformation();
+    final int correctNo = isWrong == false ? 1 : 0;
+    final int wrongNo = 1 - correctNo;
 
     if (dbUsageInfoData == null) {
-      await into(usageInfo)
-          .insert(UsageInfoData(cardsQuizzed: 1, date: _getOnlyTimeToday()));
+      await into(usageInfo).insert(UsageInfoData(
+        cardsCorrect: correctNo,
+        cardsWrong: wrongNo,
+        cardsQuizzed: 1,
+        date: _getOnlyTimeToday(),
+      ));
     } else {
       await (update(usageInfo)
             ..where((table) => table.date.equals(dbUsageInfoData.date)))
-          .write(UsageInfoData(cardsQuizzed: dbUsageInfoData.cardsQuizzed + 1));
+          .write(UsageInfoData(
+        cardsQuizzed: dbUsageInfoData.cardsQuizzed + 1,
+        cardsCorrect: dbUsageInfoData.cardsCorrect + correctNo,
+        cardsWrong: dbUsageInfoData.cardsWrong + wrongNo,
+      ));
     }
   }
 
   Future<int> updateCardLevel(int cardID, int level, DateTime nextDue) async {
-    await _handleQuizUsageInfo();
+    await _handleQuizUsageInfo(level == 0);
     return (update(cards)..where((table) => table.id.equals(cardID))).write(
       Card(dueOn: nextDue, level: level),
     );
@@ -1227,10 +1065,44 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
     final List<UsageInfoData> list = await select(usageInfo).get();
     final Map<DateTime, int> output = {};
     list.forEach((value) => output[value.date] = value.cardsQuizzed);
+    print('Size of values: ${output.keys.length}');
     return output;
   }
-}
 
+  Future<Performance> getPerformanceResults(int range) async {
+    final DateTime endDate = _getOnlyTimeToday().add(Duration(days: 1));
+    final DateTime startDate =
+        _getOnlyDay(endDate.subtract(Duration(days: range)));
+    final Map<DateTime, PerformaceResult> output = {};
+    int maxVal = 0, minVal = 9999999;
+    final List<UsageInfoData> list = await (select(usageInfo)
+          ..where((table) => table.date.isBetweenValues(startDate, endDate)))
+        .get();
+
+    list.forEach((row) {
+      maxVal = max(maxVal, max(row.cardsCorrect, row.cardsWrong));
+      minVal = min(minVal, min(row.cardsCorrect, row.cardsWrong));
+      print('Date is ${getFormattedDateTime(row.date)}');
+      print('Correct is ${row.cardsCorrect}');
+      print('Wrong is ${row.cardsWrong}');
+      output[row.date] = PerformaceResult(
+        totalCorrect: row.cardsCorrect,
+        totalWrong: row.cardsWrong,
+      );
+    });
+
+    print('Size of values: ${output.keys.length}');
+
+    return Performance(
+      performanceMap: output,
+      maxValue: maxVal,
+      minValue: minVal,
+    );
+  }
+}
+// ACTUAL: 1579197600
+// LOW:    1578938400
+// HIGH:   1579197600
 //! ============================================================================================================================================ !//
 //! ============================================================================================================================================ !//
 //!                                                                 Database class                                                               !//
@@ -1256,6 +1128,7 @@ const List<Type> _DAO_LIST = const [
   WordDao,
   CardDao,
   StatisticsDao,
+  FetchWordDao,
 ];
 
 //? flutter packages pub run build_runner watch --delete-conflicting-outputs

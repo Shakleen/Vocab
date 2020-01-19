@@ -13,9 +13,12 @@ import 'package:vocab/features/word_card/data/repository/word_card_repository_im
 import 'package:vocab/features/word_card/domain/repository/word_card_repository.dart';
 import 'package:vocab/features/word_card/domain/usecase/get_word_card.dart';
 import 'package:vocab/features/word_card/presentation/bloc/bloc.dart';
+import 'package:vocab/features/word_save/data/repository/saved_words_repository_impl.dart';
+import 'package:vocab/features/word_save/domain/usecase/get_saved_words.dart';
 
 import 'core/database/card_database.dart';
-
+import 'features/word_save/domain/repository/saved_words_repository.dart';
+import 'features/word_save/presentation/bloc/word_list_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -67,7 +70,19 @@ Future<void> init() async {
   );
 
   //!Feature: Word card saving
-  // Data
+  //? Presentation later
+  // Bloc
+  sl.registerFactory<WordListBloc>(() => WordListBloc(sl()));
+
+  //? Domain
+  // Use cases
+  sl.registerLazySingleton<GetSavedWords>(() => GetSavedWords(repository: sl()));
+
+  //? Data
+  // Repository 
+  sl.registerLazySingleton<SavedWordsRepository>(() => SavedWordRepositoryImpl(sl()));
+
+  // Data source
   sl.registerLazySingleton(() => CardDatabase());
 
   //! Core

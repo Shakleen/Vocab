@@ -15,7 +15,7 @@ class QueryWordBody extends StatelessWidget {
       BlocBuilder<QueryWordBloc, QueryWordState>(
         builder: (BuildContext context, QueryWordState state) {
           if (state is EmptyQueryWordState) {
-            return EmptyStateUI();
+            return EmptyStateUI(text: "Start by searching for a word!");
           } else if (state is LoadingQueryWordState) {
             return LoadingStateUI();
           } else if (state is LoadedQueryWordState) {

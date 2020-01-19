@@ -5,6 +5,7 @@ import 'package:vocab/core/ui/widgets/subtitle_text.dart';
 import 'package:vocab/core/enums/part_of_speech.dart';
 
 import 'custom_text_field.dart';
+import 'part_of_speech_dropdown.dart';
 
 const String SEPERATOR = " | ";
 
@@ -12,69 +13,35 @@ class SenseForm extends StatelessWidget {
   final WordCardDetails initSense;
   final Function(SenseForm) removeField;
   List<Widget> _children;
-  final List<String> _posNames = const [
-    'Verb',
-    'Adjective',
-    'Noun',
-    'Pronoun',
-    'Adverb',
-    'Preposition',
-    'Conjunction',
-    'Interjection',
-  ];
-  int _partOfSpeech;
 
   SenseForm({Key key, @required this.removeField, this.initSense})
-      : super(key: key);
+      : _children = [
+          CustomTextField(
+            labelText: 'Definition',
+            initValue: initSense?.definition,
+          ),
+          SubtitleText(text: 'Part of speech'),
+          PartOfSpeechDropDown(partOfSpeech: initSense?.partOfSpeech),
+          CustomTextField(
+            labelText: 'Examples',
+            initValue: initSense?.exampleList?.join(SEPERATOR),
+            isNullable: true,
+          ),
+          CustomTextField(
+            labelText: 'Synonyms',
+            initValue: initSense?.synonymList?.join(SEPERATOR),
+            isNullable: true,
+          ),
+          CustomTextField(
+            labelText: 'Antonyms',
+            initValue: initSense?.antonymList?.join(SEPERATOR),
+            isNullable: true,
+          ),
+        ],
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (_partOfSpeech == null) {
-      if (initSense != null) {
-        _partOfSpeech = PART_OF_SPEECH_TYPE_TO_ID[initSense.partOfSpeech];
-      } else {
-        _partOfSpeech = 1;
-      }
-    }
-
-    _children = [
-      CustomTextField(
-        labelText: 'Definition',
-        initValue: initSense?.definition,
-      ),
-      SubtitleText(text: 'Part of speech'),
-      DropdownButton<int>(
-        items: List<DropdownMenuItem<int>>.generate(
-          _posNames.length,
-          (int index) => DropdownMenuItem(
-            child: Text(_posNames[index]),
-            value: index + 1,
-          ),
-        ),
-        onChanged: (int value) => _partOfSpeech = value,
-        icon: Icon(Icons.arrow_downward),
-        iconSize: 24,
-        elevation: 16,
-        value: _partOfSpeech,
-        isExpanded: true,
-        style: TextStyle(color: Theme.of(context).primaryColor),
-      ),
-      CustomTextField(
-        labelText: 'Examples',
-        initValue: initSense?.exampleList?.join(SEPERATOR),
-        isNullable: true,
-      ),
-      CustomTextField(
-        labelText: 'Synonyms',
-        initValue: initSense?.synonymList?.join(SEPERATOR),
-        isNullable: true,
-      ),
-      CustomTextField(
-        labelText: 'Antonyms',
-        initValue: initSense?.antonymList?.join(SEPERATOR),
-        isNullable: true,
-      ),
-    ];
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -111,15 +78,18 @@ class SenseForm extends StatelessWidget {
 
   WordCardDetails getSenseFormValues() {
     final List values = [];
+    int partOfSpeech;
 
     for (final Widget widget in _children)
       if (widget is CustomTextField)
         values.add(widget.controller.text?.split(SEPERATOR));
+      else if (widget is PartOfSpeechDropDown)
+        partOfSpeech = widget.choice;
 
     return WordCardDetails(
       id: initSense?.id,
       definition: values[0].join(''),
-      partOfSpeech: ID_TO_PART_OF_SPEECH_TYPE[_partOfSpeech],
+      partOfSpeech: ID_TO_PART_OF_SPEECH_TYPE[partOfSpeech],
       exampleList: values[1],
       synonymList: values[2],
       antonymList: values[3],

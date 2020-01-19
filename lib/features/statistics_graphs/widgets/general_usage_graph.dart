@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vocab/core/util/formatter.dart';
 
 import 'general_usage_stats.dart';
 

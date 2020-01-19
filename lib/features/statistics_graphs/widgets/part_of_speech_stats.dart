@@ -23,11 +23,11 @@ class PartOfSpeechStatsState extends State {
           Color(0xffe74c3c),
           Color(0xffe67e22),
           Color(0xfff1c40f),
-          Color(0xff2ecc71),
-          Color(0xff1abc9c),
-          Color(0xff3498db),
-          Color(0xff9b59b6),
-          Color(0xff34495e),
+          Color(0xffffeb3b),
+          Color(0xff2efc71),
+          Color(0xff3498fb),
+          Color(0xff3f51f5),
+          Color(0xff9b59f6),
         ];
 
   @override

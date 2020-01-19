@@ -8,7 +8,7 @@ import 'package:vocab/core/util/formatter.dart';
 
 class GeneralUsageStats extends StatelessWidget {
   final Map<double, String> statTitles = {
-    0: 'Search',
+    0: 'Searched',
     1: 'Saved',
     2: 'Quizzed',
     3: 'Editted',
@@ -53,29 +53,25 @@ class GeneralUsageStats extends StatelessWidget {
                   aspectRatio: 12 / 10,
                   child: BarChart(
                     BarChartData(
-                      gridData: FlGridData(
-                        show: true,
-                        drawVerticalLine: true,
-                        verticalInterval: 25,
-                      ),
                       axisTitleData: FlAxisTitleData(
                         show: true,
                         topTitle: AxisTitle(
                           showTitle: true,
                           titleText: "Usage on ${getFormattedDateTime(graphTime)}",
                           textAlign: TextAlign.center,
-                          textStyle: Theme.of(context).textTheme.title
+                          textStyle: Theme.of(context).textTheme.title,
+                          margin: 16,
                         )
                       ),
                       alignment: BarChartAlignment.spaceAround,
-                      maxY: _max(values) + 10,
+                      maxY: _max(values) + 25,
                       borderData: FlBorderData(show: false),
                       titlesData: FlTitlesData(
                         show: true,
                         leftTitles: const SideTitles(showTitles: false),
                         bottomTitles: SideTitles(
                           textStyle: TextStyle(
-                            color: const Color(0xff7589a2),
+                            color: Theme.of(context).primaryColorDark,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                           ),
@@ -94,6 +90,8 @@ class GeneralUsageStats extends StatelessWidget {
                               BarChartRodData(
                                 y: val.toDouble(),
                                 color: stateBarColors[index],
+                                width: 32,
+                                isRound: false,
                               ),
                             ],
                             showingTooltipIndicators: [0],
