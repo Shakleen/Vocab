@@ -10,6 +10,11 @@ class InitialWordListBlocState extends WordListBlocState {
   List<Object> get props => [];
 }
 
+class LoadingWordListBlocState extends WordListBlocState {
+  @override
+  List<Object> get props => [];
+}
+
 class LoadedWordListBlocState extends WordListBlocState {
   final List<WordDetailsSummary> wordList;
 

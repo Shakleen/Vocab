@@ -11,7 +11,6 @@ import 'package:vocab/features/word_save/domain/repository/saved_words_repositor
 
 class GetSavedWords extends UseCase<List<WordDetailsSummary>, Param> {
   final SavedWordsRepository repository;
-  bool endReached = false;
 
   GetSavedWords({@required this.repository});
 
@@ -33,20 +32,16 @@ class GetSavedWords extends UseCase<List<WordDetailsSummary>, Param> {
       List<Entry> r) async {
     final List<WordDetailsSummary> resultList = [];
 
-    if (r.isEmpty) {
-      endReached = true;
-    } else {
-      for (final Entry dbEntry in r) {
-        Object senseCount = await _getEntrySenseCount(dbEntry);
-        Object word = await _getEntryWord(dbEntry);
-        resultList.add(
-          WordDetailsSummary(
-            word: word is String ? word : null,
-            addedOn: dbEntry.addedOn,
-            senses: senseCount is int ? senseCount : 0,
-          ),
-        );
-      }
+    for (final Entry dbEntry in r) {
+      Object senseCount = await _getEntrySenseCount(dbEntry);
+      Object word = await _getEntryWord(dbEntry);
+      resultList.add(
+        WordDetailsSummary(
+          word: word is String ? word : null,
+          addedOn: dbEntry.addedOn,
+          senses: senseCount is int ? senseCount : 0,
+        ),
+      );
     }
 
     return Right(resultList);

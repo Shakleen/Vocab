@@ -8,12 +8,10 @@ import './bloc.dart';
 
 class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {
   final GetSavedWords _usecase;
-  final List<WordDetailsSummary> _wordList = [];
+  bool endReached = false;
   int _offset = 0;
 
   WordListBloc(this._usecase);
-
-  bool get hasReachedEnd => _usecase.endReached;
 
   @override
   WordListBlocState get initialState => InitialWordListBlocState();
@@ -22,6 +20,8 @@ class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {
   Stream<WordListBlocState> mapEventToState(
     WordListBlocEvent event,
   ) async* {
+    yield LoadingWordListBlocState();
+
     if (event is GetWordListEvent) {
       final result = await _usecase(Param(
         limit: event.limit,
@@ -38,9 +38,7 @@ class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {
   }
 
   Stream<WordListBlocState> _handleSuccess(List<WordDetailsSummary> r) async* {
-    if (_usecase.endReached == false) {
-      _wordList.addAll(r);
-    }
-    yield LoadedWordListBlocState(_wordList);
+    endReached = r.isEmpty;
+    yield LoadedWordListBlocState(r);
   }
 }
