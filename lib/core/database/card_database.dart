@@ -475,7 +475,8 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
                         expression: table.word,
                         mode: OrderingMode.asc,
                       )
-                ]))
+                ])
+                ..limit(limit, offset: offset))
               .join([
         innerJoin(entries, entries.wordId.equalsExp(words.id))
       ]).get())
@@ -491,48 +492,6 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
         readsFrom: {senses},
       ).getSingle())
           .readInt('COUNT(*)');
-
-  // Future<List<WordDetailsSummary>> getSavedWords() async {
-  //   final List<Entry> dbEntryList = (await (select(words)
-  //             ..orderBy([
-  //               (table) => OrderingTerm(
-  //                     expression: table.word,
-  //                     mode: OrderingMode.asc,
-  //                   )
-  //             ]))
-  //           .join(
-  //               [innerJoin(entries, entries.wordId.equalsExp(words.id))]).get())
-  //       .map((table) => table.readTable(entries))
-  //       .toList();
-
-  //   final List<WordDetailsSummary> detailSummaryList = [];
-
-  //   for (final Entry dbEntry in dbEntryList) {
-  //     final Word word = await (select(words)
-  //           ..where((table) => table.id.equals(dbEntry.wordId)))
-  //         .getSingle();
-
-  //     // final List<Sense> dbSenseList = await (select(senses)
-  //     //       ..where((table) => table.entryId.equals(dbEntry.id)))
-  //     //     .get();
-  //     final int senseCount = (await customSelectQuery(
-  //       'SELECT COUNT(*) FROM ${senses.actualTableName} ' +
-  //           'WHERE ${senses.entryId.$name} = ${dbEntry.id};',
-  //       readsFrom: {senses},
-  //     ).getSingle())
-  //         .readInt('COUNT(*)');
-
-  //     detailSummaryList.add(
-  //       WordDetailsSummary(
-  //         word: word.word,
-  //         addedOn: dbEntry.addedOn,
-  //         senses: senseCount,
-  //       ),
-  //     );
-  //   }
-
-  //   return detailSummaryList;
-  // }
 
   Future<int> _deleteSenseExampleLinks(int senseID) async {
     return await (delete(exampleList)
@@ -948,17 +907,8 @@ class CardDao extends DatabaseAccessor<CardDatabase> with _$CardDaoMixin {
   }
 
   Future<List<Card>> _getDueCards(int limit) async => (select(cards)
-        ..where((table) => table.dueOn.isSmallerOrEqualValue(DateTime.now()))
-        ..orderBy([
-          (table) => OrderingTerm(
-                expression: table.level,
-                mode: OrderingMode.asc,
-              ),
-          (table) => OrderingTerm(
-                expression: table.isImportant,
-                mode: OrderingMode.desc,
-              ),
-        ])
+        ..where(
+            (table) => table.dueOn.isSmallerOrEqualValue(_getOnlyTimeToday()))
         ..limit(limit))
       .get();
 

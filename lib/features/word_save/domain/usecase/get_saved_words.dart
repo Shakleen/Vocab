@@ -24,24 +24,29 @@ class GetSavedWords extends UseCase<List<WordDetailsSummary>, Param> {
     return fetchEntry.fold(_handleEntryFetchFailure, _handleEntryFetchSuccess);
   }
 
-  FutureOr<Either<Failure, List<WordDetailsSummary>>> _handleEntryFetchFailure(Failure l) async {
-    endReached = l is EmptyListFailure;
+  FutureOr<Either<Failure, List<WordDetailsSummary>>> _handleEntryFetchFailure(
+      Failure l) async {
     return Left(l);
   }
 
-  FutureOr<Either<Failure, List<WordDetailsSummary>>> _handleEntryFetchSuccess(List<Entry> r) async {
+  FutureOr<Either<Failure, List<WordDetailsSummary>>> _handleEntryFetchSuccess(
+      List<Entry> r) async {
     final List<WordDetailsSummary> resultList = [];
 
-    for (final Entry dbEntry in r) {
-      Object senseCount = await _getEntrySenseCount(dbEntry);
-      Object word = await _getEntryWord(dbEntry);
-      resultList.add(
-        WordDetailsSummary(
-          word: word is String ? word : null,
-          addedOn: dbEntry.addedOn,
-          senses: senseCount is int ? senseCount : 0,
-        ),
-      );
+    if (r.isEmpty) {
+      endReached = true;
+    } else {
+      for (final Entry dbEntry in r) {
+        Object senseCount = await _getEntrySenseCount(dbEntry);
+        Object word = await _getEntryWord(dbEntry);
+        resultList.add(
+          WordDetailsSummary(
+            word: word is String ? word : null,
+            addedOn: dbEntry.addedOn,
+            senses: senseCount is int ? senseCount : 0,
+          ),
+        );
+      }
     }
 
     return Right(resultList);

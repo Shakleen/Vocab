@@ -7,11 +7,13 @@ import 'package:vocab/features/word_save/domain/usecase/get_saved_words.dart';
 import './bloc.dart';
 
 class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {
-  final GetSavedWords usecase;
+  final GetSavedWords _usecase;
   final List<WordDetailsSummary> _wordList = [];
   int _offset = 0;
 
-  WordListBloc(this.usecase);
+  WordListBloc(this._usecase);
+
+  bool get hasReachedEnd => _usecase.endReached;
 
   @override
   WordListBlocState get initialState => InitialWordListBlocState();
@@ -21,9 +23,7 @@ class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {
     WordListBlocEvent event,
   ) async* {
     if (event is GetWordListEvent) {
-      yield LoadingWordListBlocState();
-
-      final result = await usecase(
+      final result = await _usecase(
         Param(limit: event.limit, offset: _offset),
       );
 
@@ -36,7 +36,7 @@ class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {
   }
 
   Stream<WordListBlocState> _handleSuccess(List<WordDetailsSummary> r) async* {
-    if (usecase.endReached == false) {
+    if (_usecase.endReached == false) {
       _wordList.addAll(r);
       _offset += r.length;
     }

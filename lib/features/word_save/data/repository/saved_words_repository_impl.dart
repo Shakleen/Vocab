@@ -34,10 +34,7 @@ class SavedWordRepositoryImpl extends SavedWordsRepository {
       final List<Entry> result =
           await cardDatabase.wordDao.getWordEntries(limit, offset);
 
-      if (result.isNotEmpty)
-        return Right(result);
-      else
-        return Left(EmptyListFailure());
+      return Right(result);
     } on Exception {
       return Left(DatabaseFailure());
     }

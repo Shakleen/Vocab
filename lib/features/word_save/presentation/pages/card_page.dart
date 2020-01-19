@@ -25,9 +25,7 @@ class CardPage extends StatelessWidget {
                 Navigator.pushNamed(
                   context,
                   '${Page.CardFormPage}',
-                  arguments: {
-                    'isEditing': false,
-                  },
+                  arguments: {'isEditing': false},
                 );
               },
             ),
