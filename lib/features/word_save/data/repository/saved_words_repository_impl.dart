@@ -29,7 +29,9 @@ class SavedWordRepositoryImpl extends SavedWordsRepository {
 
   @override
   Future<Either<Failure, List<Entry>>> getWordEntries(
-      int limit, int offset) async {
+    int limit,
+    int offset,
+  ) async {
     try {
       final List<Entry> result =
           await cardDatabase.wordDao.getWordEntries(limit, offset);

@@ -23,9 +23,11 @@ class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {
     WordListBlocEvent event,
   ) async* {
     if (event is GetWordListEvent) {
-      final result = await _usecase(
-        Param(limit: event.limit, offset: _offset),
-      );
+      final result = await _usecase(Param(
+        limit: event.limit,
+        offset: _offset,
+      ));
+      _offset += event.limit;
 
       yield* result.fold(_handleFailure, _handleSuccess);
     }
@@ -38,7 +40,6 @@ class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {
   Stream<WordListBlocState> _handleSuccess(List<WordDetailsSummary> r) async* {
     if (_usecase.endReached == false) {
       _wordList.addAll(r);
-      _offset += r.length;
     }
     yield LoadedWordListBlocState(_wordList);
   }

@@ -469,17 +469,16 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
   }
 
   Future<List<Entry>> getWordEntries(int limit, int offset) async =>
-      (await (select(words)
+      (await ((select(words)
                 ..orderBy([
                   (table) => OrderingTerm(
                         expression: table.word,
                         mode: OrderingMode.asc,
                       )
-                ])
-                ..limit(limit, offset: offset))
+                ]))
               .join([
         innerJoin(entries, entries.wordId.equalsExp(words.id))
-      ]).get())
+      ])..limit(limit, offset: offset)).get())
           .map((table) => table.readTable(entries))
           .toList();
 
