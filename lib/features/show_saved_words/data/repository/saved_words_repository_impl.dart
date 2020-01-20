@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:vocab/core/database/card_database.dart';
 import 'package:vocab/core/error/failures.dart';
-import 'package:vocab/features/word_save/domain/repository/saved_words_repository.dart';
+import 'package:vocab/features/show_saved_words/domain/repository/saved_words_repository.dart';
 
 class SavedWordRepositoryImpl extends SavedWordsRepository {
   final FetchWordDao fetchWordDao;

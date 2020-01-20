@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:vocab/features/word_save/domain/entity/word_details_summary.dart';
+import 'package:vocab/features/show_saved_words/domain/entity/word_details_summary.dart';
 
 abstract class WordListBlocState extends Equatable {
   const WordListBlocState();

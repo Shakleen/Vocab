@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:vocab/core/error/error_messages.dart';
 import 'package:vocab/core/error/failures.dart';
-import 'package:vocab/features/word_save/domain/entity/word_details_summary.dart';
-import 'package:vocab/features/word_save/domain/usecase/get_saved_words.dart';
+import 'package:vocab/features/show_saved_words/domain/entity/word_details_summary.dart';
+import 'package:vocab/features/show_saved_words/domain/usecase/get_saved_words.dart';
 import './bloc.dart';
 
 class WordListBloc extends Bloc<WordListBlocEvent, WordListBlocState> {

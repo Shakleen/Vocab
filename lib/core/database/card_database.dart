@@ -13,7 +13,7 @@ import 'package:vocab/core/util/formatter.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 import 'tables.dart';
 
-part 'package:vocab/features/word_save/data/data_source/fetch_word_dao.dart';
+part 'package:vocab/features/show_saved_words/data/data_source/fetch_word_dao.dart';
 part 'card_database.g.dart';
 
 DateTime _getOnlyTimeToday() {

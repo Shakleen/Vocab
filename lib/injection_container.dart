@@ -8,17 +8,17 @@ import 'package:vocab/features/query_word/domain/repository/query_word_repositor
 import 'package:vocab/features/query_word/domain/usecases/get_word_definition.dart';
 import 'package:vocab/features/query_word/presentation/bloc/bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:vocab/features/show_saved_words/data/repository/saved_words_repository_impl.dart';
+import 'package:vocab/features/show_saved_words/domain/repository/saved_words_repository.dart';
+import 'package:vocab/features/show_saved_words/domain/usecase/get_saved_words.dart';
+import 'package:vocab/features/show_saved_words/presentation/bloc/word_list_bloc.dart';
 import 'package:vocab/features/word_card/data/data_source/remote_dictionary.dart';
 import 'package:vocab/features/word_card/data/repository/word_card_repository_impl.dart';
 import 'package:vocab/features/word_card/domain/repository/word_card_repository.dart';
 import 'package:vocab/features/word_card/domain/usecase/get_word_card.dart';
 import 'package:vocab/features/word_card/presentation/bloc/bloc.dart';
-import 'package:vocab/features/word_save/data/repository/saved_words_repository_impl.dart';
-import 'package:vocab/features/word_save/domain/usecase/get_saved_words.dart';
 
 import 'core/database/card_database.dart';
-import 'features/word_save/domain/repository/saved_words_repository.dart';
-import 'features/word_save/presentation/bloc/word_list_bloc.dart';
 
 final sl = GetIt.instance;
 

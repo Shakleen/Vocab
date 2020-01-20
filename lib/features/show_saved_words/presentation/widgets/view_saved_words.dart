@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vocab/core/ui/widgets/empty_state_ui.dart';
 import 'package:vocab/core/ui/widgets/error_state_ui.dart';
-import 'package:vocab/features/word_save/domain/entity/word_details_summary.dart';
-import 'package:vocab/features/word_save/presentation/bloc/bloc.dart';
+import 'package:vocab/features/show_saved_words/domain/entity/word_details_summary.dart';
+import 'package:vocab/features/show_saved_words/presentation/bloc/bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'word_tile.dart';

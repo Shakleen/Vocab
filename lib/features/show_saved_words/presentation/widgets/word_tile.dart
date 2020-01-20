@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vocab/core/navigation/routes.dart';
 import 'package:vocab/core/ui/widgets/delete_alert_dialog.dart';
 import 'package:vocab/core/util/formatter.dart';
-import 'package:vocab/features/word_save/domain/entity/word_details_summary.dart';
+import 'package:vocab/features/show_saved_words/domain/entity/word_details_summary.dart';
 
 class WordTile extends StatefulWidget {
   final WordDetailsSummary wordSummary;

@@ -7,7 +7,7 @@ import 'package:vocab/features/quiz_card/presentation/pages/quiz_page.dart';
 import 'package:vocab/features/quiz_card/presentation/pages/take_quiz_page.dart';
 import 'package:vocab/features/statistics_graphs/pages/statistics_page.dart';
 import 'package:vocab/features/word_save/presentation/pages/card_form_page.dart';
-import 'package:vocab/features/word_save/presentation/pages/card_page.dart';
+import 'package:vocab/features/show_saved_words/presentation/pages/card_page.dart';
 
 enum Page {
   HomePage,

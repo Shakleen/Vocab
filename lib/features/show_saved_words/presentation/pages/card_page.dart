@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vocab/core/navigation/routes.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/side_drawer.dart';
-import 'package:vocab/features/word_save/presentation/bloc/bloc.dart';
-import 'package:vocab/features/word_save/presentation/widgets/view_saved_words.dart';
+import 'package:vocab/features/show_saved_words/presentation/bloc/word_list_bloc.dart';
+import 'package:vocab/features/show_saved_words/presentation/widgets/view_saved_words.dart';
 import 'package:vocab/injection_container.dart';
 
 class CardPage extends StatelessWidget {

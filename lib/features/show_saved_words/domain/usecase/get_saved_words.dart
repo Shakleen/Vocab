@@ -6,8 +6,8 @@ import 'package:meta/meta.dart';
 import 'package:vocab/core/database/card_database.dart';
 import 'package:vocab/core/error/failures.dart';
 import 'package:vocab/core/usecases/usecase.dart';
-import 'package:vocab/features/word_save/domain/entity/word_details_summary.dart';
-import 'package:vocab/features/word_save/domain/repository/saved_words_repository.dart';
+import 'package:vocab/features/show_saved_words/domain/entity/word_details_summary.dart';
+import 'package:vocab/features/show_saved_words/domain/repository/saved_words_repository.dart';
 
 class GetSavedWords extends UseCase<List<WordDetailsSummary>, Param> {
   final SavedWordsRepository repository;
