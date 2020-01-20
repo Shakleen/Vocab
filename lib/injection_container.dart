@@ -19,6 +19,11 @@ import 'package:vocab/features/word_card/domain/usecase/get_word_card.dart';
 import 'package:vocab/features/word_card/presentation/bloc/bloc.dart';
 
 import 'core/database/card_database.dart';
+import 'features/word_save/data/repository/word_save_repository_impl.dart';
+import 'features/word_save/domain/repository/word_save_repository.dart';
+import 'features/word_save/domain/usecase/insert_word_details.dart';
+import 'features/word_save/domain/usecase/update_word_details.dart';
+import 'features/word_save/presentation/bloc/word_save_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -69,23 +74,42 @@ Future<void> init() async {
     () => WordsAPIRemoteDictionary(client: sl()),
   );
 
-  //!Feature: Word card saving
+  //!Feature: Show saved words
   //? Presentation later
   // Bloc
   sl.registerFactory<WordListBloc>(() => WordListBloc(sl()));
 
   //? Domain
   // Use cases
-  sl.registerLazySingleton<GetSavedWords>(() => GetSavedWords(repository: sl()));
+  sl.registerLazySingleton<GetSavedWords>(
+      () => GetSavedWords(repository: sl()));
 
   //? Data
-  // Repository 
-  sl.registerLazySingleton<SavedWordsRepository>(() => SavedWordRepositoryImpl(sl()));
+  // Repository
+  sl.registerLazySingleton<SavedWordsRepository>(
+      () => SavedWordRepositoryImpl(sl()));
 
-  // Data source
-  sl.registerLazySingleton(() => CardDatabase());
+  //!Feature: Save words
+  //? Presentation later
+  // Bloc
+  sl.registerFactory<WordSaveBloc>(
+    () => WordSaveBloc(insertUsecase: sl(), updateUsecase: sl()),
+  );
+
+  //? Domain
+  // Use cases
+  sl.registerLazySingleton<InsertWordDetails>(
+      () => InsertWordDetails(repository: sl()));
+  sl.registerLazySingleton<UpdateWordDetails>(
+      () => UpdateWordDetails(repository: sl()));
+
+  //? Data
+  // Repository
+  sl.registerLazySingleton<WordSaveRepository>(
+      () => WordSaveRepositoryImpl(sl()));
 
   //! Core
+  sl.registerLazySingleton(() => CardDatabase());
   sl.registerLazySingleton(() => InputConverter());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 

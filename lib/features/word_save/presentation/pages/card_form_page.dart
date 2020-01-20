@@ -126,7 +126,7 @@ class _CardFormPageState extends State<CardFormPage> {
   Future _createQuizCards(WordCard wordCard) async {
     if (widget.isEditing == false) {
       db.CardDatabase cardDatabase = sl();
-      db.CardDao cardDao = cardDatabase.cardDao;
+      db.QuizCardDao cardDao = cardDatabase.quizCardDao;
       await cardDao.createNewQuizCards(wordCard);
     }
   }

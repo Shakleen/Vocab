@@ -77,7 +77,7 @@ class _QuizCardTileState extends State<QuizCardTile> {
   void _handleOnDismissed(DismissDirection direction) async {
     final bool result =
         await Provider.of<db.CardDatabase>(context, listen: false)
-            .cardDao
+            .quizCardDao
             .deleteQuizCard(widget.quizCard.id);
     print('Deletion result: $result');
   }

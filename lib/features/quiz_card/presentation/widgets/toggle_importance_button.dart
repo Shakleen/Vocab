@@ -14,14 +14,14 @@ class ToggleImportanceButton extends StatefulWidget {
 }
 
 class _ToggleImportanceButtonState extends State<ToggleImportanceButton> {
-  db.CardDao cardDao;
+  db.QuizCardDao cardDao;
   bool _status;
 
   @override
   void initState() {
     super.initState();
     db.CardDatabase cardDatabase = sl();
-    cardDao = cardDatabase.cardDao;
+    cardDao = cardDatabase.quizCardDao;
     _status = widget.quizCard.isImportant;
   }
 

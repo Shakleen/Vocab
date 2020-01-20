@@ -11,7 +11,7 @@ class QuizCardTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Provider.of<CardDatabase>(context).cardDao.getQuizCardsForWord(word),
+      future: Provider.of<CardDatabase>(context).quizCardDao.getQuizCardsForWord(word),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());

@@ -28,4 +28,8 @@ class UnauthorizedFailure extends Failure {}
 
 class DatabaseFailure extends Failure {}
 
+class DatabaseInsertionFailure extends Failure {}
+
+class DatabaseUpdateFailure extends Failure {}
+
 class EmptyListFailure extends Failure {}

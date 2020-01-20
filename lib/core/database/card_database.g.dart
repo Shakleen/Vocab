@@ -2683,8 +2683,9 @@ abstract class _$CardDatabase extends GeneratedDatabase {
   $UsageInfoTable get usageInfo => _usageInfo ??= $UsageInfoTable(this);
   WordDao _wordDao;
   WordDao get wordDao => _wordDao ??= WordDao(this as CardDatabase);
-  CardDao _cardDao;
-  CardDao get cardDao => _cardDao ??= CardDao(this as CardDatabase);
+  QuizCardDao _quizCardDao;
+  QuizCardDao get quizCardDao =>
+      _quizCardDao ??= QuizCardDao(this as CardDatabase);
   StatisticsDao _statisticsDao;
   StatisticsDao get statisticsDao =>
       _statisticsDao ??= StatisticsDao(this as CardDatabase);
@@ -2721,20 +2722,6 @@ mixin _$WordDaoMixin on DatabaseAccessor<CardDatabase> {
   $ThesaurusListTable get thesaurusList => db.thesaurusList;
   $ExampleListTable get exampleList => db.exampleList;
   $SyllableListTable get syllableList => db.syllableList;
-  $UsageInfoTable get usageInfo => db.usageInfo;
-}
-mixin _$CardDaoMixin on DatabaseAccessor<CardDatabase> {
-  $EntriesTable get entries => db.entries;
-  $SensesTable get senses => db.senses;
-  $WordsTable get words => db.words;
-  $ExamplesTable get examples => db.examples;
-  $SyllablesTable get syllables => db.syllables;
-  $ThesaurusListTable get thesaurusList => db.thesaurusList;
-  $ExampleListTable get exampleList => db.exampleList;
-  $SyllableListTable get syllableList => db.syllableList;
-  $CardsTable get cards => db.cards;
-  $CardInfoTable get cardInfo => db.cardInfo;
-  $EntryQuizCardsTable get entryQuizCards => db.entryQuizCards;
   $UsageInfoTable get usageInfo => db.usageInfo;
 }
 mixin _$StatisticsDaoMixin on DatabaseAccessor<CardDatabase> {
@@ -2829,4 +2816,18 @@ mixin _$FetchWordDaoMixin on DatabaseAccessor<CardDatabase> {
   $EntriesTable get entries => db.entries;
   $SensesTable get senses => db.senses;
   $WordsTable get words => db.words;
+}
+mixin _$QuizCardDaoMixin on DatabaseAccessor<CardDatabase> {
+  $EntriesTable get entries => db.entries;
+  $SensesTable get senses => db.senses;
+  $WordsTable get words => db.words;
+  $ExamplesTable get examples => db.examples;
+  $SyllablesTable get syllables => db.syllables;
+  $ThesaurusListTable get thesaurusList => db.thesaurusList;
+  $ExampleListTable get exampleList => db.exampleList;
+  $SyllableListTable get syllableList => db.syllableList;
+  $CardsTable get cards => db.cards;
+  $CardInfoTable get cardInfo => db.cardInfo;
+  $EntryQuizCardsTable get entryQuizCards => db.entryQuizCards;
+  $UsageInfoTable get usageInfo => db.usageInfo;
 }

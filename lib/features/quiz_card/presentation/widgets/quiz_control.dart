@@ -93,7 +93,7 @@ class _QuizControlsState extends State<QuizControls> {
 
   void _handleAgain() async {
     await Provider.of<CardDatabase>(context, listen: false)
-        .cardDao
+        .quizCardDao
         .updateCardLevel(
             widget.quizCard.id, 0, DateTime.now().add(Duration(minutes: 1)));
     widget.next();
@@ -102,7 +102,7 @@ class _QuizControlsState extends State<QuizControls> {
   void _handleGood() async {
     final int level = widget.quizCard.level;
     await Provider.of<CardDatabase>(context, listen: false)
-        .cardDao
+        .quizCardDao
         .updateCardLevel(
           widget.quizCard.id,
           level + 1,

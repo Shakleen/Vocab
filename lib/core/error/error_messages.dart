@@ -9,6 +9,8 @@ const String TOO_LONG_URL_ERROR_MESSAGE = "The URL is too long!";
 const String SERVER_FAILURE_ERROR_MESSAGE = "Server failure has occured!";
 const String UNAUTHORIZED_ERROR_MESSAGE = "Unauthorized access!";
 const String DATABASE_ERROR_MESSAGE = "Database error!";
+const String DATABASE_INSERT_ERROR_MESSAGE = "Failed to insert into database!";
+const String DATABASE_UPDATE_ERROR_MESSAGE = "Failed to update content in database!";
 const String EMPTY_LIST_ERROR_MESSAGE = "No records exist in the database!";
 
 String getErrorMessage(Failure failure) {
@@ -29,6 +31,10 @@ String getErrorMessage(Failure failure) {
       return DATABASE_ERROR_MESSAGE;
     case EmptyListFailure:
       return EMPTY_LIST_ERROR_MESSAGE;
+    case DatabaseInsertionFailure:
+      return DATABASE_INSERT_ERROR_MESSAGE;
+    case DatabaseUpdateFailure:
+      return DATABASE_UPDATE_ERROR_MESSAGE;
     default:
       return UNKNOWN_ERROR_MESSAGE;
   }

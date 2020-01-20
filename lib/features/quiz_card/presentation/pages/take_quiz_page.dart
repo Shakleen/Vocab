@@ -22,7 +22,7 @@ class TakeQuizPage extends StatelessWidget {
         ],
       ),
       body: FutureBuilder(
-        future: Provider.of<CardDatabase>(context).cardDao.getQuizCards(),
+        future: Provider.of<CardDatabase>(context).quizCardDao.getQuizCards(),
         builder: (BuildContext context, AsyncSnapshot<List<QuizCard>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
