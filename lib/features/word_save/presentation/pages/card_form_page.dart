@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:vocab/core/entities/pronunciation.dart';
-import 'package:vocab/core/entities/syllable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vocab/core/entities/word_card.dart';
-import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/display_word_text.dart';
 import 'package:vocab/core/database/card_database.dart' as db;
+import 'package:vocab/features/word_save/domain/entity/word_details_keys.dart';
+import 'package:vocab/features/word_save/presentation/bloc/bloc.dart';
 import 'package:vocab/features/word_save/presentation/widgets/custom_text_field.dart';
 import 'package:vocab/features/word_save/presentation/widgets/sense_form_list.dart';
 import 'package:vocab/injection_container.dart';
@@ -31,6 +31,7 @@ class _CardFormPageState extends State<CardFormPage> {
   CustomTextField wordField, pronunciationField, syllablesField;
   SenseFormList senseFormList;
   db.WordDao _wordDao;
+  WordSaveBloc _bloc;
 
   @override
   void initState() {
@@ -55,15 +56,56 @@ class _CardFormPageState extends State<CardFormPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _bloc = sl();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: AppTitle(),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.done), onPressed: _submit)
-        ],
-      ),
-      body: Form(
+    return BlocBuilder<WordSaveBloc, WordSaveState>(
+      bloc: _bloc,
+      builder: (BuildContext context, WordSaveState state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: AppTitle(),
+            actions: _buildActions(state),
+          ),
+          body: _buildBody(state),
+        );
+      },
+    );
+  }
+
+  void _submit() async {
+    if (!_formKey.currentState.validate()) return;
+
+    Map<String, dynamic> wordDetails = _makeWordDetails();
+
+    if (widget.isEditing) {
+      _bloc.add(UpdateWordEvent(wordDetails));
+    } else {
+      _bloc.add(InsertWordEvent(wordDetails));
+    }
+  }
+
+  Map<String, dynamic> _makeWordDetails() {
+    return <String, dynamic>{
+      getWordDetailKeyString(WordDetailKeys.id): widget.initialWordCard?.id,
+      getWordDetailKeyString(WordDetailKeys.word):
+          wordField.controller.value.text,
+      getWordDetailKeyString(WordDetailKeys.pronunciation):
+          pronunciationField.controller.value.text,
+      getWordDetailKeyString(WordDetailKeys.syllables):
+          syllablesField.controller.value.text,
+      getWordDetailKeyString(WordDetailKeys.senses):
+          senseFormList.getSenseValues(),
+    };
+  }
+
+  Widget _buildBody(WordSaveState state) {
+    if (state is InitialWordSaveState) {
+      return Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(8.0),
@@ -79,55 +121,90 @@ class _CardFormPageState extends State<CardFormPage> {
             senseFormList,
           ],
         ),
-      ),
-    );
-  }
-
-  void _submit() async {
-    if (!_formKey.currentState.validate()) return;
-    final WordCard wordCard = _createDataFromForm();
-    final bool result = await _handleFormSubmission(wordCard);
-    if (result) {
-      await _createQuizCards(wordCard);
-      Navigator.pop(context);
+      );
+    } else if (state is ProcessingWordSaveState) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "Processing. Please wait.",
+              style: Theme.of(context).textTheme.headline,
+            ),
+          ),
+          Center(child: LinearProgressIndicator()),
+        ],
+      );
+    } else if (state is FinishedWordSaveState) {
+      return _Notifier(
+        text: widget.isEditing
+            ? "Changes successfully saved!"
+            : "Word successfully saved",
+        color: Colors.green,
+        icon: Icons.done,
+      );
+    } else if (state is ErrorWordSaveState) {
+      return _Notifier(
+        text: widget.isEditing
+            ? "Changes could not be saved!"
+            : "Word could not be saved",
+        color: Colors.red,
+        icon: Icons.clear,
+      );
     }
   }
 
-  WordCard _createDataFromForm() {
-    final String word = wordField.controller.value.text;
-    final String pronunciation = pronunciationField.controller.value.text;
-    final List<String> syllables =
-        syllablesField.controller.value.text?.split(SEPERATOR);
-    final List<WordCardDetails> details = senseFormList.getSenseValues();
-    
-    final WordCard wordCard = WordCard(
-      id: widget.initialWordCard?.id,
-      word: word,
-      pronunciation: Pronunciation(all: pronunciation),
-      syllables: Syllable(count: syllables.length, list: syllables),
-      detailList: details,
-    );
-    return wordCard;
-  }
-
-  Future<bool> _handleFormSubmission(WordCard wordCard) async {
-    bool result;
-    
-    if (widget.isEditing) {
-      result = await _wordDao.updateWordCard(wordCard);
-      print('Update result: $result');
+  List<Widget> _buildActions(WordSaveState state) {
+    if (state is InitialWordSaveState) {
+      return <Widget>[IconButton(icon: Icon(Icons.done), onPressed: _submit)];
     } else {
-      result = await _wordDao.insertWordCard(wordCard);
-      print('Insertion result: $result');
+      return <Widget>[IconButton(icon: Icon(Icons.done), disabledColor: Colors.blue)];
     }
-    return result;
   }
+}
 
-  Future _createQuizCards(WordCard wordCard) async {
-    if (widget.isEditing == false) {
-      db.CardDatabase cardDatabase = sl();
-      db.QuizCardDao cardDao = cardDatabase.quizCardDao;
-      await cardDao.createNewQuizCards(wordCard);
-    }
+class _Notifier extends StatelessWidget {
+  final String text;
+  final Color color;
+  final IconData icon;
+
+  const _Notifier({
+    Key key,
+    @required this.text,
+    @required this.color,
+    @required this.icon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            text,
+            style: Theme.of(context).textTheme.headline,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Center(
+          child: CircleAvatar(
+            backgroundColor: color,
+            radius: 60,
+            child: IconButton(
+              iconSize: 100,
+              icon: Icon(icon, color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

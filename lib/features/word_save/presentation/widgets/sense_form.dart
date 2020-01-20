@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/ui/widgets/headline_text.dart';
 import 'package:vocab/core/ui/widgets/subtitle_text.dart';
-import 'package:vocab/core/enums/part_of_speech.dart';
+import 'package:vocab/features/word_save/domain/entity/word_details_keys.dart';
 
 import 'custom_text_field.dart';
 import 'part_of_speech_dropdown.dart';
@@ -76,23 +76,23 @@ class SenseForm extends StatelessWidget {
     );
   }
 
-  WordCardDetails getSenseFormValues() {
+  Map<String, dynamic> getSenseFormValues() {
     final List values = [];
     int partOfSpeech;
 
     for (final Widget widget in _children)
       if (widget is CustomTextField)
-        values.add(widget.controller.text?.split(SEPERATOR));
+        values.add(widget.controller.text);
       else if (widget is PartOfSpeechDropDown)
         partOfSpeech = widget.choice;
 
-    return WordCardDetails(
-      id: initSense?.id,
-      definition: values[0].join(''),
-      partOfSpeech: ID_TO_PART_OF_SPEECH_TYPE[partOfSpeech],
-      exampleList: values[1],
-      synonymList: values[2],
-      antonymList: values[3],
-    );
+    return <String, dynamic>{
+      getWordDetailKeyString(WordDetailKeys.senseID): initSense?.id,
+      getWordDetailKeyString(WordDetailKeys.definition): values[0],
+      getWordDetailKeyString(WordDetailKeys.partOfSpeech): partOfSpeech,
+      getWordDetailKeyString(WordDetailKeys.examples): values[1],
+      getWordDetailKeyString(WordDetailKeys.synonyms): values[2],
+      getWordDetailKeyString(WordDetailKeys.antonyms): values[3],
+    };
   }
 }

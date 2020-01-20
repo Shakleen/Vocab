@@ -28,26 +28,30 @@ class WordSaveBloc extends Bloc<WordSaveEvent, WordSaveState> {
   ) async* {
     if (event is InsertWordEvent) {
       yield ProcessingWordSaveState();
-      yield* _handleInsertionEvent(event.wordCard);
+      yield* _handleInsertionEvent(event.wordDetails);
     } else if (event is UpdateWordEvent) {
       yield ProcessingWordSaveState();
-      yield* _handleUpdateEvent(event.wordCard);
+      yield* _handleUpdateEvent(event.wordDetails);
     }
   }
 
-  _handleInsertionEvent(WordCard wordCard) async* {
+  Stream<WordSaveState> _handleInsertionEvent(Map<String, dynamic> wordDetails) async* {
     final attemptInsertion =
-        await insertUsecase(insert.Param(wordCard: wordCard));
-    yield* attemptInsertion.fold(_handleInsertFailure, _handleInsertSuccess);
+        await insertUsecase(insert.Param(wordDetails: wordDetails));
+    yield* attemptInsertion.fold(_handleFailure, _handleSuccess);
   }
 
-  _handleUpdateEvent(WordCard wordCard) async* {}
+  Stream<WordSaveState> _handleUpdateEvent(Map<String, dynamic> wordDetails) async* {
+    final attemptUpdate =
+        await updateUsecase(update.Param(wordDetails: wordDetails));
+    yield* attemptUpdate.fold(_handleFailure, _handleSuccess);
+  }
 
-  _handleInsertFailure(Failure l) async* {
+  Stream<WordSaveState> _handleFailure(Failure l) async* {
     yield ErrorWordSaveState(getErrorMessage(l));
   }
 
-  _handleInsertSuccess(bool r) async* {
+  Stream<WordSaveState> _handleSuccess(bool r) async* {
     yield FinishedWordSaveState(r);
   }
 }

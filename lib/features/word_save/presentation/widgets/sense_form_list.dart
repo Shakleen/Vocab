@@ -14,8 +14,8 @@ class SenseFormList extends StatefulWidget {
   @override
   _SenseFormListState createState() => _SenseFormListState();
 
-  List<WordCardDetails> getSenseValues() {
-    final List<WordCardDetails> returnList = [];
+  List<Map<String, dynamic>> getSenseValues() {
+    final List<Map<String, dynamic>> returnList = [];
     _children.forEach((Widget child) {
       if (child is SenseForm) returnList.add(child.getSenseFormValues());
     });
