@@ -2713,7 +2713,7 @@ abstract class _$CardDatabase extends GeneratedDatabase {
 // DaoGenerator
 // **************************************************************************
 
-mixin _$WordDaoMixin on DatabaseAccessor<CardDatabase> {
+mixin _$QuizCardDaoMixin on DatabaseAccessor<CardDatabase> {
   $EntriesTable get entries => db.entries;
   $SensesTable get senses => db.senses;
   $WordsTable get words => db.words;
@@ -2722,6 +2722,9 @@ mixin _$WordDaoMixin on DatabaseAccessor<CardDatabase> {
   $ThesaurusListTable get thesaurusList => db.thesaurusList;
   $ExampleListTable get exampleList => db.exampleList;
   $SyllableListTable get syllableList => db.syllableList;
+  $CardsTable get cards => db.cards;
+  $CardInfoTable get cardInfo => db.cardInfo;
+  $EntryQuizCardsTable get entryQuizCards => db.entryQuizCards;
   $UsageInfoTable get usageInfo => db.usageInfo;
 }
 mixin _$StatisticsDaoMixin on DatabaseAccessor<CardDatabase> {
@@ -2817,7 +2820,7 @@ mixin _$FetchWordDaoMixin on DatabaseAccessor<CardDatabase> {
   $SensesTable get senses => db.senses;
   $WordsTable get words => db.words;
 }
-mixin _$QuizCardDaoMixin on DatabaseAccessor<CardDatabase> {
+mixin _$WordDaoMixin on DatabaseAccessor<CardDatabase> {
   $EntriesTable get entries => db.entries;
   $SensesTable get senses => db.senses;
   $WordsTable get words => db.words;
@@ -2826,8 +2829,5 @@ mixin _$QuizCardDaoMixin on DatabaseAccessor<CardDatabase> {
   $ThesaurusListTable get thesaurusList => db.thesaurusList;
   $ExampleListTable get exampleList => db.exampleList;
   $SyllableListTable get syllableList => db.syllableList;
-  $CardsTable get cards => db.cards;
-  $CardInfoTable get cardInfo => db.cardInfo;
-  $EntryQuizCardsTable get entryQuizCards => db.entryQuizCards;
   $UsageInfoTable get usageInfo => db.usageInfo;
 }

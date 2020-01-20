@@ -9,7 +9,6 @@ import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/enums/attributes.dart';
 import 'package:vocab/core/enums/mastery_levels.dart';
 import 'package:vocab/core/enums/part_of_speech.dart';
-import 'package:vocab/core/util/formatter.dart';
 import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 import 'tables.dart';
 
@@ -50,7 +49,8 @@ DateTime _getOnlyTimeToday() {
   EntryQuizCards,
   UsageInfo,
 ])
-class QuizCardDao extends DatabaseAccessor<CardDatabase> with _$QuizCardDaoMixin {
+class QuizCardDao extends DatabaseAccessor<CardDatabase>
+    with _$QuizCardDaoMixin {
   final CardDatabase cardDatabase;
 
   QuizCardDao(this.cardDatabase) : super(cardDatabase);
@@ -251,11 +251,27 @@ class QuizCardDao extends DatabaseAccessor<CardDatabase> with _$QuizCardDaoMixin
     return true;
   }
 
-  Future<List<Card>> _getDueCards(int limit) async => (select(cards)
-        ..where(
-            (table) => table.dueOn.isSmallerOrEqualValue(_getOnlyTimeToday()))
-        ..limit(limit))
-      .get();
+  Future<List<Card>> _getDueCards(int limit) async {
+    final time = (_getOnlyTimeToday().millisecondsSinceEpoch / 1000).round();
+
+    return (await customSelectQuery(
+      'SELECT * FROM ${cards.actualTableName} ' +
+          'WHERE ${cards.dueOn.$name} <= $time ' +
+          'ORDER BY RANDOM() ' +
+          'LIMIT $limit',
+      readsFrom: {cards},
+    ).get())
+        .map((row) {
+      return Card(
+        id: row.readInt(cards.id.$name),
+        dueOn: row.readDateTime(cards.dueOn.$name),
+        level: row.readInt(cards.level.$name),
+        frontId: row.readInt(cards.frontId.$name),
+        backId: row.readInt(cards.backId.$name),
+        isImportant: row.readBool(cards.isImportant.$name),
+      );
+    }).toList();
+  }
 
   Future<CardInfoData> _getCardInfoFromID(int cardInfoID) async =>
       (select(cardInfo)..where((table) => table.id.equals(cardInfoID)))
@@ -547,7 +563,6 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
     final List<UsageInfoData> list = await select(usageInfo).get();
     final Map<DateTime, int> output = {};
     list.forEach((value) => output[value.date] = value.cardsQuizzed);
-    print('Size of values: ${output.keys.length}');
     return output;
   }
 
@@ -564,16 +579,11 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
     list.forEach((row) {
       maxVal = max(maxVal, max(row.cardsCorrect, row.cardsWrong));
       minVal = min(minVal, min(row.cardsCorrect, row.cardsWrong));
-      print('Date is ${getFormattedDateTime(row.date)}');
-      print('Correct is ${row.cardsCorrect}');
-      print('Wrong is ${row.cardsWrong}');
       output[row.date] = PerformaceResult(
         totalCorrect: row.cardsCorrect,
         totalWrong: row.cardsWrong,
       );
     });
-
-    print('Size of values: ${output.keys.length}');
 
     return Performance(
       performanceMap: output,
