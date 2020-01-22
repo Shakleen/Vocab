@@ -2695,6 +2695,8 @@ abstract class _$CardDatabase extends GeneratedDatabase {
   QuizCardCreateDao _quizCardCreateDao;
   QuizCardCreateDao get quizCardCreateDao =>
       _quizCardCreateDao ??= QuizCardCreateDao(this as CardDatabase);
+  QuizDao _quizDao;
+  QuizDao get quizDao => _quizDao ??= QuizDao(this as CardDatabase);
   @override
   List<TableInfo> get allTables => [
         entries,
@@ -2835,6 +2837,20 @@ mixin _$WordDaoMixin on DatabaseAccessor<CardDatabase> {
   $UsageInfoTable get usageInfo => db.usageInfo;
 }
 mixin _$QuizCardCreateDaoMixin on DatabaseAccessor<CardDatabase> {
+  $EntriesTable get entries => db.entries;
+  $SensesTable get senses => db.senses;
+  $WordsTable get words => db.words;
+  $ExamplesTable get examples => db.examples;
+  $SyllablesTable get syllables => db.syllables;
+  $ThesaurusListTable get thesaurusList => db.thesaurusList;
+  $ExampleListTable get exampleList => db.exampleList;
+  $SyllableListTable get syllableList => db.syllableList;
+  $CardsTable get cards => db.cards;
+  $CardInfoTable get cardInfo => db.cardInfo;
+  $EntryQuizCardsTable get entryQuizCards => db.entryQuizCards;
+  $UsageInfoTable get usageInfo => db.usageInfo;
+}
+mixin _$QuizDaoMixin on DatabaseAccessor<CardDatabase> {
   $EntriesTable get entries => db.entries;
   $SensesTable get senses => db.senses;
   $WordsTable get words => db.words;

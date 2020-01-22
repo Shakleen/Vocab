@@ -8,6 +8,12 @@ import 'package:vocab/features/query_word/domain/repository/query_word_repositor
 import 'package:vocab/features/query_word/domain/usecases/get_word_definition.dart';
 import 'package:vocab/features/query_word/presentation/bloc/bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:vocab/features/quiz_card/data/repository/quiz_repository_impl.dart';
+import 'package:vocab/features/quiz_card/domain/repository/quiz_repository.dart';
+import 'package:vocab/features/quiz_card/domain/usecase/fetch_quiz_cards.dart';
+import 'package:vocab/features/quiz_card/domain/usecase/mark_correct.dart';
+import 'package:vocab/features/quiz_card/domain/usecase/mark_wrong.dart';
+import 'package:vocab/features/quiz_card/presentation/bloc/quiz_bloc.dart';
 import 'package:vocab/features/show_saved_words/data/repository/saved_words_repository_impl.dart';
 import 'package:vocab/features/show_saved_words/domain/repository/saved_words_repository.dart';
 import 'package:vocab/features/show_saved_words/domain/usecase/get_saved_words.dart';
@@ -107,6 +113,31 @@ Future<void> init() async {
   // Repository
   sl.registerLazySingleton<WordSaveRepository>(
       () => WordSaveRepositoryImpl(sl()));
+
+  //!Feature: Quiz on words
+  //? Presentation later
+  // Bloc
+  sl.registerFactory<QuizBloc>(
+    () => QuizBloc(
+      fetchUseCase: sl(),
+      markCorrectUsecase: sl(),
+      markWrongUsecase: sl(),
+    ),
+  );
+
+  //? Domain
+  // Use cases
+  sl.registerLazySingleton<FetchQuizCards>(
+      () => FetchQuizCards(sl()));
+  sl.registerLazySingleton<MarkCorrect>(
+      () => MarkCorrect(sl()));
+  sl.registerLazySingleton<MarkWrong>(
+      () => MarkWrong(sl()));
+
+  //? Data
+  // Repository
+  sl.registerLazySingleton<QuizRepository>(
+      () => QuizRepositoyImpl(sl()));
 
   //! Core
   sl.registerLazySingleton(() => CardDatabase());

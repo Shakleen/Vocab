@@ -4,6 +4,7 @@ import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:vocab/core/ui/widgets/display_word_text.dart';
 import 'package:vocab/core/database/card_database.dart' as db;
+import 'package:vocab/core/ui/widgets/notifier.dart';
 import 'package:vocab/features/word_save/domain/entity/word_details_keys.dart';
 import 'package:vocab/features/word_save/presentation/bloc/bloc.dart';
 import 'package:vocab/features/word_save/presentation/widgets/custom_text_field.dart';
@@ -138,7 +139,7 @@ class _CardFormPageState extends State<CardFormPage> {
         ],
       );
     } else if (state is FinishedWordSaveState) {
-      return _Notifier(
+      return Notifier(
         text: widget.isEditing
             ? "Changes successfully saved!"
             : "Word successfully saved",
@@ -146,7 +147,7 @@ class _CardFormPageState extends State<CardFormPage> {
         icon: Icons.done,
       );
     } else if (state is ErrorWordSaveState) {
-      return _Notifier(
+      return Notifier(
         text: widget.isEditing
             ? "Changes could not be saved!"
             : "Word could not be saved",
@@ -165,46 +166,4 @@ class _CardFormPageState extends State<CardFormPage> {
   }
 }
 
-class _Notifier extends StatelessWidget {
-  final String text;
-  final Color color;
-  final IconData icon;
 
-  const _Notifier({
-    Key key,
-    @required this.text,
-    @required this.color,
-    @required this.icon,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            text,
-            style: Theme.of(context).textTheme.headline,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Center(
-          child: CircleAvatar(
-            backgroundColor: color,
-            radius: 60,
-            child: IconButton(
-              iconSize: 100,
-              icon: Icon(icon, color: Colors.white),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
