@@ -25,6 +25,8 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     @required this.markWrongUsecase,
   }) : this._quizCards = [], this._index = 0;
 
+  int getRemaining() => _quizCards.length - _index;
+
   @override
   QuizState get initialState {
     _index = 0;

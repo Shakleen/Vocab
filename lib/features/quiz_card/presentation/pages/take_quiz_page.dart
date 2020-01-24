@@ -36,19 +36,44 @@ class _TakeQuizPageState extends State<TakeQuizPage> {
           return Scaffold(
             appBar: AppBar(
               title: AppTitle(),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.undo),
-                  onPressed: () => _bloc.add(UndoAnswerQuizEvent()),
-                  tooltip: "Undo last answer",
-                ),
-              ],
+              actions: _getAppBarActions(state),
             ),
             body: _buildBody(state),
           );
         },
       ),
     );
+  }
+
+  List<Widget> _getAppBarActions(QuizState state) {
+    if (state is ShowCardFrontState || state is ShowFullCardState) {
+      return <Widget>[
+        IconButton(
+          icon: Icon(Icons.undo),
+          onPressed: () => _bloc.add(UndoAnswerQuizEvent()),
+          tooltip: "Undo last answer",
+        ),
+        CircleAvatar(
+          backgroundColor: Colors.white,
+          child: Text(
+            '${_bloc.getRemaining()}',
+            style: TextStyle(
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ];
+    } else {
+      return <Widget>[
+        IconButton(
+          icon: Icon(
+            Icons.info,
+            color: Colors.blue,
+          ),
+        ),
+      ];
+    }
   }
 
   Widget _buildBody(QuizState state) {
@@ -83,8 +108,6 @@ class _TakeQuizPageState extends State<TakeQuizPage> {
     return _body;
   }
 }
-
-
 
 class _OnlyFront extends StatelessWidget {
   final QuizCard quizCard;
