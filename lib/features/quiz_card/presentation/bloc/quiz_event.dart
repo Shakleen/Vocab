@@ -30,3 +30,8 @@ class RevealCardQuizEvent implements QuizEvent {
   @override
   List<Object> get props => [];
 }
+
+class UndoAnswerQuizEvent implements QuizEvent {
+  @override
+  List<Object> get props => [];
+}

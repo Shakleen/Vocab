@@ -7,6 +7,7 @@ import 'package:vocab/features/quiz_card/domain/entities/quiz_card.dart';
 import 'package:vocab/features/quiz_card/presentation/bloc/bloc.dart';
 import 'package:vocab/features/quiz_card/presentation/widgets/back_widget.dart';
 import 'package:vocab/features/quiz_card/presentation/widgets/front_widget.dart';
+import 'package:vocab/features/quiz_card/presentation/widgets/select_quiz_card_limit.dart';
 
 import '../../../../injection_container.dart';
 
@@ -23,60 +24,67 @@ class _TakeQuizPageState extends State<TakeQuizPage> {
   @override
   void initState() {
     super.initState();
-    _bloc.add(InitiateQuizEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: AppTitle(),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.info),
-            onPressed: () {},
-            tooltip: "Help!",
-          ),
-        ],
-      ),
-      body: BlocProvider(
-        create: (BuildContext context) => _bloc,
-        child: BlocBuilder<QuizBloc, QuizState>(
-          bloc: _bloc,
-          builder: (BuildContext context, QuizState state) {
-            if (state is InitQuizState) {
-              return Container();
-            } else if (state is LoadingQuizState) {
-              return Center(child: CircularProgressIndicator());
-            } else if (state is ShowCardFrontState) {
-              return _OnlyFront(quizCard: state.quizCard);
-            } else if (state is ShowFullCardState) {
-              return _FullCard(quizCard: state.quizCard);
-            } else if (state is NoDueCardsQuizState) {
-              return Notifier(
-                text: "All caught up!",
-                color: Colors.green,
-                icon: Icons.done,
-              );
-            } else if (state is FinishedQuizState) {
-              return Notifier(
-                text: "Yay! Quizzed on 25 cards!",
-                color: Colors.blue,
-                icon: Icons.tag_faces,
-              );
-            } else if (state is ErrorQuizState) {
-              return Notifier(
-                text: state.message,
-                color: Colors.red,
-                icon: Icons.clear,
-              );
-            }
-          },
-        ),
+    return BlocProvider(
+      create: (BuildContext context) => _bloc,
+      child: BlocBuilder<QuizBloc, QuizState>(
+        bloc: _bloc,
+        builder: (BuildContext context, QuizState state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: AppTitle(),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.undo),
+                  onPressed: () => _bloc.add(UndoAnswerQuizEvent()),
+                  tooltip: "Undo last answer",
+                ),
+              ],
+            ),
+            body: _buildBody(state),
+          );
+        },
       ),
     );
   }
+
+  Widget _buildBody(QuizState state) {
+    Widget _body;
+    if (state is InitQuizState) {
+      _body = SelectQuizCardLimit();
+    } else if (state is LoadingQuizState) {
+      _body = Center(child: CircularProgressIndicator());
+    } else if (state is ShowCardFrontState) {
+      _body = _OnlyFront(quizCard: state.quizCard);
+    } else if (state is ShowFullCardState) {
+      _body = _FullCard(quizCard: state.quizCard);
+    } else if (state is NoDueCardsQuizState) {
+      _body = Notifier(
+        text: "All caught up!",
+        color: Colors.green,
+        icon: Icons.done,
+      );
+    } else if (state is FinishedQuizState) {
+      _body = Notifier(
+        text: "Yay! Quizzed finished!",
+        color: Colors.blue,
+        icon: Icons.tag_faces,
+      );
+    } else if (state is ErrorQuizState) {
+      _body = Notifier(
+        text: state.message,
+        color: Colors.red,
+        icon: Icons.clear,
+      );
+    }
+    return _body;
+  }
 }
+
+
 
 class _OnlyFront extends StatelessWidget {
   final QuizCard quizCard;

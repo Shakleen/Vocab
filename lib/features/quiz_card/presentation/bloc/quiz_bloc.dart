@@ -59,6 +59,12 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
       yield LoadingQuizState();
       await _handleAnswerMarking(event);
       yield* _fetchNextCard();
+    } else if (event is UndoAnswerQuizEvent) {
+      if (_index > 0) {
+        yield LoadingQuizState();
+        _index -= 1;
+        yield  ShowCardFrontState(_quizCards[_index]);
+      }
     }
   }
 
