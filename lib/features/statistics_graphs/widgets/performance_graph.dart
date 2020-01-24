@@ -15,7 +15,7 @@ class _PerformanceGraphState extends State<PerformanceGraph> {
   @override
   void initState() {
     super.initState();
-    _range = 7;
+    _range = 15;
   }
 
   @override
@@ -38,15 +38,6 @@ class _PerformanceGraphState extends State<PerformanceGraph> {
                 buttonMinWidth: 100,
                 children: <Widget>[
                   RaisedButton(
-                    child: Text("Last 3 days", textAlign: TextAlign.center),
-                    color: Theme.of(context).accentColor,
-                    onPressed: () {
-                      setState(() {
-                        _range = 3;
-                      });
-                    },
-                  ),
-                  RaisedButton(
                     child: Text("Last 7 days", textAlign: TextAlign.center),
                     color: Theme.of(context).accentColor,
                     onPressed: () {
@@ -56,11 +47,20 @@ class _PerformanceGraphState extends State<PerformanceGraph> {
                     },
                   ),
                   RaisedButton(
-                    child: Text("Last 14 days", textAlign: TextAlign.center),
+                    child: Text("Last 15 days", textAlign: TextAlign.center),
                     color: Theme.of(context).accentColor,
                     onPressed: () {
                       setState(() {
-                        _range = 14;
+                        _range = 15;
+                      });
+                    },
+                  ),
+                  RaisedButton(
+                    child: Text("Last 31 days", textAlign: TextAlign.center),
+                    color: Theme.of(context).accentColor,
+                    onPressed: () {
+                      setState(() {
+                        _range = 31;
                       });
                     },
                   ),

@@ -62,13 +62,13 @@ class PerformanceStats extends StatelessWidget {
                               rotateAngle: 90,
                               getTitles: (double value) =>
                                   getShortFormattedDateTIme(
-                                      _getPastDate(value.toInt())),
+                                      _getPastDate((range - value - 1).toInt())),
                             ),
                           ),
                           barGroups: List<BarChartGroupData>.generate(
                             range,
                             (int index) {
-                              final DateTime indexDay = _getPastDate(index);
+                              final DateTime indexDay = _getPastDate(range - index - 1);
                               final PerformaceResult result =
                                   snapshot.data.performanceMap[indexDay] == null
                                       ? PerformaceResult()
@@ -135,11 +135,12 @@ class PerformanceStats extends StatelessWidget {
   }
 
   double _getWidth() {
-    if (range == 3)
-      return 64.5;
-    else if (range == 7)
+    if (range == 7)
       return 27.5;
-    else if (range == 14) return 13.5;
+    else if (range == 15) 
+      return 13.0;
+    else if (range == 31)
+      return 6.0;
   }
 
   DateTime _getPastDate(int index) => DateTime(
