@@ -4,7 +4,7 @@ import './bloc.dart';
 
 class BackupBloc extends Bloc<BackupEvent, BackupState> {
   @override
-  BackupState get initialState => InitialBackupState();
+  BackupState get initialState => ShowBackupFiles();
 
   @override
   Stream<BackupState> mapEventToState(
