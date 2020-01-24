@@ -8,12 +8,9 @@ import 'package:vocab/core/enums/part_of_speech.dart';
 import 'package:vocab/core/error/error_messages.dart';
 import 'package:vocab/core/error/failures.dart';
 import 'package:vocab/core/util/input_converter.dart';
-import 'package:vocab/core/entities/syllable.dart';
-import 'package:vocab/core/entities/pronunciation.dart';
 import 'package:vocab/features/word_card/domain/usecase/get_word_card.dart';
 import 'package:vocab/features/word_card/presentation/bloc/bloc.dart';
 import 'package:vocab/features/word_card/presentation/bloc/word_card_bloc.dart';
-import 'package:vocab/core/enums/part_of_speech.dart';
 
 class MockInputConverter extends Mock implements InputConverter {}
 
@@ -205,7 +202,7 @@ WordCard _buildWordCard() {
         partOfSpeech: STRING_TO_PART_OF_SPEECH_TYPE["verb"],
       ),
     ],
-    syllables: Syllable(count: 1, list: ["race"]),
-    pronunciation: Pronunciation(all: "res"),
+    syllables: ["race"],
+    pronunciation: "res",
   );
 }

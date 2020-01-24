@@ -31,8 +31,8 @@ class GetWordCard extends UseCase<WordCard, Param> {
     return Right(
       WordCard(
         word: r.word,
-        syllables: r.syllables,
-        pronunciation: r.pronunciation,
+        syllables: r.syllables?.list,
+        pronunciation: r.pronunciation?.all,
         detailList: r.results.map(_toWordCardDetails).toList(),
       ),
     );

@@ -66,7 +66,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
         Entry(
           wordId: wordID,
           addedOn: DateTime.now(),
-          pronunciation: wordCard.pronunciation.all,
+          pronunciation: wordCard.pronunciation,
         ),
       );
     }
@@ -219,7 +219,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     // First get the Syllable ID.
     // Next use the Syllable ID and entry ID to link the entry and
     // the syllable.
-    await _insertEntrySyllables(entryID, wordCard.syllables.list);
+    await _insertEntrySyllables(entryID, wordCard.syllables);
 
     //? Step 4: Dealing with senses list data
     await _insertEntrySenseData(entryID, wordCard.detailList);
@@ -310,13 +310,8 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     return WordCard(
       id: dbEntry.id,
       word: word,
-      pronunciation: PronunciationEntity.Pronunciation(
-        all: dbEntry.pronunciation,
-      ),
-      syllables: SyllableEntity.Syllable(
-        count: resultSyllableList.length,
-        list: resultSyllableList,
-      ),
+      pronunciation: dbEntry.pronunciation,
+      syllables: resultSyllableList,
       detailList: resultDetailsList,
     );
   }
@@ -403,7 +398,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
         .map((row) => row.syllable)
         .toList();
 
-    for (final String syl in wordCard.syllables.list) {
+    for (final String syl in wordCard.syllables) {
       if (syl.isNotEmpty) {
         if (dbSyllablesList.contains(syl) == false) {
           final int sylID = await _getExistingOrNewSyllableID(syl);
@@ -413,7 +408,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     }
 
     for (final String dbSyl in dbSyllablesList) {
-      if (wordCard.syllables.list.contains(dbSyl) == false) {
+      if (wordCard.syllables.contains(dbSyl) == false) {
         final int sbSylID = await _getExistingOrNewExampleID(dbSyl);
         await (delete(syllableList)
               ..where((table) => table.entryId.equals(wordCard.id))
@@ -495,7 +490,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
     //? Step 1: Update entry details
     await (update(entries)..where((table) => table.id.equals(wordCard.id)))
         .write(
-      Entry(pronunciation: wordCard.pronunciation.all),
+      Entry(pronunciation: wordCard.pronunciation),
     );
 
     //? Step 2: update syllables

@@ -31,7 +31,7 @@ class SaveWordButton extends StatelessWidget {
                   arguments: {
                     'wordCard': WordCard(
                       detailList: stateW.wordCard.detailList,
-                      pronunciation: Pronunciation(all: audioUrl),
+                      pronunciation: audioUrl,
                       syllables: stateW.wordCard.syllables,
                       word: stateW.wordCard.word,
                     ),

@@ -44,11 +44,11 @@ class _CardFormPageState extends State<CardFormPage> {
       labelText: 'Word',
     );
     pronunciationField = CustomTextField(
-      initValue: widget.initialWordCard?.pronunciation?.all,
+      initValue: widget.initialWordCard?.pronunciation,
       labelText: 'Pronunciation',
     );
     syllablesField = CustomTextField(
-      initValue: widget.initialWordCard?.syllables?.list?.join(SEPERATOR),
+      initValue: widget.initialWordCard?.syllables?.join(SEPERATOR),
       labelText: "Syllables",
     );
     senseFormList = SenseFormList(

@@ -19,15 +19,15 @@ class WordInfoWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: HeadlineText(
-            text: 'Pronunciation: ${wordCard.pronunciation.all}',
+            text: 'Pronunciation: ${wordCard.pronunciation}',
           ),
         ),
         SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: HeadlineText(
-            text: 'Syllables(${wordCard.syllables.count}):' +
-                ' ${wordCard.syllables.list}',
+            text: 'Syllables(${wordCard.syllables.length}):' +
+                ' ${wordCard.syllables}',
           ),
         ),
         Column(

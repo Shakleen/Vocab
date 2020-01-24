@@ -61,12 +61,10 @@ class InsertWordDetails extends UseCase<bool, Param> {
     return WordCard(
       id: params.wordDetails[getWordDetailKeyString(WordDetailKeys.id)],
       word: params.wordDetails[getWordDetailKeyString(WordDetailKeys.word)],
-      syllables: Syllable(list: syllables, count: syllables.length),
+      syllables: syllables,
       detailList: detailList,
-      pronunciation: Pronunciation(
-        all: params
-            .wordDetails[getWordDetailKeyString(WordDetailKeys.pronunciation)],
-      ),
+      pronunciation: params
+          .wordDetails[getWordDetailKeyString(WordDetailKeys.pronunciation)],
     );
   }
 
