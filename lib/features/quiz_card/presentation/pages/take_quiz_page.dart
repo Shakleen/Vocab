@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:provider/provider.dart';
 import 'package:vocab/core/ui/widgets/notifier.dart';
@@ -96,7 +97,7 @@ class _TakeQuizPageState extends State<TakeQuizPage> {
       _body = Notifier(
         text: "Yay! Quizzed finished!",
         color: Colors.blue,
-        icon: Icons.tag_faces,
+        icon: MdiIcons.emoticonHappy,
       );
     } else if (state is ErrorQuizState) {
       _body = Notifier(

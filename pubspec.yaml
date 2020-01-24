@@ -20,6 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  material_design_icons_flutter: ^3.4.4795
   heatmap_calendar: ^1.2.5
   audioplayers: ^0.13.7
   fl_chart: ^0.6.3

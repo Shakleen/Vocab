@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:vocab/core/navigation/routes.dart';
 
 import 'headline_text.dart';
@@ -22,7 +23,7 @@ class SideDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.home),
-            title: Text('Home Page'),
+            title: Text('Search'),
             selected: page == Page.HomePage,
             onTap: () {
               if (page != Page.HomePage) {
@@ -34,8 +35,8 @@ class SideDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.credit_card),
-            title: Text('Card Page'),
+            leading: Icon(MdiIcons.cards),
+            title: Text('Saved'),
             selected: page == Page.CardPage,
             onTap: () {
               if (page != Page.CardPage) {
@@ -47,8 +48,8 @@ class SideDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.book),
-            title: Text('Quiz Page'),
+            leading: Icon(MdiIcons.trophy),
+            title: Text('Quiz'),
             selected: page == Page.QuizPage,
             onTap: () {
               if (page != Page.QuizPage) {
@@ -60,8 +61,8 @@ class SideDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.pie_chart),
-            title: Text('Statistics Page'),
+            leading: Icon(MdiIcons.chartBar),
+            title: Text('Stats'),
             selected: page == Page.StatisticsPage,
             onTap: () {
               if (page != Page.StatisticsPage) {
