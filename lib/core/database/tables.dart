@@ -64,9 +64,6 @@ class SyllableList extends Table {
       integer().customConstraint('REFERENCES entries(id)')();
   IntColumn get syllableId =>
       integer().customConstraint('REFERENCES syllables(id)')();
-
-  @override
-  Set<Column> get primaryKey => {entryId, syllableId};
 }
 
 class EntryQuizCards extends Table {

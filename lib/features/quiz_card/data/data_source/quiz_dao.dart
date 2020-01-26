@@ -14,8 +14,7 @@ part of 'package:vocab/core/database/card_database.dart';
   EntryQuizCards,
   UsageInfo,
 ])
-class QuizDao extends DatabaseAccessor<CardDatabase>
-    with _$QuizDaoMixin {
+class QuizDao extends DatabaseAccessor<CardDatabase> with _$QuizDaoMixin {
   final CardDatabase cardDatabase;
 
   QuizDao(this.cardDatabase) : super(cardDatabase);
@@ -30,27 +29,45 @@ class QuizDao extends DatabaseAccessor<CardDatabase>
         .toList();
   }
 
-  Future<List<Card>> getDueCards(int limit) async {
-    final int time = (DateTime.now().millisecondsSinceEpoch / 1000).round();
+  Future<List<Card>> getNewQuizCards(int limit, int time) async =>
+      (await customSelectQuery(
+        'SELECT * FROM ${cards.actualTableName} ' +
+            'WHERE ${cards.dueOn.$name} <= $time AND ' +
+            '${cards.level.$name} <= 1 ' +
+            'ORDER BY RANDOM() ' +
+            'LIMIT $limit',
+        readsFrom: {cards},
+      ).get())
+          .map((row) {
+        return Card(
+          id: row.readInt(cards.id.$name),
+          dueOn: row.readDateTime(cards.dueOn.$name),
+          level: row.readInt(cards.level.$name),
+          frontId: row.readInt(cards.frontId.$name),
+          backId: row.readInt(cards.backId.$name),
+          isImportant: row.readBool(cards.isImportant.$name),
+        );
+      }).toList();
 
-    return (await customSelectQuery(
-      'SELECT * FROM ${cards.actualTableName} ' +
-          'WHERE ${cards.dueOn.$name} <= $time ' +
-          'ORDER BY RANDOM() ' +
-          'LIMIT $limit',
-      readsFrom: {cards},
-    ).get())
-        .map((row) {
-      return Card(
-        id: row.readInt(cards.id.$name),
-        dueOn: row.readDateTime(cards.dueOn.$name),
-        level: row.readInt(cards.level.$name),
-        frontId: row.readInt(cards.frontId.$name),
-        backId: row.readInt(cards.backId.$name),
-        isImportant: row.readBool(cards.isImportant.$name),
-      );
-    }).toList();
-  }
+  Future<List<Card>> getOldQuizCards(int limit, int time) async =>
+      (await customSelectQuery(
+        'SELECT * FROM ${cards.actualTableName} ' +
+            'WHERE ${cards.dueOn.$name} <= $time AND ' +
+            '${cards.level.$name} > 1 ' +
+            'ORDER BY RANDOM() ' +
+            'LIMIT $limit',
+        readsFrom: {cards},
+      ).get())
+          .map((row) {
+        return Card(
+          id: row.readInt(cards.id.$name),
+          dueOn: row.readDateTime(cards.dueOn.$name),
+          level: row.readInt(cards.level.$name),
+          frontId: row.readInt(cards.frontId.$name),
+          backId: row.readInt(cards.backId.$name),
+          isImportant: row.readBool(cards.isImportant.$name),
+        );
+      }).toList();
 
   Future<CardInfoData> getCardInfoFromID(int cardInfoID) async =>
       (select(cardInfo)..where((table) => table.id.equals(cardInfoID)))

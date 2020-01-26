@@ -233,7 +233,7 @@ class CardDatabase extends _$CardDatabase {
         );
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -241,16 +241,31 @@ class CardDatabase extends _$CardDatabase {
           await this.customStatement('PRAGMA foreign_keys = ON');
         },
         onCreate: (Migrator m) {
-          return m.createAllTables();
+          return m.createAll();
         },
         onUpgrade: (Migrator m, int from, int to) async {
-          if (from < 3) {
-            await m.deleteTable('part_of_speech');
-            await m.createTable(usageInfo);
-          } else if (from == 4) {
-            await m.addColumn(usageInfo, usageInfo.cardsCorrect);
-            await m.addColumn(usageInfo, usageInfo.cardsWrong);
-            await m.addColumn(usageInfo, usageInfo.wordsDeleted);
+          if (from < 12) {
+            await m.issueCustomQuery("PRAGMA foreign_keys=off;");
+            await m.issueCustomQuery("BEGIN TRANSACTION;");
+            await m.issueCustomQuery(
+              "ALTER TABLE ${syllableList.actualTableName} RENAME TO ${syllableList.actualTableName}B;",
+            );
+            await m.issueCustomQuery(
+              "CREATE TABLE ${syllableList.actualTableName} (" +
+                  "${syllableList.entryId.$name} INTEGER, " +
+                  "${syllableList.syllableId.$name} INTEGER, " +
+                  "FOREIGN KEY(${syllableList.syllableId.$name}) REFERENCES ${syllables.actualTableName}(${syllables.id.$name}), " +
+                  "FOREIGN KEY(${syllableList.entryId.$name}) REFERENCES ${entries.actualTableName}(${entries.id.$name})" +
+                  ");",
+            );
+            await m.issueCustomQuery(
+              "INSERT INTO ${syllableList.actualTableName} SELECT * FROM ${syllableList.actualTableName}B;",
+            );
+            await m.issueCustomQuery(
+              "DROP TABLE ${syllableList.actualTableName}B;",
+            );
+            await m.issueCustomQuery("COMMIT;");
+            await m.issueCustomQuery("PRAGMA foreign_keys=on;");
           }
         },
       );
