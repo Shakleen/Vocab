@@ -11,16 +11,11 @@ class MasteryLevelStats extends StatefulWidget {
 }
 
 class MasteryLevelStatsState extends State {
-  final List<String> _masteryName = [];
   final List<Color> _masteryColor = [];
 
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < 4; ++i) {
-      _masteryName.add(getMasteryLevelString(ID_TO_MASTERY_LEVEL[i]));
-    }
-
     _masteryColor.addAll([Colors.grey, Colors.yellow, Colors.lightGreen, Colors.green]);
   }
 
@@ -68,7 +63,7 @@ class MasteryLevelStatsState extends State {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: List<Widget>.generate(
-                            3,
+                            MASTERY_LEVELS,
                             _generateIndicator,
                           ),
                         ),
@@ -88,7 +83,7 @@ class MasteryLevelStatsState extends State {
   }
 
   List<PieChartSectionData> _showingSections(Map<MasteryLevels, int> data) =>
-      List<PieChartSectionData>.generate(3, (int index) {
+      List<PieChartSectionData>.generate(MASTERY_LEVELS, (int index) {
         int val = data[ID_TO_MASTERY_LEVEL[index]];
         if (val == null) val = 0;
         return PieChartSectionData(
@@ -108,7 +103,7 @@ class MasteryLevelStatsState extends State {
         padding: const EdgeInsets.only(bottom: 4.0, left: 4.0),
         child: Indicator(
           color: _masteryColor[index],
-          text: _masteryName[index],
+          text: getMasteryLevelString(ID_TO_MASTERY_LEVEL[index]),
           isSquare: true,
         ),
       );

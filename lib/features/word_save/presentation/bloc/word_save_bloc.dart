@@ -31,19 +31,23 @@ class WordSaveBloc extends Bloc<WordSaveEvent, WordSaveState> {
       yield* _handleInsertionEvent(event.wordDetails);
     } else if (event is UpdateWordEvent) {
       yield ProcessingWordSaveState();
-      yield* _handleUpdateEvent(event.wordDetails);
+      yield* _handleUpdateEvent(event.wordDetails, event.previousWordDetails);
     }
   }
 
-  Stream<WordSaveState> _handleInsertionEvent(Map<String, dynamic> wordDetails) async* {
-    final attemptInsertion =
-        await insertUsecase(insert.Param(wordDetails: wordDetails));
+  Stream<WordSaveState> _handleInsertionEvent(
+      Map<String, dynamic> wordDetails) async* {
+    final attemptInsertion = await insertUsecase(
+      insert.Param(wordDetails: wordDetails),
+    );
     yield* attemptInsertion.fold(_handleFailure, _handleSuccess);
   }
 
-  Stream<WordSaveState> _handleUpdateEvent(Map<String, dynamic> wordDetails) async* {
-    final attemptUpdate =
-        await updateUsecase(update.Param(wordDetails: wordDetails));
+  Stream<WordSaveState> _handleUpdateEvent(
+      Map<String, dynamic> wordDetails, WordCard previous) async* {
+    final attemptUpdate = await updateUsecase(
+      update.Param(wordDetails: wordDetails, previous: previous),
+    );
     yield* attemptUpdate.fold(_handleFailure, _handleSuccess);
   }
 

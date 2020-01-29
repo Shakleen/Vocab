@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:vocab/core/enums/mastery_levels.dart';
 import 'package:vocab/core/ui/widgets/app_title.dart';
 import 'package:provider/provider.dart';
 import 'package:vocab/core/ui/widgets/notifier.dart';
@@ -199,11 +200,11 @@ class _FullCard extends StatelessWidget {
   String _getTime() {
     final int level = quizCard.level;
 
-    if (level < 10) {
+    if (level < FAMILIAR_LEVEL_START) {
       return "2 minutes";
-    } else if (level == 11) {
+    } else if (level == FAMILIAR_LEVEL_START) {
       return "1 day";
-    } else if (level < 25) {
+    } else if (level <= MASTERED_LEVEL_START) {
       return "${2 * level - 1} days";
     } else {
       final double time = (level / 25);

@@ -84,7 +84,7 @@ class _CardFormPageState extends State<CardFormPage> {
     Map<String, dynamic> wordDetails = _makeWordDetails();
 
     if (widget.isEditing) {
-      _bloc.add(UpdateWordEvent(wordDetails));
+      _bloc.add(UpdateWordEvent(wordDetails, widget.initialWordCard));
     } else {
       _bloc.add(InsertWordEvent(wordDetails));
     }

@@ -27,7 +27,16 @@ class UpdateWordDetails extends UseCase<bool, Param> {
     final attemptInsertion = await repository.updateWordDetails(wordCard);
     return attemptInsertion.fold(
       (Failure l) => Left(l),
-      (bool r) => Right(r),
+      (bool r) {
+        // if (r) {
+        //   for (int i = 0; i < wordCard.detailList.length; ++i) {
+        //     if (wordCard.detailList[i].exampleList.isNotEmpty && params.previous.detailList[i].exampleList.isEmpty) {
+
+        //     }
+        //   }
+        // }
+        return Right(r);
+      },
     );
   }
 
@@ -65,9 +74,10 @@ class UpdateWordDetails extends UseCase<bool, Param> {
 }
 
 class Param extends Equatable {
+  final WordCard previous;
   final Map<String, dynamic> wordDetails;
 
-  const Param({@required this.wordDetails});
+  const Param({@required this.wordDetails, @required this.previous});
 
   @override
   List<Object> get props => [wordDetails];
