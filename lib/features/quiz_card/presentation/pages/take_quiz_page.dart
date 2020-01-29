@@ -198,7 +198,7 @@ class _FullCard extends StatelessWidget {
   }
 
   String _getTime() {
-    final int level = quizCard.level;
+    final int level = quizCard.level + 1;
 
     if (level < FAMILIAR_LEVEL_START) {
       return "2 minutes";

@@ -30,7 +30,7 @@ class QuizRepositoyImpl implements QuizRepository {
   @override
   Future<Either<Failure, List<QuizCard>>> getQuizCards(int limit) async {
     try {
-      final List<Card> dbCardList = await _getDueCards(limit);
+      final List<Card> dbCardList = await quizDao.getQuizCards(limit);
 
       if (dbCardList.isNotEmpty) {
         final List<QuizCard> output = await _makeQuizCards(dbCardList);
@@ -78,32 +78,6 @@ class QuizRepositoyImpl implements QuizRepository {
       );
     }
     return output;
-  }
-
-  Future<List<Card>> _getDueCards(int limit) async {
-    final int time = (DateTime.now().millisecondsSinceEpoch / 1000).round();
-    final List<Card> result = [];
-    final List<Card> newQuizCards = await quizDao.getNewQuizCards(
-      (limit * 0.5).ceil(),
-      time,
-    );
-    result.addAll(newQuizCards);
-
-    final List<Card> oldCards = await quizDao.getOldQuizCards(
-      limit - newQuizCards.length,
-      time,
-    );
-    result.addAll(oldCards);
-
-    if (result.length < limit) {
-      final List<Card> remaining = await quizDao.getNewQuizCards(
-        limit - result.length,
-        time,
-      );
-      result.addAll(remaining);
-    }
-
-    return result;
   }
 
   @override
