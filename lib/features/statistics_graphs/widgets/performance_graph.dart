@@ -30,7 +30,7 @@ class _PerformanceGraphState extends State<PerformanceGraph> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               PerformanceStats(range: _range),
-              SizedBox(height: 32),
+              SizedBox(height: 4),
               ButtonBar(
                 buttonTextTheme: ButtonTextTheme.primary,
                 alignment: MainAxisAlignment.spaceAround,
