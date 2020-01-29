@@ -7,8 +7,12 @@ abstract class QuizEvent extends Equatable {
 
 class InitiateQuizEvent implements QuizEvent {
   final int limit;
+  final bool fetchOnlyToday;
 
-  InitiateQuizEvent({this.limit = 25});
+  InitiateQuizEvent({
+    this.limit = 25,
+    this.fetchOnlyToday = false,
+  });
 
   @override
   List<Object> get props => [limit];

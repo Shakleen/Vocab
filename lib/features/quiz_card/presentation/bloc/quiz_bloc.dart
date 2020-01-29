@@ -23,7 +23,8 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     @required this.fetchUseCase,
     @required this.markCorrectUsecase,
     @required this.markWrongUsecase,
-  }) : this._quizCards = [], this._index = 0;
+  })  : this._quizCards = [],
+        this._index = 0;
 
   int getRemaining() => _quizCards.length - _index;
 
@@ -40,8 +41,9 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     if (event is InitiateQuizEvent) {
       yield LoadingQuizState();
 
-      final fetchQuizCards =
-          await fetchUseCase(fetch.Param(limit: event.limit));
+      final fetchQuizCards = await fetchUseCase(
+        fetch.Param(limit: event.limit, fetchOnlyToday: event.fetchOnlyToday),
+      );
       yield* fetchQuizCards.fold(
         (Failure f) async* {
           if (f is EmptyListFailure) {
@@ -51,7 +53,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
           }
         },
         (List<QuizCard> r) async* {
-          if (_quizCards.isEmpty) _quizCards.addAll(r);
+          if (_quizCards.isNotEmpty) _quizCards.addAll(r);
           yield ShowCardFrontState(_quizCards[_index]);
         },
       );
@@ -65,7 +67,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
       if (_index > 0) {
         yield LoadingQuizState();
         _index -= 1;
-        yield  ShowCardFrontState(_quizCards[_index]);
+        yield ShowCardFrontState(_quizCards[_index]);
       }
     }
   }
@@ -80,7 +82,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     }
   }
 
-  Stream<QuizState> _fetchNextCard() async*{
+  Stream<QuizState> _fetchNextCard() async* {
     _index += 1;
     if (_index < _quizCards.length) {
       yield ShowCardFrontState(_quizCards[_index]);

@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vocab/features/quiz_card/presentation/bloc/bloc.dart';
@@ -27,6 +28,27 @@ class _SelectQuizCardLimitState extends State<SelectQuizCardLimit> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          RaisedButton(
+            child: Text("Quiz only on words added today."),
+            textTheme: ButtonTextTheme.primary,
+            color: Theme.of(context).accentColor,
+            onPressed: () {
+              _bloc.add(InitiateQuizEvent(fetchOnlyToday: true));
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(flex: 1, child: Divider(thickness: 2)),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Or', style: Theme.of(context).textTheme.display1),
+                ),
+                Expanded(flex: 1, child: Divider(thickness: 2)),
+              ],
+            ),
+          ),
           Text(
             "Quiz on ${_limit.toInt()} cards?",
             style: Theme.of(context).textTheme.headline,
@@ -34,8 +56,8 @@ class _SelectQuizCardLimitState extends State<SelectQuizCardLimit> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
-              vertical: 64.0,
-              horizontal: 16.0,
+              vertical: 16.0,
+              horizontal: 8.0,
             ),
             child: Slider(
               value: _limit,

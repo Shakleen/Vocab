@@ -19,6 +19,21 @@ class QuizDao extends DatabaseAccessor<CardDatabase> with _$QuizDaoMixin {
 
   QuizDao(this.cardDatabase) : super(cardDatabase);
 
+  Future<List<Card>> getCardsAddedToday() async {
+    return (await (select(entries)
+              ..where((table) => table.addedOn.equals(_getOnlyTimeToday())))
+            .join([
+      leftOuterJoin(entryQuizCards, entryQuizCards.entryId.equalsExp(entries.id)),
+      leftOuterJoin(cards, cards.id.equalsExp(entryQuizCards.cardId)),
+    ]).get())
+        .map((row) {
+      final Card card = row.readTable(cards);
+      if (card.level == 0) return card;
+      else if (card.dueOn.isBefore(DateTime.now())) return card;
+      else return null;
+    }).toList();
+  }
+
   Future<List<int>> _getEntryQuizCardIDs(int entryID) async {
     return (await (select(entryQuizCards)
               ..where((table) => table.entryId.equals(entryID)))

@@ -15,15 +15,21 @@ class FetchQuizCards extends UseCase<List<QuizCard>, Param> {
 
   @override
   Future<Either<Failure, List<QuizCard>>> call(Param params) async {
-    final fetchQuizCards = await repository.getQuizCards(params.limit);
+    final fetchQuizCards = params.fetchOnlyToday
+        ? await repository.getQuizCardsForTodaysWords()
+        : await repository.getQuizCards(params.limit);
     return fetchQuizCards;
   }
 }
 
 class Param extends Equatable {
   final int limit;
+  final bool fetchOnlyToday;
 
-  const Param({@required this.limit});
+  const Param({
+    @required this.limit,
+    this.fetchOnlyToday = false,
+  });
 
   @override
   List<Object> get props => [limit];

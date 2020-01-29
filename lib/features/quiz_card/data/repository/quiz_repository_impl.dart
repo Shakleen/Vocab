@@ -12,52 +12,74 @@ class QuizRepositoyImpl implements QuizRepository {
       : this.quizDao = cardDatabase.quizDao;
 
   @override
-  Future<Either<Failure, List<QuizCard>>> getQuizCards(int limit) async {
+  Future<Either<Failure, List<QuizCard>>> getQuizCardsForTodaysWords() async {
     try {
-      final List<Card> dbCardList = await _getDueCards(limit);
+      final List<Card> dbCardList = await quizDao.getCardsAddedToday();
 
       if (dbCardList.isNotEmpty) {
-        final List<QuizCard> output = [];
-
-        for (final Card dbCard in dbCardList) {
-          //? Step 1: get card side information for front
-          final CardInfoData dbFrontCardInfo =
-              await quizDao.getCardInfoFromID(dbCard.frontId);
-          final String front = await quizDao.getCardSideInfo(dbFrontCardInfo);
-
-          //? Step 2: get card side information for back
-          final CardInfoData dbBackCardInfo =
-              await quizDao.getCardInfoFromID(dbCard.backId);
-          final String back = await quizDao.getCardSideInfo(dbBackCardInfo);
-
-          //? Step 3: Get the word
-          final String word = await quizDao.getWordFromCardID(dbCard.id);
-
-          //? Step 4: create quiz card and add to output list
-          output.add(
-            QuizCard(
-              word: word,
-              id: dbCard.id,
-              dueDate: dbCard.dueOn,
-              isImportant: dbCard.isImportant,
-              level: dbCard.level,
-              frontType: ID_TO_ATTRIBUTE_TYPE[dbFrontCardInfo.attributeType],
-              front: front,
-              backType: ID_TO_ATTRIBUTE_TYPE[dbBackCardInfo.attributeType],
-              back: back,
-            ),
-          );
-        }
-
-        return Right(output);
+        final List<QuizCard> output = await _makeQuizCards(dbCardList);
+        return output.isNotEmpty ? Right(output) : Left(EmptyListFailure());
       } else {
-        Left(EmptyListFailure());
+        return Left(EmptyListFailure());
       }
     } on Exception {
       return Left(DatabaseFailure());
     }
   }
-  
+
+  @override
+  Future<Either<Failure, List<QuizCard>>> getQuizCards(int limit) async {
+    try {
+      final List<Card> dbCardList = await _getDueCards(limit);
+
+      if (dbCardList.isNotEmpty) {
+        final List<QuizCard> output = await _makeQuizCards(dbCardList);
+        return output.isNotEmpty ? Right(output) : Left(EmptyListFailure());
+      } else {
+        return Left(EmptyListFailure());
+      }
+    } on Exception {
+      return Left(DatabaseFailure());
+    }
+  }
+
+  Future<List<QuizCard>> _makeQuizCards(List<Card> dbCardList) async {
+    final List<QuizCard> output = [];
+
+    for (final Card dbCard in dbCardList) {
+      if (dbCard == null) continue;
+
+      //? Step 1: get card side information for front
+      final CardInfoData dbFrontCardInfo =
+          await quizDao.getCardInfoFromID(dbCard.frontId);
+      final String front = await quizDao.getCardSideInfo(dbFrontCardInfo);
+
+      //? Step 2: get card side information for back
+      final CardInfoData dbBackCardInfo =
+          await quizDao.getCardInfoFromID(dbCard.backId);
+      final String back = await quizDao.getCardSideInfo(dbBackCardInfo);
+
+      //? Step 3: Get the word
+      final String word = await quizDao.getWordFromCardID(dbCard.id);
+
+      //? Step 4: create quiz card and add to output list
+      output.add(
+        QuizCard(
+          word: word,
+          id: dbCard.id,
+          dueDate: dbCard.dueOn,
+          isImportant: dbCard.isImportant,
+          level: dbCard.level,
+          frontType: ID_TO_ATTRIBUTE_TYPE[dbFrontCardInfo.attributeType],
+          front: front,
+          backType: ID_TO_ATTRIBUTE_TYPE[dbBackCardInfo.attributeType],
+          back: back,
+        ),
+      );
+    }
+    return output;
+  }
+
   Future<List<Card>> _getDueCards(int limit) async {
     final int time = (DateTime.now().millisecondsSinceEpoch / 1000).round();
     final List<Card> result = [];

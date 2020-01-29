@@ -65,7 +65,7 @@ class WordDao extends DatabaseAccessor<CardDatabase> with _$WordDaoMixin {
       return await into(entries).insert(
         Entry(
           wordId: wordID,
-          addedOn: DateTime.now(),
+          addedOn: _getOnlyTimeToday(),
           pronunciation: wordCard.pronunciation,
         ),
       );
