@@ -178,7 +178,7 @@ class _FullCard extends StatelessWidget {
             ),
             RaisedButton(
               child: Text(
-                "Good\n${_getTime()}",
+                "Good\n(${_getTime()})",
                 textAlign: TextAlign.center,
               ),
               color: Colors.green,
@@ -202,13 +202,9 @@ class _FullCard extends StatelessWidget {
 
     if (level < FAMILIAR_LEVEL_START) {
       return "2 minutes";
-    } else if (level == FAMILIAR_LEVEL_START) {
-      return "1 day";
-    } else if (level <= MASTERED_LEVEL_START) {
-      return "${2 * level - 1} days";
     } else {
-      final double time = (level / 25);
-      return "${time.toStringAsFixed(1)} months";
+      final double time = 2.0 * (level - FAMILIAR_LEVEL_START) + 1.0;
+      return "${time.toStringAsFixed(1)} days";
     }
   }
 }

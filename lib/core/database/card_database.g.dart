@@ -2748,7 +2748,7 @@ mixin _$StatisticsDaoMixin on DatabaseAccessor<CardDatabase> {
   }
 
   Selectable<int> _getUntouchedCardCountQuery() {
-    return customSelectQuery('SELECT COUNT(*) FROM cards WHERE level <= 0',
+    return customSelectQuery('SELECT COUNT(*) FROM cards WHERE level < 1',
         variables: [],
         readsFrom: {cards}).map((QueryRow row) => row.readInt('COUNT(*)'));
   }
@@ -2763,7 +2763,7 @@ mixin _$StatisticsDaoMixin on DatabaseAccessor<CardDatabase> {
 
   Selectable<int> _getLearningCardCountQuery() {
     return customSelectQuery(
-        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 1 AND 10',
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 1 AND 2',
         variables: [],
         readsFrom: {cards}).map((QueryRow row) => row.readInt('COUNT(*)'));
   }
@@ -2778,7 +2778,7 @@ mixin _$StatisticsDaoMixin on DatabaseAccessor<CardDatabase> {
 
   Selectable<int> _getFamiliarCardCountQuery() {
     return customSelectQuery(
-        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 11 AND 24',
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 3 AND 9',
         variables: [],
         readsFrom: {cards}).map((QueryRow row) => row.readInt('COUNT(*)'));
   }
@@ -2791,8 +2791,23 @@ mixin _$StatisticsDaoMixin on DatabaseAccessor<CardDatabase> {
     return _getFamiliarCardCountQuery().watch();
   }
 
+  Selectable<int> _getProficientCardCountQuery() {
+    return customSelectQuery(
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 10 AND 15',
+        variables: [],
+        readsFrom: {cards}).map((QueryRow row) => row.readInt('COUNT(*)'));
+  }
+
+  Future<List<int>> _getProficientCardCount() {
+    return _getProficientCardCountQuery().get();
+  }
+
+  Stream<List<int>> _watchGetProficientCardCount() {
+    return _getProficientCardCountQuery().watch();
+  }
+
   Selectable<int> _getMasteredCardCountQuery() {
-    return customSelectQuery('SELECT COUNT(*) FROM cards WHERE level > 24',
+    return customSelectQuery('SELECT COUNT(*) FROM cards WHERE level >= 16',
         variables: [],
         readsFrom: {cards}).map((QueryRow row) => row.readInt('COUNT(*)'));
   }

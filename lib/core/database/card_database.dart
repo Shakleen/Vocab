@@ -98,12 +98,14 @@ class QuizCardDao extends DatabaseAccessor<CardDatabase>
   queries: {
     '_getPartOfSpeechStats':
         'SELECT part_of_speech, COUNT(*) FROM senses GROUP BY part_of_speech',
-    '_getUntouchedCardCount': 'SELECT COUNT(*) FROM cards WHERE level <= 0',
+    '_getUntouchedCardCount': 'SELECT COUNT(*) FROM cards WHERE level < $LEARNING_LEVEL_START',
     '_getLearningCardCount':
-        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 1 AND 10',
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN $LEARNING_LEVEL_START AND ${FAMILIAR_LEVEL_START-1}',
     '_getFamiliarCardCount':
-        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 11 AND 24',
-    '_getMasteredCardCount': 'SELECT COUNT(*) FROM cards WHERE level > 24',
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN $FAMILIAR_LEVEL_START AND ${PROFICIENT_LEVEL_START-1}',
+    '_getProficientCardCount':
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN $PROFICIENT_LEVEL_START AND ${MASTERED_LEVEL_START-1}',
+    '_getMasteredCardCount': 'SELECT COUNT(*) FROM cards WHERE level >= $MASTERED_LEVEL_START',
   },
 )
 class StatisticsDao extends DatabaseAccessor<CardDatabase>
@@ -151,12 +153,14 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
     final int untouchedCount = (await _getUntouchedCardCount())[0];
     final int learningCount = (await _getLearningCardCount())[0];
     final int familiarCount = (await _getFamiliarCardCount())[0];
+    final int proficientCount = (await _getProficientCardCount())[0];
     final int masteredCount = (await _getMasteredCardCount())[0];
 
     return {
       MasteryLevels.Untouched: untouchedCount,
       MasteryLevels.Learning: learningCount,
       MasteryLevels.Familiar: familiarCount,
+      MasteryLevels.Proficient: proficientCount,
       MasteryLevels.Mastered: masteredCount,
     };
   }

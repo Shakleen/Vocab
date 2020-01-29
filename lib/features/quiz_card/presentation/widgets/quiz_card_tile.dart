@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moor_flutter/moor_flutter.dart';
+import 'package:vocab/core/enums/mastery_levels.dart';
 import 'package:vocab/core/ui/widgets/delete_alert_dialog.dart';
 import 'package:vocab/core/ui/widgets/title_text.dart';
 import 'package:vocab/core/util/formatter.dart';
@@ -37,7 +38,8 @@ class _QuizCardTileState extends State<QuizCardTile> {
       child: ListTile(
         leading: CircleAvatar(
           child: Text(widget.quizCard.level.toString()),
-          backgroundColor: _chooseColor(),
+          backgroundColor: MASTERY_LEVEL_COLOR[
+              getMasteryLevelForLevel(widget.quizCard.level)],
         ),
         title: TitleText(text: widget.quizCard.front),
         subtitle: Text(
@@ -46,17 +48,6 @@ class _QuizCardTileState extends State<QuizCardTile> {
         trailing: ToggleImportanceButton(quizCard: widget.quizCard),
       ),
     );
-  }
-
-  Color _chooseColor() {
-    if (widget.quizCard.level == 0)
-      return Colors.grey[350];
-    else if (widget.quizCard.level <= 2)
-      return Colors.yellow;
-    else if (widget.quizCard.level <= 15)
-      return Colors.lightGreen;
-    else
-      return Colors.green[900];
   }
 
   Future<bool> _handleDismissConfirmation(DismissDirection direction) async {

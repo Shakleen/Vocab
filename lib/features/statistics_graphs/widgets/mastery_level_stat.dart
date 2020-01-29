@@ -5,20 +5,7 @@ import 'package:vocab/core/enums/mastery_levels.dart';
 import '../../../core/database/card_database.dart' as db;
 import 'indicator.dart';
 
-class MasteryLevelStats extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => MasteryLevelStatsState();
-}
-
-class MasteryLevelStatsState extends State {
-  final List<Color> _masteryColor = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _masteryColor.addAll([Colors.grey, Colors.yellow, Colors.lightGreen, Colors.green]);
-  }
-
+class MasteryLevelStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -87,7 +74,7 @@ class MasteryLevelStatsState extends State {
         int val = data[ID_TO_MASTERY_LEVEL[index]];
         if (val == null) val = 0;
         return PieChartSectionData(
-          color: _masteryColor[index],
+          color: MASTERY_LEVEL_COLOR[ID_TO_MASTERY_LEVEL[index]],
           value: val.toDouble(),
           title: val.toString(),
           radius: 50,
@@ -102,7 +89,7 @@ class MasteryLevelStatsState extends State {
   Widget _generateIndicator(int index) => Padding(
         padding: const EdgeInsets.only(bottom: 4.0, left: 4.0),
         child: Indicator(
-          color: _masteryColor[index],
+          color: MASTERY_LEVEL_COLOR[ID_TO_MASTERY_LEVEL[index]],
           text: getMasteryLevelString(ID_TO_MASTERY_LEVEL[index]),
           isSquare: true,
         ),
