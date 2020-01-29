@@ -199,14 +199,14 @@ class _FullCard extends StatelessWidget {
   String _getTime() {
     final int level = quizCard.level;
 
-    if (level == 0) {
-      return "10 minutes";
-    } else if (level == 1) {
+    if (level < 10) {
+      return "2 minutes";
+    } else if (level == 11) {
       return "1 day";
-    } else if (level < 15) {
+    } else if (level < 25) {
       return "${2 * level - 1} days";
     } else {
-      final double time = (level / 15);
+      final double time = (level / 25);
       return "${time.toStringAsFixed(1)} months";
     }
   }

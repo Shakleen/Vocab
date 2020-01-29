@@ -14,8 +14,17 @@ class MarkCorrect extends UseCase<bool, Param> {
 
   @override
   Future<Either<Failure, bool>> call(Param params) async {
+    DateTime dueOn;
+
+    if (params.level <= 10)
+      dueOn = DateTime.now().add(Duration(minutes: 2));
+    else if (params.level == 11)
+      dueOn = DateTime.now().add(Duration(days: 1));
+    else
+      dueOn = DateTime.now().add(Duration(days: 2 * params.level - 1));
+
     final fetchQuizCards =
-        await repository.markAsCorrect(params.id, params.level);
+        await repository.markAsCorrect(params.id, params.level, dueOn);
     return fetchQuizCards;
   }
 }

@@ -53,7 +53,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
           }
         },
         (List<QuizCard> r) async* {
-          if (_quizCards.isNotEmpty) _quizCards.addAll(r);
+          if (_quizCards.isEmpty) _quizCards.addAll(r);
           yield ShowCardFrontState(_quizCards[_index]);
         },
       );

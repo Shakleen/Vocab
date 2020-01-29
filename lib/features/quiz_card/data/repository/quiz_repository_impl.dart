@@ -107,13 +107,10 @@ class QuizRepositoyImpl implements QuizRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> markAsCorrect(int cardID, int level) async {
+  Future<Either<Failure, bool>> markAsCorrect(
+      int cardID, int level, DateTime dueOn) async {
     try {
-      final DateTime nextDue = DateTime.now().add(
-        level == 1 ? Duration(minutes: 10) : Duration(days: level * 2 - 1),
-      );
-      final int affected =
-          await quizDao.updateCardLevel(cardID, level, nextDue);
+      final int affected = await quizDao.updateCardLevel(cardID, level, dueOn);
       return Right(affected == 1);
     } on Exception {
       Left(DatabaseFailure());

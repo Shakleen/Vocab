@@ -2763,7 +2763,7 @@ mixin _$StatisticsDaoMixin on DatabaseAccessor<CardDatabase> {
 
   Selectable<int> _getLearningCardCountQuery() {
     return customSelectQuery(
-        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 1 AND 20',
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 1 AND 10',
         variables: [],
         readsFrom: {cards}).map((QueryRow row) => row.readInt('COUNT(*)'));
   }
@@ -2776,8 +2776,23 @@ mixin _$StatisticsDaoMixin on DatabaseAccessor<CardDatabase> {
     return _getLearningCardCountQuery().watch();
   }
 
+  Selectable<int> _getFamiliarCardCountQuery() {
+    return customSelectQuery(
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 11 AND 24',
+        variables: [],
+        readsFrom: {cards}).map((QueryRow row) => row.readInt('COUNT(*)'));
+  }
+
+  Future<List<int>> _getFamiliarCardCount() {
+    return _getFamiliarCardCountQuery().get();
+  }
+
+  Stream<List<int>> _watchGetFamiliarCardCount() {
+    return _getFamiliarCardCountQuery().watch();
+  }
+
   Selectable<int> _getMasteredCardCountQuery() {
-    return customSelectQuery('SELECT COUNT(*) FROM cards WHERE level > 20',
+    return customSelectQuery('SELECT COUNT(*) FROM cards WHERE level > 24',
         variables: [],
         readsFrom: {cards}).map((QueryRow row) => row.readInt('COUNT(*)'));
   }

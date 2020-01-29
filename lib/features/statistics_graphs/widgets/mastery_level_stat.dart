@@ -17,11 +17,11 @@ class MasteryLevelStatsState extends State {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 4; ++i) {
       _masteryName.add(getMasteryLevelString(ID_TO_MASTERY_LEVEL[i]));
     }
 
-    _masteryColor.addAll([Colors.grey, Colors.yellow, Colors.green]);
+    _masteryColor.addAll([Colors.grey, Colors.yellow, Colors.lightGreen, Colors.green]);
   }
 
   @override

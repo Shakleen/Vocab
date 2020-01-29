@@ -100,8 +100,10 @@ class QuizCardDao extends DatabaseAccessor<CardDatabase>
         'SELECT part_of_speech, COUNT(*) FROM senses GROUP BY part_of_speech',
     '_getUntouchedCardCount': 'SELECT COUNT(*) FROM cards WHERE level <= 0',
     '_getLearningCardCount':
-        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 1 AND 20',
-    '_getMasteredCardCount': 'SELECT COUNT(*) FROM cards WHERE level > 20',
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 1 AND 10',
+    '_getFamiliarCardCount':
+        'SELECT COUNT(*) FROM cards WHERE level BETWEEN 11 AND 24',
+    '_getMasteredCardCount': 'SELECT COUNT(*) FROM cards WHERE level > 24',
   },
 )
 class StatisticsDao extends DatabaseAccessor<CardDatabase>
@@ -148,11 +150,13 @@ class StatisticsDao extends DatabaseAccessor<CardDatabase>
   Future<Map<MasteryLevels, int>> getCardLevelStatistics() async {
     final int untouchedCount = (await _getUntouchedCardCount())[0];
     final int learningCount = (await _getLearningCardCount())[0];
+    final int familiarCount = (await _getFamiliarCardCount())[0];
     final int masteredCount = (await _getMasteredCardCount())[0];
 
     return {
       MasteryLevels.Untouched: untouchedCount,
       MasteryLevels.Learning: learningCount,
+      MasteryLevels.Familiar: familiarCount,
       MasteryLevels.Mastered: masteredCount,
     };
   }
