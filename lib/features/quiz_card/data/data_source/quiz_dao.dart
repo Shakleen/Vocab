@@ -50,7 +50,8 @@ class QuizDao extends DatabaseAccessor<CardDatabase> with _$QuizDaoMixin {
     return (await customSelectQuery(
         'SELECT * FROM ${cards.actualTableName} ' +
             'WHERE ${cards.dueOn.$name} <= $time ' +
-            'ORDER BY RANDOM() ' +
+            'ORDER BY ${cards.dueOn.$name} ASC, ' +
+            '${cards.level.$name} ASC, RANDOM() ' +
             'LIMIT $limit',
         readsFrom: {cards},
       ).get())
