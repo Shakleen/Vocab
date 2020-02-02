@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:vocab/core/entities/pronunciation.dart';
-import 'package:vocab/core/entities/syllable.dart';
 import 'package:vocab/core/entities/word_card.dart';
 import 'package:vocab/core/entities/word_card_details.dart';
 import 'package:vocab/core/enums/part_of_speech.dart';
@@ -47,20 +45,25 @@ class UpdateWordDetails extends UseCase<bool, Param> {
 
     final List<WordCardDetails> detailList = [];
 
-    params.wordDetails[getWordDetailKeyString(WordDetailKeys.senses)].forEach(
-      (Map<String, dynamic> value) => WordCardDetails(
-        id: value[getWordDetailKeyString(WordDetailKeys.senseID)],
-        definition: value[getWordDetailKeyString(WordDetailKeys.definition)],
-        partOfSpeech: ID_TO_PART_OF_SPEECH_TYPE[
-            value[getWordDetailKeyString(WordDetailKeys.partOfSpeech)]],
-        antonymList: value[getWordDetailKeyString(WordDetailKeys.antonyms)]
-            ?.split(SEPERATOR),
-        synonymList: value[getWordDetailKeyString(WordDetailKeys.synonyms)]
-            ?.split(SEPERATOR),
-        exampleList: value[getWordDetailKeyString(WordDetailKeys.examples)]
-            ?.split(SEPERATOR),
-      ),
-    );
+    params.wordDetails[getWordDetailKeyString(WordDetailKeys.senses)]
+        .forEach((Map<String, dynamic> value) => detailList.add(
+              WordCardDetails(
+                id: value[getWordDetailKeyString(WordDetailKeys.senseID)],
+                definition:
+                    value[getWordDetailKeyString(WordDetailKeys.definition)],
+                partOfSpeech: ID_TO_PART_OF_SPEECH_TYPE[
+                    value[getWordDetailKeyString(WordDetailKeys.partOfSpeech)]],
+                antonymList:
+                    value[getWordDetailKeyString(WordDetailKeys.antonyms)]
+                        ?.split(SEPERATOR),
+                synonymList:
+                    value[getWordDetailKeyString(WordDetailKeys.synonyms)]
+                        ?.split(SEPERATOR),
+                exampleList:
+                    value[getWordDetailKeyString(WordDetailKeys.examples)]
+                        ?.split(SEPERATOR),
+              ),
+            ));
 
     return WordCard(
       id: params.wordDetails[getWordDetailKeyString(WordDetailKeys.id)],
